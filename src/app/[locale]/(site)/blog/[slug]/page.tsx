@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
-import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
+import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
+import { NODE_ID, ref, type GraphNode } from '@/lib/seo/graph'
+import { webPageNode } from '@/lib/seo/nodes'
+import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
 import { redirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -78,22 +81,36 @@ export default async function PostPage({
       }).format(post.publishedAt)
     : null
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
+  const url = localeUrl(locale, `/blog/${translation?.slug ?? slug}`)
+
+  const article: GraphNode = {
     '@type': 'Article',
+    '@id': `${url}#article`,
     headline: translation?.title,
     description: translation?.excerpt ?? undefined,
     datePublished: post.publishedAt?.toISOString(),
     dateModified: post.updatedAt.toISOString(),
+    inLanguage: locale,
     author: authorName ? { '@type': 'Person', name: authorName } : undefined,
     image: mediaUrl(cover?.objectKey) || undefined,
+    // Ties the article to the URL it is published at rather than leaving two
+    // unrelated descriptions of the same page.
+    mainEntityOfPage: ref(NODE_ID.page(url)),
   }
 
   return (
     <article className="pb-16">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <JsonLd
+        nodes={[
+          webPageNode({
+            locale,
+            url,
+            name: translation?.title ?? '',
+            description: translation?.excerpt,
+            dateModified: post.updatedAt,
+          }),
+          article,
+        ]}
       />
 
       <header className="container-narrow pt-10 md:pt-16">
