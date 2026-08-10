@@ -878,5 +878,26 @@
     "reference": "Reference",
     "tooMany": "Too many reports from here just now. Please try again shortly.",
     "failed": "The report could not be sent. Please try again."
+  },
+  "capabilities": {
+    "title": "Capability statement",
+    "subtitle": "What we have built, where, and who builds it — generated from our delivery record.",
+    "organisation": "Organisation",
+    "legalName": "Registered name",
+    "registration": "Registration number",
+    "based": "Based in",
+    "contact": "Email",
+    "phone": "Phone",
+    "founded": "Working since",
+    "delivered": "Delivered to date",
+    "projectsDelivered": "Projects",
+    "waterPoints": "Water points",
+    "peopleServed": "People served",
+    "districts": "Districts worked in",
+    "averageDepth": "Average depth",
+    "deepest": "Deepest borehole",
+    "interventionTypes": "Types of intervention",
+    "teamQualifications": "Team and qualifications",
+    "generated": "Generated on {date} from published project records."
   }
 }

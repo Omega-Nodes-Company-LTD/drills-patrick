@@ -70,6 +70,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/faq',
     '/team',
     '/partners',
+    '/capabilities',
   ]
   const now = new Date()
 

@@ -878,5 +878,26 @@
     "reference": "Referenz",
     "tooMany": "Momentan zu viele Meldungen von hier. Bitte kurz später erneut versuchen.",
     "failed": "Die Meldung konnte nicht gesendet werden. Bitte erneut versuchen."
+  },
+  "capabilities": {
+    "title": "Leistungsprofil",
+    "subtitle": "Was wir gebaut haben, wo und mit wem — erzeugt aus unseren Projektdaten.",
+    "organisation": "Organisation",
+    "legalName": "Eingetragener Name",
+    "registration": "Registernummer",
+    "based": "Sitz",
+    "contact": "E-Mail",
+    "phone": "Telefon",
+    "founded": "Tätig seit",
+    "delivered": "Bisher realisiert",
+    "projectsDelivered": "Projekte",
+    "waterPoints": "Wasserstellen",
+    "peopleServed": "Versorgte Menschen",
+    "districts": "Distrikte",
+    "averageDepth": "Durchschnittliche Tiefe",
+    "deepest": "Tiefste Bohrung",
+    "interventionTypes": "Interventionsarten",
+    "teamQualifications": "Team und Qualifikationen",
+    "generated": "Erstellt am {date} aus veröffentlichten Projektdaten."
   }
 }

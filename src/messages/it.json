@@ -878,5 +878,26 @@
     "reference": "Riferimento",
     "tooMany": "Troppe segnalazioni da qui in questo momento. Riprova tra poco.",
     "failed": "Non è stato possibile inviare la segnalazione. Riprova."
+  },
+  "capabilities": {
+    "title": "Scheda capacità",
+    "subtitle": "Cosa abbiamo realizzato, dove e con chi — generata dai progetti effettivamente consegnati.",
+    "organisation": "Organizzazione",
+    "legalName": "Denominazione",
+    "registration": "Numero di registrazione",
+    "based": "Sede",
+    "contact": "Email",
+    "phone": "Telefono",
+    "founded": "Attivi dal",
+    "delivered": "Realizzato a oggi",
+    "projectsDelivered": "Progetti",
+    "waterPoints": "Punti d'acqua",
+    "peopleServed": "Persone servite",
+    "districts": "Distretti",
+    "averageDepth": "Profondità media",
+    "deepest": "Pozzo più profondo",
+    "interventionTypes": "Tipi di intervento",
+    "teamQualifications": "Team e qualifiche",
+    "generated": "Generata il {date} dai progetti pubblicati."
   }
 }

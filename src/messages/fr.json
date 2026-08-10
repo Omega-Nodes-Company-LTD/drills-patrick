@@ -878,5 +878,26 @@
     "reference": "Référence",
     "tooMany": "Trop de signalements depuis cet endroit pour le moment. Réessayez sous peu.",
     "failed": "Le signalement n'a pas pu être envoyé. Réessayez."
+  },
+  "capabilities": {
+    "title": "Fiche de capacités",
+    "subtitle": "Ce que nous avons réalisé, où, et par qui — générée à partir de nos réalisations.",
+    "organisation": "Organisation",
+    "legalName": "Dénomination",
+    "registration": "Numéro d'enregistrement",
+    "based": "Siège",
+    "contact": "E-mail",
+    "phone": "Téléphone",
+    "founded": "En activité depuis",
+    "delivered": "Réalisé à ce jour",
+    "projectsDelivered": "Projets",
+    "waterPoints": "Points d'eau",
+    "peopleServed": "Personnes desservies",
+    "districts": "Districts",
+    "averageDepth": "Profondeur moyenne",
+    "deepest": "Forage le plus profond",
+    "interventionTypes": "Types d'intervention",
+    "teamQualifications": "Équipe et qualifications",
+    "generated": "Générée le {date} à partir des projets publiés."
   }
 }
