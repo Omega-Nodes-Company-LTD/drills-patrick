@@ -728,6 +728,24 @@
         "accepted": "Accettato",
         "declined": "Rifiutato"
       }
+    },
+    "visits": {
+      "title": "Interventi di manutenzione",
+      "kind": "Tipo",
+      "kinds": {
+        "scheduled": "Manutenzione programmata",
+        "repair": "Riparazione",
+        "inspection": "Ispezione",
+        "training": "Formazione comitato"
+      },
+      "technician": "Tecnico",
+      "findings": "Rilievi",
+      "workDone": "Lavoro svolto",
+      "parts": "Ricambi usati",
+      "functionalAfter": "Funzionante alla partenza",
+      "functionalHint": "È il dato da cui si calcola il tasso di funzionalità.",
+      "working": "Funzionante",
+      "notWorking": "Non funzionante"
     }
   },
   "portal": {

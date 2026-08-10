@@ -13,6 +13,7 @@ import {
   posts,
   projectTranslations,
   projectUpdateTranslations,
+  maintenanceVisits,
   projectDocuments,
   projectUpdates,
   projects,
@@ -184,6 +185,15 @@ export async function adminListProjectDocuments(projectId: string) {
     .from(projectDocuments)
     .where(eq(projectDocuments.projectId, projectId))
     .orderBy(desc(projectDocuments.issuedOn), desc(projectDocuments.createdAt))
+}
+
+/** Maintenance visits to a water point, most recent first. */
+export async function adminListMaintenanceVisits(projectId: string) {
+  return db
+    .select()
+    .from(maintenanceVisits)
+    .where(eq(maintenanceVisits.projectId, projectId))
+    .orderBy(desc(maintenanceVisits.visitedOn))
 }
 
 /** Team members who can carry a public byline on an article. */

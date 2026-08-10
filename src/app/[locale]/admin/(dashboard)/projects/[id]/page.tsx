@@ -2,12 +2,14 @@ import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { ProjectForm } from '@/components/admin/project-form'
+import { MaintenanceVisitsEditor } from '@/components/admin/maintenance-visits-editor'
 import { ProjectDocumentsEditor } from '@/components/admin/project-documents-editor'
 import { ProjectUpdatesEditor } from '@/components/admin/project-updates-editor'
 import { features } from '@/env'
 import type { Locale } from '@/i18n/config'
 import {
   adminGetProject,
+  adminListMaintenanceVisits,
   adminListProjectDocuments,
   adminListProjectUpdates,
 } from '@/lib/admin/queries'
@@ -29,12 +31,13 @@ export default async function EditProjectPage({
   setRequestLocale(locale)
   await requirePermission('projects')
 
-  const [t, record, settings, updates, documents] = await Promise.all([
+  const [t, record, settings, updates, documents, visits] = await Promise.all([
     getTranslations('admin.nav'),
     adminGetProject(id),
     getSiteSettings(),
     adminListProjectUpdates(id),
     adminListProjectDocuments(id),
+    adminListMaintenanceVisits(id),
   ])
 
   if (!record) notFound()
@@ -128,6 +131,20 @@ export default async function EditProjectPage({
           issuedOn: document.issuedOn,
           expiresOn: document.expiresOn,
           isPublic: document.isPublic,
+        }))}
+      />
+
+      <MaintenanceVisitsEditor
+        projectId={project.id}
+        rows={visits.map((visit) => ({
+          id: visit.id,
+          kind: visit.kind,
+          visitedOn: visit.visitedOn,
+          technician: visit.technician,
+          findings: visit.findings,
+          workDone: visit.workDone,
+          partsUsed: visit.partsUsed,
+          functionalAfter: visit.functionalAfter,
         }))}
       />
     </div>

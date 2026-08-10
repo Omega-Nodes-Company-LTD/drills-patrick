@@ -728,6 +728,24 @@
         "accepted": "Angenommen",
         "declined": "Abgelehnt"
       }
+    },
+    "visits": {
+      "title": "Wartungsbesuche",
+      "kind": "Typ",
+      "kinds": {
+        "scheduled": "Planmäßige Wartung",
+        "repair": "Reparatur",
+        "inspection": "Inspektion",
+        "training": "Komitee-Schulung"
+      },
+      "technician": "Techniker",
+      "findings": "Befund",
+      "workDone": "Ausgeführte Arbeiten",
+      "parts": "Verwendete Teile",
+      "functionalAfter": "Beim Verlassen in Betrieb",
+      "functionalHint": "Daraus wird die Funktionsrate berechnet.",
+      "working": "In Betrieb",
+      "notWorking": "Außer Betrieb"
     }
   },
   "portal": {

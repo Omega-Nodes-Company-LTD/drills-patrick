@@ -728,6 +728,24 @@
         "accepted": "Accepté",
         "declined": "Refusé"
       }
+    },
+    "visits": {
+      "title": "Interventions de maintenance",
+      "kind": "Type",
+      "kinds": {
+        "scheduled": "Entretien programmé",
+        "repair": "Réparation",
+        "inspection": "Inspection",
+        "training": "Formation du comité"
+      },
+      "technician": "Technicien",
+      "findings": "Constats",
+      "workDone": "Travaux réalisés",
+      "parts": "Pièces utilisées",
+      "functionalAfter": "En service au départ",
+      "functionalHint": "C'est la donnée qui sert au taux de fonctionnalité.",
+      "working": "En service",
+      "notWorking": "Hors service"
     }
   },
   "portal": {

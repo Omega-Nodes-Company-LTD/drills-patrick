@@ -728,6 +728,24 @@
         "accepted": "Accepted",
         "declined": "Declined"
       }
+    },
+    "visits": {
+      "title": "Maintenance visits",
+      "kind": "Type",
+      "kinds": {
+        "scheduled": "Scheduled service",
+        "repair": "Repair",
+        "inspection": "Inspection",
+        "training": "Committee training"
+      },
+      "technician": "Technician",
+      "findings": "Findings",
+      "workDone": "Work done",
+      "parts": "Parts used",
+      "functionalAfter": "Working when we left",
+      "functionalHint": "This is what the functionality rate is computed from.",
+      "working": "Working",
+      "notWorking": "Not working"
     }
   },
   "portal": {
