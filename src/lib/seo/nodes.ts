@@ -58,6 +58,35 @@ export function organisationNode(settings: SiteSettings, locale: Locale): GraphN
 }
 
 /**
+ * The site as a whole, with the search endpoint it exposes.
+ *
+ * `SearchAction` is what a search engine reads to offer a search box inside
+ * its own results for this site, and what an answer engine reads to know the
+ * site can be queried rather than only crawled. The template points at the
+ * real `/search?q=` route, per language.
+ */
+export function webSiteNode(settings: SiteSettings, locale: Locale): GraphNode {
+  const searchUrl = localeUrl(locale, '/search')
+
+  return {
+    '@type': 'WebSite',
+    '@id': NODE_ID.website(locale),
+    url: localeUrl(locale, '/'),
+    name: settings.siteName,
+    inLanguage: locale,
+    publisher: ref(NODE_ID.organisation(locale)),
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${searchUrl}?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+}
+
+/**
  * The page itself. Everything specific — an article, a project, a campaign —
  * declares this node as its `mainEntityOfPage`, which is what ties a piece of
  * content to the URL it is published at.
