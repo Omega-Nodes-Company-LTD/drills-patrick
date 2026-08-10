@@ -670,5 +670,36 @@
       "pending": "Unconfirmed",
       "unsubscribed": "Unsubscribed"
     }
+  },
+  "portal": {
+    "title": "Partner area",
+    "loginIntro": "Sign in with the address your organisation was given. This area is separate from the public site.",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "invalid": "Wrong email or password.",
+    "inactive": "This account has been deactivated. Contact us to reactivate it.",
+    "tooMany": "Too many attempts. Try again in a few minutes.",
+    "signedInAs": "Signed in as {name}",
+    "projects": "Projects",
+    "projectsCount": "Projects",
+    "documents": "Documents",
+    "contracts": "Maintenance",
+    "noProjects": "No projects are linked to your organisation yet.",
+    "noDocuments": "No documents have been published for these projects yet.",
+    "viewDocuments": "Documents",
+    "download": "Download",
+    "issued": "Issued",
+    "expires": "Expires",
+    "expired": "Expired",
+    "allProjects": "All projects",
+    "allKinds": "All types",
+    "nextVisit": "Next visit due",
+    "lastVisit": "Last visit",
+    "visits": "Visits",
+    "coverage": "Water points covered",
+    "responseTime": "Response time promised",
+    "hours": "{count} h"
   }
 }

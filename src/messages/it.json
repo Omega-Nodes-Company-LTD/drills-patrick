@@ -670,5 +670,36 @@
       "pending": "Da confermare",
       "unsubscribed": "Disiscritto"
     }
+  },
+  "portal": {
+    "title": "Area partner",
+    "loginIntro": "Accedi con l'indirizzo assegnato alla tua organizzazione. Quest'area è separata dal sito pubblico.",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Accedi",
+    "signOut": "Esci",
+    "invalid": "Email o password errate.",
+    "inactive": "Questo account è stato disattivato. Contattaci per riattivarlo.",
+    "tooMany": "Troppi tentativi. Riprova tra qualche minuto.",
+    "signedInAs": "Accesso come {name}",
+    "projects": "Progetti",
+    "projectsCount": "Progetti",
+    "documents": "Documenti",
+    "contracts": "Manutenzione",
+    "noProjects": "Nessun progetto è ancora collegato alla tua organizzazione.",
+    "noDocuments": "Non ci sono ancora documenti pubblicati per questi progetti.",
+    "viewDocuments": "Documenti",
+    "download": "Scarica",
+    "issued": "Emesso",
+    "expires": "Scade",
+    "expired": "Scaduto",
+    "allProjects": "Tutti i progetti",
+    "allKinds": "Tutti i tipi",
+    "nextVisit": "Prossima visita prevista",
+    "lastVisit": "Ultima visita",
+    "visits": "Visite",
+    "coverage": "Punti d'acqua coperti",
+    "responseTime": "Tempo di risposta garantito",
+    "hours": "{count} h"
   }
 }

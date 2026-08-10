@@ -670,5 +670,36 @@
       "pending": "Unbestätigt",
       "unsubscribed": "Abgemeldet"
     }
+  },
+  "portal": {
+    "title": "Partnerbereich",
+    "loginIntro": "Melden Sie sich mit der Adresse an, die Ihre Organisation erhalten hat. Dieser Bereich ist vom öffentlichen Auftritt getrennt.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "invalid": "E-Mail oder Passwort falsch.",
+    "inactive": "Dieses Konto wurde deaktiviert. Kontaktieren Sie uns zur Reaktivierung.",
+    "tooMany": "Zu viele Versuche. Bitte in einigen Minuten erneut versuchen.",
+    "signedInAs": "Angemeldet als {name}",
+    "projects": "Projekte",
+    "projectsCount": "Projekte",
+    "documents": "Dokumente",
+    "contracts": "Wartung",
+    "noProjects": "Ihrer Organisation ist noch kein Projekt zugeordnet.",
+    "noDocuments": "Für diese Projekte wurden noch keine Dokumente veröffentlicht.",
+    "viewDocuments": "Dokumente",
+    "download": "Herunterladen",
+    "issued": "Ausgestellt",
+    "expires": "Gültig bis",
+    "expired": "Abgelaufen",
+    "allProjects": "Alle Projekte",
+    "allKinds": "Alle Typen",
+    "nextVisit": "Nächster Termin",
+    "lastVisit": "Letzter Besuch",
+    "visits": "Besuche",
+    "coverage": "Abgedeckte Wasserstellen",
+    "responseTime": "Zugesagte Reaktionszeit",
+    "hours": "{count} Std."
   }
 }
