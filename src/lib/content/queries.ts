@@ -65,6 +65,7 @@ export type ProjectListItem = {
   summary: string | null
   status: (typeof projects.$inferSelect)['status']
   waterPointType: (typeof projects.$inferSelect)['waterPointType']
+  country: string
   district: string | null
   region: string | null
   village: string | null
@@ -142,6 +143,7 @@ async function decorateProjects(
       summary: translation?.summary ?? null,
       status: row.status,
       waterPointType: row.waterPointType,
+      country: row.country,
       district: row.district,
       region: row.region,
       village: row.village,
