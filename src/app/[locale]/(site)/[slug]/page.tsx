@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
 import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
 import { notFound } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 import { setRequestLocale } from 'next-intl/server'
 import { BlockList } from '@/components/blocks/render'
 import { EmptyPageNotice } from '@/components/site/empty-page-notice'
@@ -53,6 +54,10 @@ export default async function DynamicPage({
 
   const result = await getPageBySlug(slug, locale)
   if (!result) notFound()
+
+  // The slug belongs to another language: send the visitor to the canonical
+  // URL for this one instead of serving the same content twice.
+  if (result.redirectTo) redirect({ href: `/${result.redirectTo}`, locale })
 
   const blocks = parseBlocks(result.page.blocks ?? [])
 

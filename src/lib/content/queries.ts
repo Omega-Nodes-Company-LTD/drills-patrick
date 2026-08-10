@@ -40,6 +40,14 @@ import { getMediaByIds } from '@/lib/media/service'
  * lateral joins to maintain.
  */
 
+/**
+ * The slug this entity should live at in the active locale, when the URL used a
+ * different one.  means the URL is already canonical.
+ */
+function redirectSlug(resolved: { slug: string } | undefined, requested: string): string | null {
+  return resolved && resolved.slug !== requested ? resolved.slug : null
+}
+
 /** Loads the requested locale plus the default one, ready for the fallback. */
 const localeFilter = (column: PgColumn, locale: Locale) =>
   locale === defaultLocale
@@ -149,11 +157,18 @@ async function decorateProjects(
 }
 
 export async function getProjectBySlug(slug: string, locale: Locale) {
-  const [translation] = await db
+  // Match the slug in the requested language first. A slug belonging to a
+  // different language still resolves, but the caller is told to redirect to
+  // the right URL so the same content is not served under several paths.
+  const [exact] = await db
     .select()
     .from(projectTranslations)
-    .where(eq(projectTranslations.slug, slug))
+    .where(and(eq(projectTranslations.slug, slug), eq(projectTranslations.locale, locale)))
     .limit(1)
+
+  const [translation] = exact
+    ? [exact]
+    : await db.select().from(projectTranslations).where(eq(projectTranslations.slug, slug)).limit(1)
 
   if (!translation) return null
 
@@ -209,6 +224,7 @@ export async function getProjectBySlug(slug: string, locale: Locale) {
     project,
     translation: resolved,
     translations: allTranslations,
+    redirectTo: redirectSlug(resolved, slug),
     cover: project.coverId ? (mediaMap.get(project.coverId) ?? null) : null,
     gallery: (project.galleryIds ?? [])
       .map((id) => mediaMap.get(id))
@@ -386,11 +402,18 @@ export async function listPosts(options: {
 }
 
 export async function getPostBySlug(slug: string, locale: Locale) {
-  const [translation] = await db
+  // Match the slug in the requested language first. A slug belonging to a
+  // different language still resolves, but the caller is told to redirect to
+  // the right URL so the same content is not served under several paths.
+  const [exact] = await db
     .select()
     .from(postTranslations)
-    .where(eq(postTranslations.slug, slug))
+    .where(and(eq(postTranslations.slug, slug), eq(postTranslations.locale, locale)))
     .limit(1)
+
+  const [translation] = exact
+    ? [exact]
+    : await db.select().from(postTranslations).where(eq(postTranslations.slug, slug)).limit(1)
 
   if (!translation) return null
 
@@ -432,6 +455,7 @@ export async function getPostBySlug(slug: string, locale: Locale) {
     post: row.post,
     translation: resolved,
     translations: allTranslations,
+    redirectTo: redirectSlug(resolved, slug),
     authorName: row.authorName,
     cover: cover ?? null,
     tags: [...tagMap.entries()].map(([id, value]) => ({ id, ...value })),
@@ -544,11 +568,18 @@ export async function listCampaigns(options: {
 }
 
 export async function getCampaignBySlug(slug: string, locale: Locale) {
-  const [translation] = await db
+  // Match the slug in the requested language first. A slug belonging to a
+  // different language still resolves, but the caller is told to redirect to
+  // the right URL so the same content is not served under several paths.
+  const [exact] = await db
     .select()
     .from(campaignTranslations)
-    .where(eq(campaignTranslations.slug, slug))
+    .where(and(eq(campaignTranslations.slug, slug), eq(campaignTranslations.locale, locale)))
     .limit(1)
+
+  const [translation] = exact
+    ? [exact]
+    : await db.select().from(campaignTranslations).where(eq(campaignTranslations.slug, slug)).limit(1)
 
   if (!translation) return null
 
@@ -574,10 +605,13 @@ export async function getCampaignBySlug(slug: string, locale: Locale) {
     where campaign_id = ${campaign.id} and status = 'succeeded'
   `)
 
+  const resolved = pickTranslation(allTranslations, locale) ?? translation
+
   return {
     campaign,
-    translation: pickTranslation(allTranslations, locale) ?? translation,
+    translation: resolved,
     translations: allTranslations,
+    redirectTo: redirectSlug(resolved, slug),
     cover,
     supporters: Number(supporters?.count ?? 0),
   }
@@ -610,11 +644,18 @@ export async function getPageByKey(key: string, locale: Locale) {
 }
 
 export async function getPageBySlug(slug: string, locale: Locale) {
-  const [translation] = await db
+  // Match the slug in the requested language first. A slug belonging to a
+  // different language still resolves, but the caller is told to redirect to
+  // the right URL so the same content is not served under several paths.
+  const [exact] = await db
     .select()
     .from(pageTranslations)
-    .where(eq(pageTranslations.slug, slug))
+    .where(and(eq(pageTranslations.slug, slug), eq(pageTranslations.locale, locale)))
     .limit(1)
+
+  const [translation] = exact
+    ? [exact]
+    : await db.select().from(pageTranslations).where(eq(pageTranslations.slug, slug)).limit(1)
 
   if (!translation) return null
 
@@ -631,7 +672,9 @@ export async function getPageBySlug(slug: string, locale: Locale) {
     .from(pageTranslations)
     .where(eq(pageTranslations.pageId, page.id))
 
-  return { page, translation: pickTranslation(translations, locale) ?? translation, translations }
+  const resolved = pickTranslation(translations, locale) ?? translation
+
+  return { page, translation: resolved, translations, redirectTo: redirectSlug(resolved, slug) }
 }
 
 // -------------------------------------------------------------------- people

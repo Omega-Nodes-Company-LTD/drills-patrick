@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
 import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
 import { notFound } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -72,6 +73,10 @@ export default async function ProjectPage({
 
   const result = await getProjectBySlug(slug, locale)
   if (!result) notFound()
+
+  // The slug belongs to another language: send the visitor to the canonical
+  // URL for this one instead of serving the same content twice.
+  if (result.redirectTo) redirect({ href: `/projects/${result.redirectTo}`, locale })
 
   const t = await getTranslations('projects')
   const { project, translation, cover, gallery, updates, campaignId } = result
