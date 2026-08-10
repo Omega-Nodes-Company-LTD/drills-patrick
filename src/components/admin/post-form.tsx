@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { savePost } from '@/app/actions/admin/content'
 import { LocaleFields } from '@/components/admin/locale-fields'
+import { SeoFields } from '@/components/admin/seo-fields'
 import { MediaPicker } from '@/components/admin/media/media-picker'
 import { RichTextEditor } from '@/components/admin/rich-text-editor'
 import { Button } from '@/components/ui/button'
@@ -38,12 +39,14 @@ export function PostForm({
   initial,
   categories,
   tags,
+  authors,
   storageEnabled,
 }: {
   initial?: {
     id: string
     coverId: string | null
     categoryId: string | null
+    authorMemberId: string | null
     status: 'draft' | 'published' | 'archived'
     isFeatured: boolean
     tagIds: string[]
@@ -51,6 +54,8 @@ export function PostForm({
   }
   categories: { id: string; name: string }[]
   tags: { id: string; name: string }[]
+  /** Published team members, the people who can carry a public byline. */
+  authors: { id: string; name: string; credentials: string | null }[]
   storageEnabled: boolean
 }) {
   const t = useTranslations('admin.common')
@@ -61,6 +66,7 @@ export function PostForm({
 
   const [coverId, setCoverId] = useState(initial?.coverId ?? null)
   const [categoryId, setCategoryId] = useState(initial?.categoryId ?? '')
+  const [authorMemberId, setAuthorMemberId] = useState(initial?.authorMemberId ?? '')
   const [status, setStatus] = useState(initial?.status ?? 'draft')
   const [isFeatured, setIsFeatured] = useState(initial?.isFeatured ?? false)
   const [tagIds, setTagIds] = useState<string[]>(initial?.tagIds ?? [])
@@ -80,6 +86,7 @@ export function PostForm({
         id: initial?.id,
         coverId,
         categoryId: categoryId || null,
+        authorMemberId: authorMemberId || null,
         status,
         isFeatured,
         tagIds,
@@ -157,22 +164,14 @@ export function PostForm({
                     storageEnabled={storageEnabled}
                   />
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label={t('seoTitle')} htmlFor={`seo-title-${locale}`}>
-                      <Input
-                        id={`seo-title-${locale}`}
-                        value={translations[locale].seoTitle}
-                        onChange={(event) => update(locale, { seoTitle: event.target.value })}
-                      />
-                    </Field>
-                    <Field label={t('seoDescription')} htmlFor={`seo-desc-${locale}`}>
-                      <Input
-                        id={`seo-desc-${locale}`}
-                        value={translations[locale].seoDescription}
-                        onChange={(event) => update(locale, { seoDescription: event.target.value })}
-                      />
-                    </Field>
-                  </div>
+                  <SeoFields
+                    idPrefix={`post-${locale}`}
+                    title={translations[locale].seoTitle}
+                    description={translations[locale].seoDescription}
+                    fallbackTitle={translations[locale].title}
+                    previewUrl={`${locale}/blog/${translations[locale].slug || '…'}`}
+                    onChange={(patch) => update(locale, patch)}
+                  />
                 </>
               )}
             </LocaleFields>
@@ -238,6 +237,21 @@ export function PostForm({
                 </option>
               ))}
             </Select>
+
+            <Field label={t('author')} htmlFor="authorMemberId">
+              <Select
+                id="authorMemberId"
+                value={authorMemberId}
+                onChange={(event) => setAuthorMemberId(event.target.value)}
+              >
+                <option value="">—</option>
+                {authors.map((author) => (
+                  <option key={author.id} value={author.id}>
+                    {author.credentials ? `${author.name} — ${author.credentials}` : author.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
 
             {tags.length > 0 ? (
               <div className="flex flex-wrap gap-1.5">

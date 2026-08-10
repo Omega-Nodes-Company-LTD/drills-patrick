@@ -147,7 +147,8 @@
     "featured": "À la une",
     "allPosts": "Tous les articles",
     "inCategory": "Articles dans {name}",
-    "taggedWith": "Articles étiquetés {name}"
+    "taggedWith": "Articles étiquetés {name}",
+    "updatedOn": "Mis à jour le {date}"
   },
   "campaigns": {
     "title": "Collecte de fonds",
@@ -399,7 +400,10 @@
       "unsavedChanges": "Des modifications ne sont pas enregistrées.",
       "title": "Titre",
       "date": "Date",
-      "systemPageLocked": "Cette page fait partie de la structure du site et doit rester publiée."
+      "systemPageLocked": "Cette page fait partie de la structure du site et doit rester publiée.",
+      "author": "Auteur",
+      "serpPreview": "Aperçu dans les résultats",
+      "serpNoDescription": "Aucune description : les moteurs en choisiront une eux-mêmes."
     },
     "media": {
       "title": "Médiathèque",
@@ -474,7 +478,9 @@
         "cta": "Appel à l'action",
         "map": "Carte",
         "video": "Vidéo",
-        "contact": "Formulaire de contact"
+        "contact": "Formulaire de contact",
+        "answer": "Réponse courte",
+        "table": "Tableau de données"
       },
       "spacing": {
         "none": "Aucun",

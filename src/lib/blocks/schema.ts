@@ -220,6 +220,46 @@ export const contactBlockSchema = z.object({
   showDetails: z.boolean().default(true),
 })
 
+/**
+ * A short, factual answer to one question, with the date it was last checked.
+ *
+ * The unit an answer engine quotes is two or three sentences, not a page.
+ * Writing that unit deliberately — question, answer, date verified, source —
+ * is the difference between being cited and being paraphrased away. The date
+ * matters as much as the text: an unverifiable claim about water yield is
+ * worth nothing to anyone deciding whether to repeat it.
+ */
+export const answerBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('answer'),
+  question: i18nTextSchema,
+  /** Two or three sentences. The editor is told so; it is not enforced. */
+  answer: i18nTextSchema,
+  /** ISO date the facts were last checked, shown to readers and machines. */
+  verifiedOn: z.string().max(10).optional(),
+  sourceLabel: z.string().max(160).optional(),
+  sourceUrl: z.string().max(500).optional(),
+})
+
+/**
+ * A data table, as a table.
+ *
+ * Figures pasted in as an image, or laid out with spans, are invisible to
+ * anything that is not a human eye. Real `<table>` markup with a header row
+ * is extractable by a crawler, readable by a screen reader, and copyable into
+ * a spreadsheet by the NGO officer who needs the numbers.
+ */
+export const tableBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('table'),
+  title: i18nTextSchema.optional(),
+  caption: i18nTextSchema.optional(),
+  columns: z.array(i18nTextSchema).max(8).default([]),
+  rows: z.array(z.array(i18nTextSchema).max(8)).max(200).default([]),
+  /** Rendered as a unit note under the caption, e.g. "litres per hour". */
+  unitNote: i18nTextSchema.optional(),
+})
+
 export const blockSchema = z.discriminatedUnion('kind', [
   heroBlockSchema,
   richTextBlockSchema,
@@ -237,6 +277,8 @@ export const blockSchema = z.discriminatedUnion('kind', [
   mapBlockSchema,
   videoBlockSchema,
   contactBlockSchema,
+  answerBlockSchema,
+  tableBlockSchema,
 ])
 
 export const blocksSchema = z.array(blockSchema)
@@ -258,6 +300,8 @@ export type StepsBlock = z.infer<typeof stepsBlockSchema>
 export type CtaBlock = z.infer<typeof ctaBlockSchema>
 export type MapBlock = z.infer<typeof mapBlockSchema>
 export type VideoBlock = z.infer<typeof videoBlockSchema>
+export type AnswerBlock = z.infer<typeof answerBlockSchema>
+export type TableBlock = z.infer<typeof tableBlockSchema>
 export type ContactBlock = z.infer<typeof contactBlockSchema>
 
 /** Drops blocks that no longer validate instead of failing a whole page. */
@@ -289,4 +333,6 @@ export const blockKinds = [
   'map',
   'video',
   'contact',
+  'answer',
+  'table',
 ] as const satisfies readonly BlockKind[]

@@ -1,3 +1,4 @@
+import { formatAddress, formatLegalLine, identityOf } from '@/lib/settings/identity'
 import { getSiteSettings } from '@/lib/settings/service'
 import { absoluteUrl } from '@/lib/url'
 import { formatMoney } from '@/lib/money'
@@ -84,6 +85,7 @@ export async function sendDonationReceipt(donation: DonationRow): Promise<boolea
   if (!donation.donorEmail) return false
 
   const settings = await getSiteSettings()
+  const identity = identityOf(settings)
   const amount = formatMoney(donation.amountMinor, donation.currency, donation.locale)
 
   return sendMail({
@@ -98,11 +100,12 @@ export async function sendDonationReceipt(donation: DonationRow): Promise<boolea
         ['Method', donation.provider],
         ['Date', donation.confirmedAt?.toISOString().slice(0, 10) ?? ''],
       ])}</table>`,
-      footer: `${settings.organisation.legalName || settings.siteName}${
-        settings.organisation.registrationNumber
-          ? ` — Reg. ${settings.organisation.registrationNumber}`
-          : ''
-      }`,
+      // Same identity line the footer shows, plus the postal address: a
+      // receipt that names a different body than the site is worth less to
+      // the donor's accountant and to anyone verifying the organisation.
+      footer: [formatLegalLine(identity), formatAddress(identity), identity.email]
+        .filter(Boolean)
+        .join('<br>'),
     }),
   })
 }

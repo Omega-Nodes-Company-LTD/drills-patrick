@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
-import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
+import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
+import { sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
+import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
-import { redirect } from '@/i18n/navigation'
+import { permanentRedirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { DonationForm } from '@/components/donate/donation-form'
 import { MediaImage } from '@/components/ui/media-image'
@@ -43,7 +45,12 @@ export async function generateMetadata({
       paths: pathsFromTranslations(result.translations, '/campaigns'),
       enabledLocales: settings.enabledLocales,
     }),
-    openGraph: { title: result.translation?.title, images: image ? [image] : undefined },
+    openGraph: {
+      type: 'article',
+      modifiedTime: result.campaign.updatedAt.toISOString(),
+      title: result.translation?.title,
+      images: image ? [image] : undefined,
+    },
   }
 }
 
@@ -58,12 +65,14 @@ export default async function CampaignPage({
   const result = await getCampaignBySlug(slug, locale)
   if (!result) notFound()
 
-  // The slug belongs to another language: send the visitor to the canonical
-  // URL for this one instead of serving the same content twice.
-  if (result.redirectTo) redirect({ href: `/campaigns/${result.redirectTo}`, locale })
+  // Either the slug belongs to another language or it is one the entity
+  // used to live at. Permanent, not temporary: the old URL is not coming
+  // back, and 308 is what moves a search engine's index and its authority.
+  if (result.redirectTo) permanentRedirect({ href: `/campaigns/${result.redirectTo}`, locale })
 
-  const [t, settings, providers] = await Promise.all([
+  const [t, tNav, settings, providers] = await Promise.all([
     getTranslations('campaigns'),
+    getTranslations('nav'),
     getSiteSettings(),
     listAvailableProviders(),
   ])
@@ -77,8 +86,28 @@ export default async function CampaignPage({
     ? Math.ceil((new Date(campaign.endsOn).getTime() - Date.now()) / 86_400_000)
     : null
 
+  const url = localeUrl(locale, `/campaigns/${translation?.slug ?? slug}`)
+
   return (
     <article className="pb-16">
+      <JsonLd
+        nodes={[
+          webPageNode({
+            locale,
+            url,
+            name: translation?.title ?? '',
+            description: translation?.summary,
+            dateModified: campaign.updatedAt,
+          }),
+          sectionBreadcrumb({
+            locale,
+            homeName: tNav('home'),
+            section: { name: tNav('campaigns'), path: '/campaigns' },
+            pageName: translation?.title ?? '',
+            pageUrl: url,
+          }),
+        ]}
+      />
       {cover ? (
         <div className="relative aspect-[16/9] max-h-[26rem] w-full overflow-hidden bg-muted md:aspect-[21/9]">
           <MediaImage media={cover} locale={locale} priority sizes="100vw" />

@@ -15,6 +15,7 @@ import {
   projectUpdateTranslations,
   projectUpdates,
   projects,
+  teamMembers,
   tagTranslations,
   tags,
 } from '@/db/schema'
@@ -173,6 +174,21 @@ export async function adminGetProject(id: string) {
     .where(eq(projectTranslations.projectId, id))
 
   return { project, translations }
+}
+
+/** Team members who can carry a public byline on an article. */
+export async function adminAuthorOptions() {
+  const rows = await db
+    .select({
+      id: teamMembers.id,
+      name: teamMembers.name,
+      credentials: teamMembers.credentials,
+    })
+    .from(teamMembers)
+    .where(eq(teamMembers.isPublished, true))
+    .orderBy(teamMembers.sortOrder)
+
+  return rows
 }
 
 /** Timeline entries of a project, every language, published or not. */

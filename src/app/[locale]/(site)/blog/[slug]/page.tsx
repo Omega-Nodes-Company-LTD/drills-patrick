@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
-import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
+import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
+import { NODE_ID, ref, type GraphNode } from '@/lib/seo/graph'
+import { authorNode, sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
+import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
-import { redirect } from '@/i18n/navigation'
+import { permanentRedirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PostCard } from '@/components/site/cards'
 import { Badge } from '@/components/ui/badge'
@@ -43,6 +46,7 @@ export async function generateMetadata({
     openGraph: {
       type: 'article',
       publishedTime: result.post.publishedAt?.toISOString(),
+      modifiedTime: result.post.updatedAt.toISOString(),
       title: result.translation?.title,
       description: result.translation?.excerpt ?? undefined,
       images: image ? [image] : undefined,
@@ -61,12 +65,14 @@ export default async function PostPage({
   const result = await getPostBySlug(slug, locale)
   if (!result) notFound()
 
-  // The slug belongs to another language: send the visitor to the canonical
-  // URL for this one instead of serving the same content twice.
-  if (result.redirectTo) redirect({ href: `/blog/${result.redirectTo}`, locale })
+  // Either the slug belongs to another language or it is one the entity
+  // used to live at. Permanent, not temporary: the old URL is not coming
+  // back, and 308 is what moves a search engine's index and its authority.
+  if (result.redirectTo) permanentRedirect({ href: `/blog/${result.redirectTo}`, locale })
 
   const t = await getTranslations('blog')
-  const { post, translation, cover, tags, authorName } = result
+  const tNav = await getTranslations('nav')
+  const { post, translation, cover, tags, authorName, author } = result
 
   const related = await listPosts({ locale, limit: 3, excludeId: post.id })
 
@@ -78,22 +84,72 @@ export default async function PostPage({
       }).format(post.publishedAt)
     : null
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
+  // "Updated" means the content changed after publication, not that a row
+  // was touched: same-minute saves around publishing are not a revision.
+  const revisedAt =
+    post.publishedAt && post.updatedAt.getTime() - post.publishedAt.getTime() > 60_000
+      ? post.updatedAt
+      : null
+
+  const url = localeUrl(locale, `/blog/${translation?.slug ?? slug}`)
+
+  // A credited team member carries qualifications; a bare name does not.
+  const authorProfile = author
+    ? authorNode({
+        url,
+        name: author.name,
+        role: author.role,
+        credentials: author.credentials,
+        profileUrl: author.linkedinUrl,
+        image: mediaUrl(author.photo?.objectKey) || null,
+        worksForLocale: locale,
+      })
+    : null
+
+  const article: GraphNode = {
     '@type': 'Article',
+    '@id': `${url}#article`,
     headline: translation?.title,
     description: translation?.excerpt ?? undefined,
     datePublished: post.publishedAt?.toISOString(),
-    dateModified: post.updatedAt.toISOString(),
-    author: authorName ? { '@type': 'Person', name: authorName } : undefined,
+    // Only when it really moved: a dateModified equal to the publication date
+    // is noise, and a wrong one is worse than none.
+    dateModified: revisedAt?.toISOString(),
+    inLanguage: locale,
+    author: authorProfile
+      ? ref(authorProfile['@id']!)
+      : authorName
+        ? { '@type': 'Person', name: authorName }
+        : undefined,
+    publisher: ref(NODE_ID.organisation(locale)),
     image: mediaUrl(cover?.objectKey) || undefined,
+    // Ties the article to the URL it is published at rather than leaving two
+    // unrelated descriptions of the same page.
+    mainEntityOfPage: ref(NODE_ID.page(url)),
   }
 
   return (
     <article className="pb-16">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <JsonLd
+        nodes={[
+          webPageNode({
+            locale,
+            url,
+            name: translation?.title ?? '',
+            description: translation?.excerpt,
+            dateModified: revisedAt,
+            speakable: true,
+          }),
+          sectionBreadcrumb({
+            locale,
+            homeName: tNav('home'),
+            section: { name: tNav('blog'), path: '/blog' },
+            pageName: translation?.title ?? '',
+            pageUrl: url,
+          }),
+          authorProfile,
+          article,
+        ]}
       />
 
       <header className="container-narrow pt-10 md:pt-16">
@@ -105,10 +161,32 @@ export default async function PostPage({
           ) : null}
           <span aria-hidden>·</span>
           <span>{t('readingTime', { minutes: post.readingMinutes })}</span>
+          {revisedAt ? (
+            <>
+              <span aria-hidden>·</span>
+              <time dateTime={revisedAt.toISOString()}>
+                {t('updatedOn', {
+                  date: new Intl.DateTimeFormat(intlLocale(locale), {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  }).format(revisedAt),
+                })}
+              </time>
+            </>
+          ) : null}
           {authorName ? (
             <>
               <span aria-hidden>·</span>
-              <span>{t('by', { name: authorName })}</span>
+              <span>
+                {t('by', { name: authorName })}
+                {/* Qualifications are shown, not only published in the markup:
+                    a reader deciding whether to trust a drilling report needs
+                    them as much as a crawler does. */}
+                {author?.credentials ? (
+                  <span className="text-muted-foreground"> — {author.credentials}</span>
+                ) : null}
+              </span>
             </>
           ) : null}
         </div>
@@ -116,7 +194,9 @@ export default async function PostPage({
         <h1 className="mt-3 text-title">{translation?.title}</h1>
 
         {translation?.excerpt ? (
-          <p className="mt-4 text-lg text-muted-foreground">{translation.excerpt}</p>
+          <p data-speakable className="mt-4 text-lg text-muted-foreground">
+            {translation.excerpt}
+          </p>
         ) : null}
       </header>
 

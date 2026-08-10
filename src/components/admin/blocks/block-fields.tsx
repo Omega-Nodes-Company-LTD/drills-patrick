@@ -8,6 +8,7 @@ import { Field, Input, Select } from '@/components/ui/field'
 import { Switch } from '@/components/ui/switch'
 import type { Block } from '@/lib/blocks/schema'
 import { createId } from '@/lib/utils'
+import { pickI18n } from '@/i18n/config'
 import { I18nField } from './i18n-field'
 
 /**
@@ -492,6 +493,107 @@ export function BlockFields({
         </>
       )
 
+    case 'answer':
+      return (
+        <>
+          <I18nField
+            label="Question"
+            value={block.question}
+            onChange={(question) => patch({ question })}
+          />
+          <I18nField
+            label="Answer"
+            variant="textarea"
+            value={block.answer}
+            onChange={(answer) => patch({ answer })}
+          />
+          <p className="text-xs text-muted-foreground">
+            Two or three factual sentences. This is the passage an assistant will
+            quote, so keep it self-contained.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Field label="Verified on">
+              <Input
+                type="date"
+                value={block.verifiedOn ?? ''}
+                onChange={(event) => patch({ verifiedOn: event.target.value })}
+              />
+            </Field>
+            <Field label="Source label">
+              <Input
+                value={block.sourceLabel ?? ''}
+                onChange={(event) => patch({ sourceLabel: event.target.value })}
+              />
+            </Field>
+            <Field label="Source URL">
+              <Input
+                type="url"
+                value={block.sourceUrl ?? ''}
+                onChange={(event) => patch({ sourceUrl: event.target.value })}
+              />
+            </Field>
+          </div>
+        </>
+      )
+
+    case 'table':
+      return (
+        <>
+          <I18nField label="Title" value={block.title} onChange={(title) => patch({ title })} />
+          <I18nField
+            label="Caption"
+            variant="textarea"
+            value={block.caption}
+            onChange={(caption) => patch({ caption })}
+          />
+          <I18nField
+            label="Units"
+            value={block.unitNote}
+            onChange={(unitNote) => patch({ unitNote })}
+          />
+
+          <RepeatableList
+            label="Columns"
+            items={block.columns}
+            create={() => ({})}
+            onChange={(columns) =>
+              patch({
+                columns,
+                // Rows follow the column count, so a removed column does not
+                // leave orphan cells behind.
+                rows: block.rows.map((row) => row.slice(0, columns.length)),
+              })
+            }
+            render={(column, update) => (
+              <I18nField label="Heading" value={column} onChange={(value) => update(value)} />
+            )}
+          />
+
+          <RepeatableList
+            label="Rows"
+            items={block.rows}
+            create={() => block.columns.map(() => ({}))}
+            onChange={(rows) => patch({ rows })}
+            render={(row, update) => (
+              <div className="flex flex-col gap-2">
+                {block.columns.map((column, index) => (
+                  <I18nField
+                    key={index}
+                    label={pickI18n(column, 'en') || `Column ${index + 1}`}
+                    value={row[index]}
+                    onChange={(value) => {
+                      const next = [...row]
+                      next[index] = value
+                      update(next as never)
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          />
+        </>
+      )
+
     // partners / testimonials / faq render everything published by default.
     default:
       return (
@@ -615,5 +717,9 @@ export function createBlock(kind: Block['kind']): Block {
       return { ...base, kind, url: '' }
     case 'contact':
       return { ...base, kind, variant: 'ngo', showDetails: true }
+    case 'answer':
+      return { ...base, kind, question: {}, answer: {} }
+    case 'table':
+      return { ...base, kind, columns: [], rows: [] }
   }
 }

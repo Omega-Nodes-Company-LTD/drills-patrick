@@ -147,7 +147,8 @@
     "featured": "Hervorgehoben",
     "allPosts": "Alle Beiträge",
     "inCategory": "Beiträge in {name}",
-    "taggedWith": "Beiträge mit {name}"
+    "taggedWith": "Beiträge mit {name}",
+    "updatedOn": "Aktualisiert am {date}"
   },
   "campaigns": {
     "title": "Spendenaktionen",
@@ -399,7 +400,10 @@
       "unsavedChanges": "Es gibt ungespeicherte Änderungen.",
       "title": "Titel",
       "date": "Datum",
-      "systemPageLocked": "Diese Seite gehört zur Seitenstruktur und muss veröffentlicht bleiben."
+      "systemPageLocked": "Diese Seite gehört zur Seitenstruktur und muss veröffentlicht bleiben.",
+      "author": "Autor",
+      "serpPreview": "Vorschau in den Suchergebnissen",
+      "serpNoDescription": "Keine Beschreibung — Suchmaschinen wählen selbst einen Text."
     },
     "media": {
       "title": "Medienbibliothek",
@@ -474,7 +478,9 @@
         "cta": "Handlungsaufruf",
         "map": "Karte",
         "video": "Video",
-        "contact": "Kontaktformular"
+        "contact": "Kontaktformular",
+        "answer": "Kurzantwort",
+        "table": "Datentabelle"
       },
       "spacing": {
         "none": "Keiner",

@@ -147,7 +147,8 @@
     "featured": "Featured",
     "allPosts": "All articles",
     "inCategory": "Articles in {name}",
-    "taggedWith": "Articles tagged {name}"
+    "taggedWith": "Articles tagged {name}",
+    "updatedOn": "Updated on {date}"
   },
   "campaigns": {
     "title": "Fundraising",
@@ -399,7 +400,10 @@
       "unsavedChanges": "You have unsaved changes.",
       "title": "Title",
       "date": "Date",
-      "systemPageLocked": "This page is part of the site structure and must stay published."
+      "systemPageLocked": "This page is part of the site structure and must stay published.",
+      "author": "Author",
+      "serpPreview": "Search result preview",
+      "serpNoDescription": "No description — search engines will pick their own text."
     },
     "media": {
       "title": "Media library",
@@ -474,7 +478,9 @@
         "cta": "Call to action",
         "map": "Map",
         "video": "Video",
-        "contact": "Contact form"
+        "contact": "Contact form",
+        "answer": "Short answer",
+        "table": "Data table"
       },
       "spacing": {
         "none": "None",

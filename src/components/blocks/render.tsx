@@ -2,11 +2,13 @@ import type { Locale } from '@/i18n/config'
 import type { Block } from '@/lib/blocks/schema'
 import { HeroBlockView } from './hero-block'
 import {
+  AnswerBlockView,
   CtaBlockView,
   GalleryBlockView,
   RichTextBlockView,
   StatsBlockView,
   StepsBlockView,
+  TableBlockView,
   VideoBlockView,
 } from './simple-blocks'
 import {
@@ -58,6 +60,10 @@ export function BlockView({ block, locale }: { block: Block; locale: Locale }) {
       return <FaqBlockView block={block} locale={locale} />
     case 'map':
       return <MapBlockView block={block} locale={locale} />
+    case 'answer':
+      return <AnswerBlockView block={block} locale={locale} />
+    case 'table':
+      return <TableBlockView block={block} locale={locale} />
     case 'contact':
       return <ContactBlockView block={block} locale={locale} />
     case 'donate':

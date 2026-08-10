@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
-import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
+import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
+import { sectionBreadcrumb, waterPointNode, webPageNode } from '@/lib/seo/nodes'
+import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
-import { redirect } from '@/i18n/navigation'
+import { permanentRedirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -56,6 +58,7 @@ export async function generateMetadata({
     }),
     openGraph: {
       type: 'article',
+      modifiedTime: result.project.updatedAt.toISOString(),
       title: result.translation?.title,
       description: result.translation?.summary ?? undefined,
       images: image ? [image] : undefined,
@@ -74,11 +77,13 @@ export default async function ProjectPage({
   const result = await getProjectBySlug(slug, locale)
   if (!result) notFound()
 
-  // The slug belongs to another language: send the visitor to the canonical
-  // URL for this one instead of serving the same content twice.
-  if (result.redirectTo) redirect({ href: `/projects/${result.redirectTo}`, locale })
+  // Either the slug belongs to another language or it is one the entity
+  // used to live at. Permanent, not temporary: the old URL is not coming
+  // back, and 308 is what moves a search engine's index and its authority.
+  if (result.redirectTo) permanentRedirect({ href: `/projects/${result.redirectTo}`, locale })
 
   const t = await getTranslations('projects')
+  const tNav = await getTranslations('nav')
   const { project, translation, cover, gallery, updates, campaignId } = result
 
   const related = await listProjects({ locale, limit: 3 })
@@ -109,8 +114,45 @@ export default async function ProjectPage({
       ? percentage(project.fundedAmount, project.budgetAmount)
       : null
 
+  const url = localeUrl(locale, `/projects/${translation?.slug ?? slug}`)
+
   return (
     <article>
+      <JsonLd
+        nodes={[
+          webPageNode({
+            locale,
+            url,
+            name: translation?.title ?? '',
+            description: translation?.summary,
+            dateModified: project.updatedAt,
+            speakable: true,
+          }),
+          sectionBreadcrumb({
+            locale,
+            homeName: tNav('home'),
+            section: { name: tNav('projects'), path: '/projects' },
+            pageName: translation?.title ?? '',
+            pageUrl: url,
+          }),
+          waterPointNode({
+            url,
+            name: translation?.title ?? '',
+            description: translation?.summary,
+            typeLabel: t(`type.${project.waterPointType}`),
+            latitude: project.latitude,
+            longitude: project.longitude,
+            country: project.country,
+            region: project.region,
+            district: project.district,
+            village: project.village,
+            depthMeters: project.depthMeters,
+            yieldLitersPerHour: project.yieldLitersPerHour,
+            beneficiaries: project.beneficiaries,
+            image: mediaUrl(cover?.objectKey) || null,
+          }),
+        ]}
+      />
       <div className="relative isolate">
         <div className="relative aspect-[16/9] max-h-[28rem] w-full overflow-hidden bg-muted md:aspect-[21/9]">
           <MediaImage media={cover} locale={locale} priority sizes="100vw" />
@@ -132,7 +174,9 @@ export default async function ProjectPage({
 
             <h1 className="mt-4 text-title">{translation?.title}</h1>
             {translation?.summary ? (
-              <p className="mt-3 max-w-3xl text-lg text-muted-foreground">{translation.summary}</p>
+              <p data-speakable className="mt-3 max-w-3xl text-lg text-muted-foreground">
+                {translation.summary}
+              </p>
             ) : null}
 
             {fundingProgress !== null ? (

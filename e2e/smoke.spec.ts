@@ -126,3 +126,49 @@ test.describe('regressions', () => {
     expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin')
   })
 })
+
+test.describe('feeds and machine-readable routes', () => {
+  test('serves an RSS feed per language', async ({ request }) => {
+    const response = await request.get('/feed.xml')
+    expect(response.status()).toBe(200)
+    expect(response.headers()['content-type']).toContain('application/rss+xml')
+
+    const body = await response.text()
+    expect(body).toContain('<rss version="2.0"')
+    expect(body).toContain('<language>en</language>')
+
+    const italian = await request.get('/it/feed.xml')
+    expect(await italian.text()).toContain('<language>it</language>')
+  })
+
+  test('publishes an llms.txt with a licence statement', async ({ request }) => {
+    const response = await request.get('/llms.txt')
+    expect(response.status()).toBe(200)
+
+    const body = await response.text()
+    expect(body).toContain('## About')
+    // A model that finds no licence has to assume the strictest one, so the
+    // absence of one is stated rather than left silent.
+    expect(body).toMatch(/> Licence:/)
+
+    expect((await request.get('/llms-full.txt')).status()).toBe(200)
+    expect((await request.get('/xx/llms.txt')).status()).toBe(404)
+  })
+
+  test('publishes the water points as open data', async ({ request }) => {
+    const response = await request.get('/projects.json')
+    expect(response.status()).toBe(200)
+    expect(response.headers()['access-control-allow-origin']).toBe('*')
+
+    const body = await response.json()
+    expect(body).toHaveProperty('licence')
+    expect(Array.isArray(body.projects)).toBe(true)
+  })
+
+  test('advertises the feed from every page', async ({ page }) => {
+    await page.goto('/projects')
+    await expect(
+      page.locator('link[rel="alternate"][type="application/rss+xml"]'),
+    ).toHaveAttribute('href', /\/feed\.xml$/)
+  })
+})

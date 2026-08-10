@@ -14,6 +14,7 @@ import {
 import type { I18nTextValue } from '@/i18n/schema'
 import type { Block } from '@/lib/blocks/schema'
 import { users } from './auth'
+import { teamMembers } from './crm'
 import { media } from './media'
 import { id, localeEnum, publishStatusEnum, timestamps } from './shared'
 
@@ -113,6 +114,12 @@ export const posts = pgTable(
     coverId: uuid().references(() => media.id, { onDelete: 'set null' }),
     categoryId: uuid().references(() => categories.id, { onDelete: 'set null' }),
     authorId: uuid().references(() => users.id, { onDelete: 'set null' }),
+    /**
+     * Public byline. A technical report is worth what its author's
+     * qualifications are worth, and the admin account that saved it is not
+     * necessarily the person who wrote it.
+     */
+    authorMemberId: uuid().references(() => teamMembers.id, { onDelete: 'set null' }),
     status: publishStatusEnum().notNull().default('draft'),
     isFeatured: boolean().notNull().default(false),
     readingMinutes: integer().notNull().default(3),
@@ -123,6 +130,7 @@ export const posts = pgTable(
   (table) => [
     index('posts_status_published_idx').on(table.status, table.publishedAt),
     index('posts_category_idx').on(table.categoryId),
+    index('posts_author_member_idx').on(table.authorMemberId),
   ],
 )
 
@@ -210,6 +218,35 @@ export const postTagsRelations = relations(postTags, ({ one }) => ({
   post: one(posts, { fields: [postTags.postId], references: [posts.id] }),
   tag: one(tags, { fields: [postTags.tagId], references: [tags.id] }),
 }))
+
+/**
+ * Slugs an entity used to live at.
+ *
+ * Renaming a project or an article is an ordinary editorial act; without this
+ * it silently breaks every inbound link, printed QR code and bookmark. The
+ * detail routes answer from here with a redirect instead of a 404.
+ *
+ * No foreign key on `entityId`: the four content types live in four tables,
+ * and one nullable column per table would be worse than none. Rows are
+ * removed by the action that deletes the entity.
+ */
+export const slugRedirects = pgTable(
+  'slug_redirects',
+  {
+    id: id(),
+    entityType: text().notNull().$type<'post' | 'project' | 'campaign' | 'page'>(),
+    entityId: uuid().notNull(),
+    locale: localeEnum().notNull(),
+    slug: text().notNull(),
+    createdAt: timestamps.createdAt,
+  },
+  (table) => [
+    unique('slug_redirects_type_locale_slug_key').on(table.entityType, table.locale, table.slug),
+    index('slug_redirects_entity_idx').on(table.entityType, table.entityId),
+  ],
+)
+
+export type SlugRedirectRow = typeof slugRedirects.$inferSelect
 
 export type PageRow = typeof pages.$inferSelect
 export type PageTranslationRow = typeof pageTranslations.$inferSelect

@@ -33,6 +33,14 @@ export const seoSettingsSchema = z.object({
   plausibleDomain: z.string().optional(),
   googleAnalyticsId: z.string().optional(),
   googleSiteVerification: z.string().optional(),
+  /**
+   * Terms under which the published content and data may be reused, stated in
+   * llms.txt and on the open data endpoint. An answer engine that finds no
+   * licence has to assume the strictest one; saying "CC BY 4.0" out loud is
+   * what turns the site's numbers into something quotable.
+   */
+  contentLicence: z.string().optional(),
+  contentLicenceUrl: z.string().optional(),
 })
 
 /** Bank details rendered on the bank-transfer donation option. */
@@ -78,6 +86,13 @@ export const organisationSchema = z.object({
   registrationNumber: z.string().optional(),
   vatNumber: z.string().optional(),
   foundedYear: z.number().int().nullish(),
+  /**
+   * Public pages that confirm the organisation exists — the NGO board entry,
+   * a donor's partner directory, a charity register. They become `sameAs` in
+   * the structured data, which is how a search or answer engine ties the site
+   * to a body that vouches for it. Entered by the operator; nothing is guessed.
+   */
+  registryUrls: z.array(z.string()).default([]),
 })
 
 export type SocialLinks = z.infer<typeof socialLinksSchema>

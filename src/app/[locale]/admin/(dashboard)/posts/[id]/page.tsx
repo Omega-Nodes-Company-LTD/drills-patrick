@@ -4,7 +4,12 @@ import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { PostForm } from '@/components/admin/post-form'
 import { features } from '@/env'
 import type { Locale } from '@/i18n/config'
-import { adminCategoryOptions, adminGetPost, adminTagOptions } from '@/lib/admin/queries'
+import {
+  adminAuthorOptions,
+  adminCategoryOptions,
+  adminGetPost,
+  adminTagOptions,
+} from '@/lib/admin/queries'
 import { requirePermission } from '@/lib/auth/guard'
 
 export const dynamic = 'force-dynamic'
@@ -18,11 +23,12 @@ export default async function EditPostPage({
   setRequestLocale(locale)
   await requirePermission('content')
 
-  const [t, record, categories, tags] = await Promise.all([
+  const [t, record, categories, tags, authors] = await Promise.all([
     getTranslations('admin.nav'),
     adminGetPost(id),
     adminCategoryOptions(),
     adminTagOptions(),
+    adminAuthorOptions(),
   ])
 
   if (!record) notFound()
@@ -49,6 +55,7 @@ export default async function EditPostPage({
           id: record.post.id,
           coverId: record.post.coverId,
           categoryId: record.post.categoryId,
+          authorMemberId: record.post.authorMemberId,
           status: record.post.status,
           isFeatured: record.post.isFeatured,
           tagIds: record.tagIds,
@@ -56,6 +63,7 @@ export default async function EditPostPage({
         }}
         categories={categories}
         tags={tags}
+        authors={authors}
         storageEnabled={features.storage}
       />
     </div>
