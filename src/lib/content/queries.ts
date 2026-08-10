@@ -798,31 +798,4 @@ export async function listTestimonials(locale: Locale, ids?: string[]) {
   return [...map.values()]
 }
 
-/** Slugs for every locale of an entity, used to build `hreflang` alternates. */
-export async function getAlternateSlugs(
-  entity: 'post' | 'project' | 'campaign' | 'page',
-  id: string,
-): Promise<Partial<Record<Locale, string>>> {
-  const table = {
-    post: postTranslations,
-    project: projectTranslations,
-    campaign: campaignTranslations,
-    page: pageTranslations,
-  }[entity]
-
-  const column = {
-    post: postTranslations.postId,
-    project: projectTranslations.projectId,
-    campaign: campaignTranslations.campaignId,
-    page: pageTranslations.pageId,
-  }[entity]
-
-  const rows = await db
-    .select({ locale: table.locale, slug: table.slug })
-    .from(table)
-    .where(eq(column, id))
-
-  return Object.fromEntries(rows.map((row) => [row.locale, row.slug]))
-}
-
 export { media }
