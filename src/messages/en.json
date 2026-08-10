@@ -338,7 +338,12 @@
       "users": "Users",
       "audit": "Activity log",
       "viewSite": "View site",
-      "signOut": "Sign out"
+      "signOut": "Sign out",
+      "collections": "Collections",
+      "faqs": "FAQs",
+      "team": "Team",
+      "partners": "Partners",
+      "testimonials": "Testimonials"
     },
     "dashboard": {
       "title": "Dashboard",

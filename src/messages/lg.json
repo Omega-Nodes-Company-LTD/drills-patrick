@@ -338,7 +338,12 @@
       "users": "Abakozesa",
       "audit": "Ebikoleddwa",
       "viewSite": "Laba omukutu",
-      "signOut": "Fuluma"
+      "signOut": "Fuluma",
+      "collections": "Ebikuŋŋaanyiziddwa",
+      "faqs": "Ebibuuzo",
+      "team": "Ttiimu",
+      "partners": "Bakolagana naffe",
+      "testimonials": "Obujulizi"
     }
   }
 }

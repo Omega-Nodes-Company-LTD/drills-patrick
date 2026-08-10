@@ -338,7 +338,12 @@
       "users": "Benutzer",
       "audit": "Aktivitätsprotokoll",
       "viewSite": "Website ansehen",
-      "signOut": "Abmelden"
+      "signOut": "Abmelden",
+      "collections": "Sammlungen",
+      "faqs": "FAQ",
+      "team": "Team",
+      "partners": "Partner",
+      "testimonials": "Stimmen"
     },
     "dashboard": {
       "title": "Übersicht",

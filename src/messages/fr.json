@@ -338,7 +338,12 @@
       "users": "Utilisateurs",
       "audit": "Journal d'activité",
       "viewSite": "Voir le site",
-      "signOut": "Déconnexion"
+      "signOut": "Déconnexion",
+      "collections": "Collections",
+      "faqs": "FAQ",
+      "team": "Équipe",
+      "partners": "Partenaires",
+      "testimonials": "Témoignages"
     },
     "dashboard": {
       "title": "Tableau de bord",

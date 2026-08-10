@@ -338,7 +338,12 @@
       "users": "Utenti",
       "audit": "Registro attività",
       "viewSite": "Vedi il sito",
-      "signOut": "Esci"
+      "signOut": "Esci",
+      "collections": "Raccolte",
+      "faqs": "FAQ",
+      "team": "Team",
+      "partners": "Partner",
+      "testimonials": "Testimonianze"
     },
     "dashboard": {
       "title": "Dashboard",
