@@ -126,3 +126,25 @@ test.describe('regressions', () => {
     expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin')
   })
 })
+
+test.describe('feeds and machine-readable routes', () => {
+  test('serves an RSS feed per language', async ({ request }) => {
+    const response = await request.get('/feed.xml')
+    expect(response.status()).toBe(200)
+    expect(response.headers()['content-type']).toContain('application/rss+xml')
+
+    const body = await response.text()
+    expect(body).toContain('<rss version="2.0"')
+    expect(body).toContain('<language>en</language>')
+
+    const italian = await request.get('/it/feed.xml')
+    expect(await italian.text()).toContain('<language>it</language>')
+  })
+
+  test('advertises the feed from every page', async ({ page }) => {
+    await page.goto('/projects')
+    await expect(
+      page.locator('link[rel="alternate"][type="application/rss+xml"]'),
+    ).toHaveAttribute('href', /\/feed\.xml$/)
+  })
+})

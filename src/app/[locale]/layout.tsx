@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { staticAlternates } from '@/lib/seo'
+import { localeUrl, staticAlternates } from '@/lib/seo'
 import { absoluteUrl } from '@/lib/url'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -87,7 +87,11 @@ export default async function LocaleLayout({
   }
 
   setRequestLocale(locale)
-  const t = await getTranslations({ locale, namespace: 'common' })
+  const [t, settings] = await Promise.all([
+    getTranslations({ locale, namespace: 'common' }),
+    getSiteSettings(),
+  ])
+  const feedTitle = settings.siteName
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -95,6 +99,17 @@ export default async function LocaleLayout({
         {/* Server-rendered so the configured palette is applied on first paint. */}
         <ThemeStyle />
         <ThemeScript />
+        {/*
+          In <head> rather than in `alternates`: a route that sets its own
+          canonical replaces the parent's alternates wholesale, so a feed
+          advertised there would reach the home page only.
+        */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title={feedTitle}
+          href={localeUrl(locale, '/feed.xml')}
+        />
       </head>
       <body className="min-h-dvh bg-background text-foreground antialiased">
         <a
