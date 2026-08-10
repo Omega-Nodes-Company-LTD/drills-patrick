@@ -87,6 +87,54 @@ export function webSiteNode(settings: SiteSettings, locale: Locale): GraphNode {
 }
 
 /**
+ * Where the page sits in the site.
+ *
+ * Detail pages are reached from a list, but a URL alone does not say so.
+ * The breadcrumb is what turns "/projects/kayunga-borehole" into "Home ›
+ * Projects › Kayunga borehole" in a result, and what tells an answer engine
+ * which section an answer came from.
+ */
+export function breadcrumbNode(params: {
+  pageUrl: string
+  items: { name: string; url: string }[]
+}): GraphNode | null {
+  if (params.items.length < 2) return null
+
+  return {
+    '@type': 'BreadcrumbList',
+    '@id': NODE_ID.breadcrumb(params.pageUrl),
+    itemListElement: params.items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  }
+}
+
+/** Home › section › page, the shape every detail route needs. */
+export function sectionBreadcrumb(params: {
+  locale: Locale
+  homeName: string
+  section?: { name: string; path: string }
+  pageName: string
+  pageUrl: string
+}): GraphNode | null {
+  const items = [{ name: params.homeName, url: localeUrl(params.locale, '/') }]
+
+  if (params.section) {
+    items.push({
+      name: params.section.name,
+      url: localeUrl(params.locale, params.section.path),
+    })
+  }
+
+  items.push({ name: params.pageName, url: params.pageUrl })
+
+  return breadcrumbNode({ pageUrl: params.pageUrl, items })
+}
+
+/**
  * The page itself. Everything specific — an article, a project, a campaign —
  * declares this node as its `mainEntityOfPage`, which is what ties a piece of
  * content to the URL it is published at.

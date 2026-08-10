@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
 import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
 import { NODE_ID, ref, type GraphNode } from '@/lib/seo/graph'
-import { webPageNode } from '@/lib/seo/nodes'
+import { sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
 import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
 import { redirect } from '@/i18n/navigation'
@@ -69,6 +69,7 @@ export default async function PostPage({
   if (result.redirectTo) redirect({ href: `/blog/${result.redirectTo}`, locale })
 
   const t = await getTranslations('blog')
+  const tNav = await getTranslations('nav')
   const { post, translation, cover, tags, authorName } = result
 
   const related = await listPosts({ locale, limit: 3, excludeId: post.id })
@@ -109,6 +110,13 @@ export default async function PostPage({
             name: translation?.title ?? '',
             description: translation?.excerpt,
             dateModified: post.updatedAt,
+          }),
+          sectionBreadcrumb({
+            locale,
+            homeName: tNav('home'),
+            section: { name: tNav('blog'), path: '/blog' },
+            pageName: translation?.title ?? '',
+            pageUrl: url,
           }),
           article,
         ]}

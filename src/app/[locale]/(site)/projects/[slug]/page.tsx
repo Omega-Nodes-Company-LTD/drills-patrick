@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
-import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
+import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
+import { sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
+import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
 import { redirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -79,6 +81,7 @@ export default async function ProjectPage({
   if (result.redirectTo) redirect({ href: `/projects/${result.redirectTo}`, locale })
 
   const t = await getTranslations('projects')
+  const tNav = await getTranslations('nav')
   const { project, translation, cover, gallery, updates, campaignId } = result
 
   const related = await listProjects({ locale, limit: 3 })
@@ -109,8 +112,28 @@ export default async function ProjectPage({
       ? percentage(project.fundedAmount, project.budgetAmount)
       : null
 
+  const url = localeUrl(locale, `/projects/${translation?.slug ?? slug}`)
+
   return (
     <article>
+      <JsonLd
+        nodes={[
+          webPageNode({
+            locale,
+            url,
+            name: translation?.title ?? '',
+            description: translation?.summary,
+            dateModified: project.updatedAt,
+          }),
+          sectionBreadcrumb({
+            locale,
+            homeName: tNav('home'),
+            section: { name: tNav('projects'), path: '/projects' },
+            pageName: translation?.title ?? '',
+            pageUrl: url,
+          }),
+        ]}
+      />
       <div className="relative isolate">
         <div className="relative aspect-[16/9] max-h-[28rem] w-full overflow-hidden bg-muted md:aspect-[21/9]">
           <MediaImage media={cover} locale={locale} priority sizes="100vw" />
