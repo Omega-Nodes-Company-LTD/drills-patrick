@@ -93,3 +93,19 @@ export function pathsFromTranslations(
 
   return paths
 }
+
+/**
+ * Whether a filtered or paginated listing should be indexed.
+ *
+ * A list crossed with three filters and a page number produces hundreds of
+ * URLs that are near-copies of each other and of the plain list. They stay
+ * crawlable — `follow`, so the entities behind them are still discovered —
+ * but only the unfiltered first page is worth an index entry.
+ *
+ * Pass the query parameters that actually narrow the list; `page` is included
+ * because page 2 of a list is not a page anyone should land on from a search.
+ */
+export function listingRobots(query: Record<string, string | undefined>): Metadata['robots'] {
+  const narrowed = Object.values(query).some((value) => value && value.trim() !== '')
+  return narrowed ? { index: false, follow: true } : { index: true, follow: true }
+}

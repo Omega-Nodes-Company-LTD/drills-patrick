@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { listingRobots } from '@/lib/seo'
 import { NODE_ID, buildGraph, compact, ref } from '@/lib/seo/graph'
 import {
   breadcrumbNode,
@@ -106,5 +107,19 @@ describe('FAQ structured data', () => {
 
   it('returns nothing when there is no answered question', () => {
     expect(faqPageNode({ url: 'u', items: [] })).toBeNull()
+  })
+})
+
+describe('listing robots', () => {
+  it('indexes the plain list', () => {
+    expect(listingRobots({})).toEqual({ index: true, follow: true })
+    expect(listingRobots({ status: undefined, page: '' })).toEqual({ index: true, follow: true })
+  })
+
+  it('keeps a filtered list crawlable but out of the index', () => {
+    // Three filters crossed with pagination produce hundreds of near-copies;
+    // `follow` still lets a crawler reach the entities behind them.
+    expect(listingRobots({ status: 'completed' })).toEqual({ index: false, follow: true })
+    expect(listingRobots({ page: '2' })).toEqual({ index: false, follow: true })
   })
 })

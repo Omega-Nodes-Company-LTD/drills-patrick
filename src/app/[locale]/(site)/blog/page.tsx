@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
-import { staticAlternates } from '@/lib/seo'
+import { listingRobots, staticAlternates } from '@/lib/seo'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Suspense } from 'react'
 import { PostCard } from '@/components/site/cards'
@@ -17,12 +17,17 @@ export const dynamic = 'force-dynamic'
 
 const PER_PAGE = 9
 
+type SearchParams = Promise<{ page?: string; category?: string; tag?: string }>
+
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>
+  searchParams: SearchParams
 }): Promise<Metadata> {
   const { locale } = (await params) as { locale: Locale }
+  const query = await searchParams
   const t = await getTranslations({ locale, namespace: 'blog' })
   const settings = await getSiteSettings()
 
@@ -30,6 +35,7 @@ export async function generateMetadata({
     title: t('title'),
     description: t('subtitle'),
     alternates: staticAlternates(locale, '/blog', settings.enabledLocales),
+    robots: listingRobots(query),
   }
 }
 
@@ -38,7 +44,7 @@ export default async function BlogPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ page?: string; category?: string; tag?: string }>
+  searchParams: SearchParams
 }) {
   const { locale } = (await params) as { locale: Locale }
   setRequestLocale(locale)
