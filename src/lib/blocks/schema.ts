@@ -1,0 +1,292 @@
+import { z } from 'zod'
+import { i18nRichTextSchema, i18nTextSchema } from '@/i18n/schema'
+
+/**
+ * Page building blocks.
+ *
+ * A page stores its blocks once (structure is shared across languages) and the
+ * textual leaves are i18n objects, so an editor arranges a layout a single time
+ * and then only translates the copy.
+ *
+ * Every block carries `layout` props, which is how the admin can override
+ * spacing and background per section rather than only globally.
+ */
+
+export const sectionSpacingSchema = z.enum(['none', 'sm', 'md', 'lg', 'xl'])
+export const sectionWidthSchema = z.enum(['narrow', 'container', 'wide', 'full'])
+export const sectionToneSchema = z.enum([
+  'default',
+  'surface',
+  'muted',
+  'primary',
+  'secondary',
+  'accent',
+])
+
+export const blockLayoutSchema = z.object({
+  paddingTop: sectionSpacingSchema.default('lg'),
+  paddingBottom: sectionSpacingSchema.default('lg'),
+  width: sectionWidthSchema.default('container'),
+  tone: sectionToneSchema.default('default'),
+  /** Optional custom background colour that overrides `tone`. */
+  background: z.string().optional(),
+  /** Anchor id, used by in-page navigation links. */
+  anchor: z.string().optional(),
+})
+
+export type BlockLayout = z.infer<typeof blockLayoutSchema>
+
+const ctaSchema = z.object({
+  label: i18nTextSchema,
+  href: z.string(),
+  variant: z.enum(['primary', 'secondary', 'outline', 'ghost']).default('primary'),
+})
+
+const baseFields = {
+  id: z.string(),
+  enabled: z.boolean().default(true),
+  layout: blockLayoutSchema,
+}
+
+export const heroBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('hero'),
+  eyebrow: i18nTextSchema.optional(),
+  title: i18nTextSchema,
+  subtitle: i18nTextSchema.optional(),
+  mediaId: z.string().uuid().nullish(),
+  overlayOpacity: z.number().min(0).max(1).default(0.45),
+  height: z.enum(['sm', 'md', 'lg', 'screen']).default('lg'),
+  align: z.enum(['left', 'center']).default('left'),
+  ctas: z.array(ctaSchema).max(2).default([]),
+  /** Small trust indicators rendered under the CTAs. */
+  highlights: z
+    .array(z.object({ value: z.string(), label: i18nTextSchema }))
+    .max(4)
+    .default([]),
+})
+
+export const richTextBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('richText'),
+  title: i18nTextSchema.optional(),
+  content: i18nRichTextSchema,
+})
+
+export const statsBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('stats'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  items: z
+    .array(
+      z.object({
+        value: z.string(),
+        suffix: z.string().optional(),
+        label: i18nTextSchema,
+        icon: z.string().optional(),
+      }),
+    )
+    .max(6)
+    .default([]),
+})
+
+export const projectsBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('projects'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  status: z.enum(['all', 'planned', 'in_progress', 'completed']).default('all'),
+  limit: z.number().int().min(1).max(12).default(3),
+  featuredOnly: z.boolean().default(false),
+  cta: ctaSchema.optional(),
+})
+
+export const postsBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('posts'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  categoryId: z.string().uuid().nullish(),
+  limit: z.number().int().min(1).max(12).default(3),
+  cta: ctaSchema.optional(),
+})
+
+export const campaignsBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('campaigns'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  limit: z.number().int().min(1).max(6).default(3),
+  activeOnly: z.boolean().default(true),
+})
+
+export const donateBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('donate'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  campaignId: z.string().uuid().nullish(),
+  suggestedAmounts: z.array(z.number().int().positive()).max(6).default([]),
+  currency: z.string().length(3).optional(),
+})
+
+export const galleryBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('gallery'),
+  title: i18nTextSchema.optional(),
+  mediaIds: z.array(z.string().uuid()).default([]),
+  columns: z.number().int().min(2).max(4).default(3),
+  aspect: z.enum(['square', 'landscape', 'portrait']).default('landscape'),
+})
+
+export const partnersBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('partners'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  partnerIds: z.array(z.string().uuid()).default([]),
+})
+
+export const testimonialsBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('testimonials'),
+  title: i18nTextSchema.optional(),
+  testimonialIds: z.array(z.string().uuid()).default([]),
+})
+
+export const faqBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('faq'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  faqIds: z.array(z.string().uuid()).default([]),
+})
+
+export const stepsBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('steps'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  items: z
+    .array(
+      z.object({
+        title: i18nTextSchema,
+        text: i18nTextSchema.optional(),
+        icon: z.string().optional(),
+      }),
+    )
+    .max(8)
+    .default([]),
+})
+
+export const ctaBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('cta'),
+  title: i18nTextSchema,
+  text: i18nTextSchema.optional(),
+  ctas: z.array(ctaSchema).max(2).default([]),
+  mediaId: z.string().uuid().nullish(),
+})
+
+export const mapBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('map'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  zoom: z.number().int().min(3).max(14).default(7),
+  center: z.object({ lat: z.number(), lng: z.number() }).default({ lat: 1.3733, lng: 32.2903 }),
+  statuses: z.array(z.enum(['planned', 'in_progress', 'completed'])).default([
+    'planned',
+    'in_progress',
+    'completed',
+  ]),
+})
+
+export const videoBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('video'),
+  title: i18nTextSchema.optional(),
+  url: z.string(),
+  caption: i18nTextSchema.optional(),
+})
+
+export const contactBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('contact'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  variant: z.enum(['ngo', 'general']).default('ngo'),
+  showDetails: z.boolean().default(true),
+})
+
+export const blockSchema = z.discriminatedUnion('kind', [
+  heroBlockSchema,
+  richTextBlockSchema,
+  statsBlockSchema,
+  projectsBlockSchema,
+  postsBlockSchema,
+  campaignsBlockSchema,
+  donateBlockSchema,
+  galleryBlockSchema,
+  partnersBlockSchema,
+  testimonialsBlockSchema,
+  faqBlockSchema,
+  stepsBlockSchema,
+  ctaBlockSchema,
+  mapBlockSchema,
+  videoBlockSchema,
+  contactBlockSchema,
+])
+
+export const blocksSchema = z.array(blockSchema)
+
+export type Block = z.infer<typeof blockSchema>
+export type BlockKind = Block['kind']
+export type HeroBlock = z.infer<typeof heroBlockSchema>
+export type RichTextBlock = z.infer<typeof richTextBlockSchema>
+export type StatsBlock = z.infer<typeof statsBlockSchema>
+export type ProjectsBlock = z.infer<typeof projectsBlockSchema>
+export type PostsBlock = z.infer<typeof postsBlockSchema>
+export type CampaignsBlock = z.infer<typeof campaignsBlockSchema>
+export type DonateBlock = z.infer<typeof donateBlockSchema>
+export type GalleryBlock = z.infer<typeof galleryBlockSchema>
+export type PartnersBlock = z.infer<typeof partnersBlockSchema>
+export type TestimonialsBlock = z.infer<typeof testimonialsBlockSchema>
+export type FaqBlock = z.infer<typeof faqBlockSchema>
+export type StepsBlock = z.infer<typeof stepsBlockSchema>
+export type CtaBlock = z.infer<typeof ctaBlockSchema>
+export type MapBlock = z.infer<typeof mapBlockSchema>
+export type VideoBlock = z.infer<typeof videoBlockSchema>
+export type ContactBlock = z.infer<typeof contactBlockSchema>
+
+/** Drops blocks that no longer validate instead of failing a whole page. */
+export function parseBlocks(value: unknown): Block[] {
+  if (!Array.isArray(value)) return []
+
+  const blocks: Block[] = []
+  for (const entry of value) {
+    const parsed = blockSchema.safeParse(entry)
+    if (parsed.success) blocks.push(parsed.data)
+  }
+  return blocks
+}
+
+export const blockKinds = [
+  'hero',
+  'richText',
+  'stats',
+  'projects',
+  'posts',
+  'campaigns',
+  'donate',
+  'gallery',
+  'partners',
+  'testimonials',
+  'faq',
+  'steps',
+  'cta',
+  'map',
+  'video',
+  'contact',
+] as const satisfies readonly BlockKind[]
