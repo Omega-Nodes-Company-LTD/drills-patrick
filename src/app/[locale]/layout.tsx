@@ -65,7 +65,11 @@ export async function generateMetadata({
     verification: settings.seo.googleSiteVerification
       ? { google: settings.seo.googleSiteVerification }
       : undefined,
-    robots: { index: true, follow: true },
+    // A language the operator switched off stays reachable for existing links
+    // but is withdrawn from the index rather than disappearing abruptly.
+    robots: settings.enabledLocales.includes(activeLocale)
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
   }
 }
 
