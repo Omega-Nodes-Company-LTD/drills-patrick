@@ -3,6 +3,7 @@
 import {
   BarChart3,
   Calculator,
+  CalendarClock,
   ChevronDown,
   ExternalLink,
   FileText,
@@ -57,6 +58,7 @@ const GROUPS: { titleKey: string; items: NavEntry[] }[] = [
       { href: '/admin/campaigns', labelKey: 'campaigns', icon: Megaphone, permission: 'content' },
       { href: '/admin/faults', labelKey: 'faults', icon: TriangleAlert, permission: 'projects' },
       { href: '/admin/quotes', labelKey: 'quotes', icon: Calculator, permission: 'projects' },
+      { href: '/admin/contracts', labelKey: 'contracts', icon: CalendarClock, permission: 'projects' },
       { href: '/admin/media', labelKey: 'media', icon: ImageIcon, permission: 'media' },
     ],
   },

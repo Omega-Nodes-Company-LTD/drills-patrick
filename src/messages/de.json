@@ -347,7 +347,8 @@
       "testimonials": "Stimmen",
       "messages": "Nachrichten",
       "faults": "Störungen",
-      "quotes": "Angebote"
+      "quotes": "Angebote",
+      "contracts": "Verträge"
     },
     "dashboard": {
       "title": "Übersicht",
@@ -746,6 +747,23 @@
       "functionalHint": "Daraus wird die Funktionsrate berechnet.",
       "working": "In Betrieb",
       "notWorking": "Außer Betrieb"
+    },
+    "contracts": {
+      "title": "Wartungsverträge",
+      "partner": "Partner",
+      "reference": "Referenz",
+      "startsOn": "Beginn",
+      "endsOn": "Ende",
+      "interval": "Besuch alle (Monate)",
+      "everyMonths": "alle {count} Monate",
+      "responseHours": "Reaktionszeit (Stunden)",
+      "fee": "Gebühr",
+      "currency": "Währung",
+      "coveredProjects": "Abgedeckte Wasserstellen",
+      "notes": "Notizen",
+      "active": "Aktiv",
+      "invalidPeriod": "Das Enddatum muss nach dem Startdatum liegen.",
+      "needPartner": "Legen Sie zuerst eine Partnerorganisation an."
     }
   },
   "portal": {
@@ -777,7 +795,8 @@
     "visits": "Besuche",
     "coverage": "Abgedeckte Wasserstellen",
     "responseTime": "Zugesagte Reaktionszeit",
-    "hours": "{count} Std."
+    "hours": "{count} Std.",
+    "noContracts": "Für Ihre Organisation liegt kein Wartungsvertrag vor."
   },
   "documents": {
     "kinds": {

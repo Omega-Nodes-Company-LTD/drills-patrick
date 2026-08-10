@@ -347,7 +347,8 @@
       "testimonials": "Testimonianze",
       "messages": "Messaggi",
       "faults": "Guasti",
-      "quotes": "Preventivi"
+      "quotes": "Preventivi",
+      "contracts": "Contratti"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -746,6 +747,23 @@
       "functionalHint": "È il dato da cui si calcola il tasso di funzionalità.",
       "working": "Funzionante",
       "notWorking": "Non funzionante"
+    },
+    "contracts": {
+      "title": "Contratti di manutenzione",
+      "partner": "Partner",
+      "reference": "Riferimento",
+      "startsOn": "Inizio",
+      "endsOn": "Fine",
+      "interval": "Visita ogni (mesi)",
+      "everyMonths": "ogni {count} mesi",
+      "responseHours": "Tempo di risposta (ore)",
+      "fee": "Canone",
+      "currency": "Valuta",
+      "coveredProjects": "Punti d'acqua coperti",
+      "notes": "Note",
+      "active": "Attivo",
+      "invalidPeriod": "La data di fine deve essere successiva a quella di inizio.",
+      "needPartner": "Aggiungi prima un'organizzazione partner."
     }
   },
   "portal": {
@@ -777,7 +795,8 @@
     "visits": "Visite",
     "coverage": "Punti d'acqua coperti",
     "responseTime": "Tempo di risposta garantito",
-    "hours": "{count} h"
+    "hours": "{count} h",
+    "noContracts": "Non risulta alcun contratto di manutenzione per la tua organizzazione."
   },
   "documents": {
     "kinds": {

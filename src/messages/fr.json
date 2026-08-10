@@ -347,7 +347,8 @@
       "testimonials": "Témoignages",
       "messages": "Messages",
       "faults": "Pannes",
-      "quotes": "Devis"
+      "quotes": "Devis",
+      "contracts": "Contrats"
     },
     "dashboard": {
       "title": "Tableau de bord",
@@ -746,6 +747,23 @@
       "functionalHint": "C'est la donnée qui sert au taux de fonctionnalité.",
       "working": "En service",
       "notWorking": "Hors service"
+    },
+    "contracts": {
+      "title": "Contrats de maintenance",
+      "partner": "Partenaire",
+      "reference": "Référence",
+      "startsOn": "Début",
+      "endsOn": "Fin",
+      "interval": "Visite tous les (mois)",
+      "everyMonths": "tous les {count} mois",
+      "responseHours": "Délai de réponse (heures)",
+      "fee": "Redevance",
+      "currency": "Devise",
+      "coveredProjects": "Points d'eau couverts",
+      "notes": "Notes",
+      "active": "Actif",
+      "invalidPeriod": "La date de fin doit suivre la date de début.",
+      "needPartner": "Ajoutez d'abord une organisation partenaire."
     }
   },
   "portal": {
@@ -777,7 +795,8 @@
     "visits": "Visites",
     "coverage": "Points d'eau couverts",
     "responseTime": "Délai de réponse garanti",
-    "hours": "{count} h"
+    "hours": "{count} h",
+    "noContracts": "Aucun contrat de maintenance n'est enregistré pour votre organisation."
   },
   "documents": {
     "kinds": {

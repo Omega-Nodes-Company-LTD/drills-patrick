@@ -347,7 +347,8 @@
       "testimonials": "Testimonials",
       "messages": "Messages",
       "faults": "Faults",
-      "quotes": "Quotes"
+      "quotes": "Quotes",
+      "contracts": "Contracts"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -746,6 +747,23 @@
       "functionalHint": "This is what the functionality rate is computed from.",
       "working": "Working",
       "notWorking": "Not working"
+    },
+    "contracts": {
+      "title": "Maintenance contracts",
+      "partner": "Partner",
+      "reference": "Reference",
+      "startsOn": "Starts",
+      "endsOn": "Ends",
+      "interval": "Visit every (months)",
+      "everyMonths": "every {count} months",
+      "responseHours": "Response time (hours)",
+      "fee": "Fee",
+      "currency": "Currency",
+      "coveredProjects": "Water points covered",
+      "notes": "Notes",
+      "active": "Active",
+      "invalidPeriod": "The end date must be after the start date.",
+      "needPartner": "Add a partner organisation first."
     }
   },
   "portal": {
@@ -777,7 +795,8 @@
     "visits": "Visits",
     "coverage": "Water points covered",
     "responseTime": "Response time promised",
-    "hours": "{count} h"
+    "hours": "{count} h",
+    "noContracts": "No maintenance contract is on file for your organisation."
   },
   "documents": {
     "kinds": {
