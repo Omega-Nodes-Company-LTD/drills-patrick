@@ -348,7 +348,8 @@
       "messages": "Messaggi",
       "faults": "Guasti",
       "quotes": "Preventivi",
-      "contracts": "Contratti"
+      "contracts": "Contratti",
+      "partnerAccess": "Accessi partner"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -764,6 +765,33 @@
       "active": "Attivo",
       "invalidPeriod": "La data di fine deve essere successiva a quella di inizio.",
       "needPartner": "Aggiungi prima un'organizzazione partner."
+    },
+    "partnerAccess": {
+      "title": "Accessi partner",
+      "accounts": "Account partner",
+      "partner": "Organizzazione",
+      "name": "Nome",
+      "email": "Email",
+      "role": "Ruolo",
+      "phone": "Telefono",
+      "language": "Lingua",
+      "reports": "Report periodico",
+      "password": "Password",
+      "passwordHintNew": "Almeno 10 caratteri, con maiuscola, minuscola e cifra.",
+      "passwordHintEdit": "Lascia vuoto per mantenere la password attuale.",
+      "weakPassword": "Password troppo debole.",
+      "passwordRequired": "Serve una password per un nuovo account.",
+      "active": "Può accedere",
+      "disabled": "Disattivato",
+      "never": "mai entrato",
+      "needPartner": "Aggiungi prima un'organizzazione partner.",
+      "visibleTo": "Progetti visibili a {name}",
+      "noProjects": "Nessun progetto.",
+      "frequency": {
+        "none": "Nessuno",
+        "monthly": "Mensile",
+        "quarterly": "Trimestrale"
+      }
     }
   },
   "portal": {

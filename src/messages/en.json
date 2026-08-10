@@ -348,7 +348,8 @@
       "messages": "Messages",
       "faults": "Faults",
       "quotes": "Quotes",
-      "contracts": "Contracts"
+      "contracts": "Contracts",
+      "partnerAccess": "Partner access"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -764,6 +765,33 @@
       "active": "Active",
       "invalidPeriod": "The end date must be after the start date.",
       "needPartner": "Add a partner organisation first."
+    },
+    "partnerAccess": {
+      "title": "Partner access",
+      "accounts": "Partner accounts",
+      "partner": "Organisation",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "phone": "Phone",
+      "language": "Language",
+      "reports": "Periodic report",
+      "password": "Password",
+      "passwordHintNew": "At least 10 characters, with upper case, lower case and a digit.",
+      "passwordHintEdit": "Leave empty to keep the current password.",
+      "weakPassword": "That password is too weak.",
+      "passwordRequired": "A password is required for a new account.",
+      "active": "Can sign in",
+      "disabled": "Disabled",
+      "never": "never signed in",
+      "needPartner": "Add a partner organisation first.",
+      "visibleTo": "Projects visible to {name}",
+      "noProjects": "No projects yet.",
+      "frequency": {
+        "none": "None",
+        "monthly": "Monthly",
+        "quarterly": "Quarterly"
+      }
     }
   },
   "portal": {

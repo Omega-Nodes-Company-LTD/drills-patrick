@@ -169,3 +169,62 @@ export async function notifyFaultReported(fault: {
     }),
   })
 }
+
+/**
+ * The periodic summary a partner contact opted into.
+ *
+ * Deliberately the same figures the portal shows: an email that disagrees
+ * with the site is worse than no email, because it costs a phone call to
+ * work out which one is wrong.
+ */
+export async function sendPartnerReport(params: {
+  to: string
+  name: string
+  partnerName: string
+  locale: string
+  periodDays: number
+  projects: { title: string; district: string | null; beneficiaries: number; openFaults: number }[]
+  metrics: { open: number; reported: number; medianResolveHours: number | null; functionalRate: number | null }
+}): Promise<boolean> {
+  const settings = await getSiteSettings()
+  const identity = identityOf(settings)
+
+  const projectRows = params.projects
+    .map(
+      (project) =>
+        `<tr><td style="padding:4px 12px 4px 0">${escape(project.title)}</td>` +
+        `<td style="padding:4px 12px 4px 0;color:#5b6b78">${escape(project.district ?? '')}</td>` +
+        `<td style="padding:4px 0;text-align:right">${project.beneficiaries}</td>` +
+        `<td style="padding:4px 0;text-align:right">${project.openFaults || ''}</td></tr>`,
+    )
+    .join('')
+
+  return sendMail({
+    to: params.to,
+    subject: `${settings.siteName} — ${params.partnerName}: ${params.periodDays}-day report`,
+    html: renderEmail({
+      title: `Your water points over the last ${params.periodDays} days`,
+      body:
+        `<table role="presentation">${rows([
+          ['Water points', params.projects.length],
+          ['Open faults', params.metrics.open],
+          ['Faults reported in the period', params.metrics.reported],
+          [
+            'Median repair time',
+            params.metrics.medianResolveHours != null
+              ? `${params.metrics.medianResolveHours.toFixed(1)} h`
+              : null,
+          ],
+          [
+            'Working at last visit',
+            params.metrics.functionalRate != null
+              ? `${Math.round(params.metrics.functionalRate * 100)}%`
+              : null,
+          ],
+        ])}</table>` +
+        `<table role="presentation" style="margin-top:16px;width:100%">${projectRows}</table>` +
+        `<p style="margin-top:16px"><a href="${absoluteUrl('/portal')}">Open the partner area</a></p>`,
+      footer: [formatLegalLine(identity), formatAddress(identity)].filter(Boolean).join('<br>'),
+    }),
+  })
+}

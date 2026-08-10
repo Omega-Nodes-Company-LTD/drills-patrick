@@ -348,7 +348,8 @@
       "messages": "Messages",
       "faults": "Pannes",
       "quotes": "Devis",
-      "contracts": "Contrats"
+      "contracts": "Contrats",
+      "partnerAccess": "Accès partenaires"
     },
     "dashboard": {
       "title": "Tableau de bord",
@@ -764,6 +765,33 @@
       "active": "Actif",
       "invalidPeriod": "La date de fin doit suivre la date de début.",
       "needPartner": "Ajoutez d'abord une organisation partenaire."
+    },
+    "partnerAccess": {
+      "title": "Accès partenaires",
+      "accounts": "Comptes partenaires",
+      "partner": "Organisation",
+      "name": "Nom",
+      "email": "E-mail",
+      "role": "Fonction",
+      "phone": "Téléphone",
+      "language": "Langue",
+      "reports": "Rapport périodique",
+      "password": "Mot de passe",
+      "passwordHintNew": "Au moins 10 caractères, avec majuscule, minuscule et chiffre.",
+      "passwordHintEdit": "Laissez vide pour conserver le mot de passe actuel.",
+      "weakPassword": "Mot de passe trop faible.",
+      "passwordRequired": "Un mot de passe est requis pour un nouveau compte.",
+      "active": "Peut se connecter",
+      "disabled": "Désactivé",
+      "never": "jamais connecté",
+      "needPartner": "Ajoutez d'abord une organisation partenaire.",
+      "visibleTo": "Projets visibles par {name}",
+      "noProjects": "Aucun projet.",
+      "frequency": {
+        "none": "Aucun",
+        "monthly": "Mensuel",
+        "quarterly": "Trimestriel"
+      }
     }
   },
   "portal": {
