@@ -110,6 +110,7 @@ export default async function PostPage({
             name: translation?.title ?? '',
             description: translation?.excerpt,
             dateModified: post.updatedAt,
+            speakable: true,
           }),
           sectionBreadcrumb({
             locale,
@@ -142,7 +143,9 @@ export default async function PostPage({
         <h1 className="mt-3 text-title">{translation?.title}</h1>
 
         {translation?.excerpt ? (
-          <p className="mt-4 text-lg text-muted-foreground">{translation.excerpt}</p>
+          <p data-speakable className="mt-4 text-lg text-muted-foreground">
+            {translation.excerpt}
+          </p>
         ) : null}
       </header>
 

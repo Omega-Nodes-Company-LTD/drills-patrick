@@ -124,6 +124,7 @@ export default async function ProjectPage({
             name: translation?.title ?? '',
             description: translation?.summary,
             dateModified: project.updatedAt,
+            speakable: true,
           }),
           sectionBreadcrumb({
             locale,
@@ -171,7 +172,9 @@ export default async function ProjectPage({
 
             <h1 className="mt-4 text-title">{translation?.title}</h1>
             {translation?.summary ? (
-              <p className="mt-3 max-w-3xl text-lg text-muted-foreground">{translation.summary}</p>
+              <p data-speakable className="mt-3 max-w-3xl text-lg text-muted-foreground">
+                {translation.summary}
+              </p>
             ) : null}
 
             {fundingProgress !== null ? (

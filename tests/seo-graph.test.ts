@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { NODE_ID, buildGraph, compact, ref } from '@/lib/seo/graph'
-import { breadcrumbNode, sectionBreadcrumb, waterPointNode } from '@/lib/seo/nodes'
+import {
+  breadcrumbNode,
+  faqPageNode,
+  sectionBreadcrumb,
+  waterPointNode,
+} from '@/lib/seo/nodes'
 
 describe('structured data graph', () => {
   it('drops empty values instead of emitting nulls', () => {
@@ -82,5 +87,24 @@ describe('water point', () => {
       { '@type': 'PropertyValue', name: 'yield', value: 3000, unitCode: 'E32' },
       { '@type': 'PropertyValue', name: 'peopleServed', value: 850 },
     ])
+  })
+})
+
+describe('FAQ structured data', () => {
+  it('skips entries without both a question and an answer', () => {
+    const node = faqPageNode({
+      url: 'u',
+      items: [
+        { question: 'How deep?', answerHtml: '<p>Around 60 m.</p>' },
+        { question: 'Unanswered', answerHtml: '   ' },
+        { question: '', answerHtml: '<p>Orphan answer.</p>' },
+      ],
+    })
+
+    expect(node?.mainEntity).toHaveLength(1)
+  })
+
+  it('returns nothing when there is no answered question', () => {
+    expect(faqPageNode({ url: 'u', items: [] })).toBeNull()
   })
 })

@@ -186,6 +186,42 @@ export function waterPointNode(params: {
   }
 }
 
+/**
+ * The FAQ page as questions and answers.
+ *
+ * An accordion is a list of `<button>`s to a crawler. `FAQPage` states which
+ * text is a question and which is its answer, which is the difference between
+ * a page that can be quoted and one that can only be linked.
+ */
+export function faqPageNode(params: {
+  url: string
+  items: { question: string; answerHtml: string }[]
+}): GraphNode | null {
+  const answered = params.items.filter((item) => item.question.trim() && item.answerHtml.trim())
+  if (answered.length === 0) return null
+
+  return {
+    '@type': 'FAQPage',
+    '@id': `${params.url}#faq`,
+    mainEntity: answered.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answerHtml },
+    })),
+  }
+}
+
+/**
+ * Marks the parts of a page a voice assistant should read aloud.
+ *
+ * CSS selectors rather than text, so the marked region follows the markup
+ * instead of being duplicated into the structured data and drifting from it.
+ */
+export const SPEAKABLE = {
+  '@type': 'SpeakableSpecification',
+  cssSelector: ['h1', '[data-speakable]'],
+} as const
+
 /** Home › section › page, the shape every detail route needs. */
 export function sectionBreadcrumb(params: {
   locale: Locale
@@ -219,6 +255,8 @@ export function webPageNode(params: {
   name: string
   description?: string | null
   dateModified?: Date | string | null
+  /** Pages whose heading and summary are worth reading aloud. */
+  speakable?: boolean
 }): GraphNode {
   const modified =
     params.dateModified instanceof Date
@@ -234,5 +272,6 @@ export function webPageNode(params: {
     inLanguage: params.locale,
     dateModified: modified,
     isPartOf: ref(NODE_ID.website(params.locale)),
+    speakable: params.speakable ? SPEAKABLE : undefined,
   }
 }
