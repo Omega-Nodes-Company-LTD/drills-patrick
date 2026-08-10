@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { absoluteUrl } from '@/lib/url'
+import { getSiteSettings } from '@/lib/settings/service'
+import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
@@ -38,19 +39,20 @@ export async function generateMetadata({
   const result = await getProjectBySlug(slug, locale)
   if (!result) return {}
 
+  const settings = await getSiteSettings()
+
   const image = mediaUrl(result.cover?.objectKey)
 
   return {
     title: result.translation?.seoTitle || result.translation?.title,
     description: result.translation?.seoDescription || result.translation?.summary || undefined,
-    alternates: {
-      languages: Object.fromEntries(
-        result.translations.map((translation) => [
-          translation.locale,
-          absoluteUrl(`/${translation.locale}/projects/${translation.slug}`),
-        ]),
-      ),
-    },
+    // Own canonical: without it the page would inherit the locale layout's,
+    // which points at the home page.
+    alternates: buildAlternates({
+      locale,
+      paths: pathsFromTranslations(result.translations, '/projects'),
+      enabledLocales: settings.enabledLocales,
+    }),
     openGraph: {
       type: 'article',
       title: result.translation?.title,

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { absoluteUrl } from '@/lib/url'
+import { getSiteSettings } from '@/lib/settings/service'
+import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 import { BlockList } from '@/components/blocks/render'
@@ -27,17 +28,18 @@ export async function generateMetadata({
   const result = await getPageBySlug(slug, locale)
   if (!result) return {}
 
-  const alternates = Object.fromEntries(
-    result.translations.map((translation) => [
-      translation.locale,
-      absoluteUrl(`/${translation.locale}/${translation.slug}`),
-    ]),
-  )
+  const settings = await getSiteSettings()
 
   return {
     title: result.translation?.seoTitle || result.translation?.title,
     description: result.translation?.seoDescription ?? undefined,
-    alternates: { languages: alternates },
+    // Own canonical: without it the page would inherit the locale layout's,
+    // which points at the home page.
+    alternates: buildAlternates({
+      locale,
+      paths: pathsFromTranslations(result.translations, ''),
+      enabledLocales: settings.enabledLocales,
+    }),
   }
 }
 

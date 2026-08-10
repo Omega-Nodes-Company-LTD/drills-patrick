@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { staticAlternates } from '@/lib/seo'
 import { absoluteUrl } from '@/lib/url'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -45,15 +46,9 @@ export async function generateMetadata({
     },
     description,
     keywords: settings.seo.keywords,
-    alternates: {
-      canonical: absoluteUrl(activeLocale === routing.defaultLocale ? '/' : `/${activeLocale}`),
-      languages: Object.fromEntries(
-        settings.enabledLocales.map((item) => [
-          item,
-          absoluteUrl(item === routing.defaultLocale ? '/' : `/${item}`),
-        ]),
-      ),
-    },
+    // Only a fallback: pages inherit `alternates` when they do not set it, so
+    // every route below builds its own canonical (see src/lib/seo.ts).
+    alternates: staticAlternates(activeLocale, '/', settings.enabledLocales),
     openGraph: {
       type: 'website',
       siteName: settings.siteName,

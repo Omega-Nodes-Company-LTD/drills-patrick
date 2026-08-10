@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { getSiteSettings } from '@/lib/settings/service'
+import { staticAlternates } from '@/lib/seo'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Suspense } from 'react'
 import { ProjectCard } from '@/components/site/cards'
@@ -21,7 +23,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = (await params) as { locale: Locale }
   const t = await getTranslations({ locale, namespace: 'projects' })
-  return { title: t('title'), description: t('subtitle') }
+  const settings = await getSiteSettings()
+
+  return {
+    title: t('title'),
+    description: t('subtitle'),
+    alternates: staticAlternates(locale, '/projects', settings.enabledLocales),
+  }
 }
 
 type SearchParams = Promise<{

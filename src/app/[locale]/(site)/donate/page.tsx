@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { staticAlternates } from '@/lib/seo'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { DonationForm } from '@/components/donate/donation-form'
 import { PageHeader } from '@/components/site/page-header'
@@ -20,7 +21,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = (await params) as { locale: Locale }
   const t = await getTranslations({ locale, namespace: 'donate' })
-  return { title: t('title'), description: t('subtitle') }
+  const settings = await getSiteSettings()
+
+  return {
+    title: t('title'),
+    description: t('subtitle'),
+    alternates: staticAlternates(locale, '/donate', settings.enabledLocales),
+  }
 }
 
 export default async function DonatePage({

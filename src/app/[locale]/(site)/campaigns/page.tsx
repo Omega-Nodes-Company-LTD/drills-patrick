@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { getSiteSettings } from '@/lib/settings/service'
+import { staticAlternates } from '@/lib/seo'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { CampaignCard } from '@/components/site/cards'
 import { EmptyState, PageHeader } from '@/components/site/page-header'
@@ -16,7 +18,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = (await params) as { locale: Locale }
   const t = await getTranslations({ locale, namespace: 'campaigns' })
-  return { title: t('title'), description: t('subtitle') }
+  const settings = await getSiteSettings()
+
+  return {
+    title: t('title'),
+    description: t('subtitle'),
+    alternates: staticAlternates(locale, '/campaigns', settings.enabledLocales),
+  }
 }
 
 export default async function CampaignsPage({

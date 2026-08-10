@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { absoluteUrl } from '@/lib/url'
+import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { DonationForm } from '@/components/donate/donation-form'
@@ -28,19 +28,20 @@ export async function generateMetadata({
   const result = await getCampaignBySlug(slug, locale)
   if (!result) return {}
 
+  const settings = await getSiteSettings()
+
   const image = mediaUrl(result.cover?.objectKey)
 
   return {
     title: result.translation?.seoTitle || result.translation?.title,
     description: result.translation?.seoDescription || result.translation?.summary || undefined,
-    alternates: {
-      languages: Object.fromEntries(
-        result.translations.map((translation) => [
-          translation.locale,
-          absoluteUrl(`/${translation.locale}/campaigns/${translation.slug}`),
-        ]),
-      ),
-    },
+    // Own canonical: without it the page would inherit the locale layout's,
+    // which points at the home page.
+    alternates: buildAlternates({
+      locale,
+      paths: pathsFromTranslations(result.translations, '/campaigns'),
+      enabledLocales: settings.enabledLocales,
+    }),
     openGraph: { title: result.translation?.title, images: image ? [image] : undefined },
   }
 }
