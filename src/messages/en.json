@@ -478,7 +478,9 @@
         "cta": "Call to action",
         "map": "Map",
         "video": "Video",
-        "contact": "Contact form"
+        "contact": "Contact form",
+        "answer": "Short answer",
+        "table": "Data table"
       },
       "spacing": {
         "none": "None",

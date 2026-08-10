@@ -478,7 +478,9 @@
         "cta": "Call to action",
         "map": "Mappa",
         "video": "Video",
-        "contact": "Modulo contatti"
+        "contact": "Modulo contatti",
+        "answer": "Risposta breve",
+        "table": "Tabella dati"
       },
       "spacing": {
         "none": "Nessuna",

@@ -478,7 +478,9 @@
         "cta": "Appel à l'action",
         "map": "Carte",
         "video": "Vidéo",
-        "contact": "Formulaire de contact"
+        "contact": "Formulaire de contact",
+        "answer": "Réponse courte",
+        "table": "Tableau de données"
       },
       "spacing": {
         "none": "Aucun",

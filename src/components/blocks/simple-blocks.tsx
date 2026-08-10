@@ -1,11 +1,13 @@
 import { Link } from '@/i18n/navigation'
 import { pickI18n, type Locale } from '@/i18n/config'
 import type {
+  AnswerBlock,
   CtaBlock,
   GalleryBlock,
   RichTextBlock,
   StatsBlock,
   StepsBlock,
+  TableBlock,
   VideoBlock,
 } from '@/lib/blocks/schema'
 import { getMediaById, getMediaByIds } from '@/lib/media/service'
@@ -212,6 +214,122 @@ export function VideoBlockView({ block, locale }: { block: VideoBlock; locale: L
       {pickI18n(block.caption, locale) ? (
         <p className="mt-3 text-small opacity-75">{pickI18n(block.caption, locale)}</p>
       ) : null}
+    </Section>
+  )
+}
+
+/**
+ * One question, answered in a few sentences, with the date it was checked.
+ *
+ * The unit an answer engine quotes is a short passage, not a page. Writing
+ * that passage deliberately — and saying when it was last verified — is what
+ * makes it quotable: an undated claim about yield or cost is not worth
+ * repeating, and a reader deciding whether to trust it needs the same thing
+ * the machine does.
+ */
+export function AnswerBlockView({ block, locale }: { block: AnswerBlock; locale: Locale }) {
+  const question = pickI18n(block.question, locale)
+  const answer = pickI18n(block.answer, locale)
+
+  if (!question && !answer) return null
+
+  return (
+    <Section layout={block.layout}>
+      <div className="mx-auto max-w-2xl rounded-[var(--radius-lg)] border-s-4 border-primary bg-surface p-6 text-surface-foreground">
+        {question ? <h2 className="text-heading">{question}</h2> : null}
+
+        {/* `data-speakable` matches the selector in the structured data. */}
+        {answer ? (
+          <p data-speakable className="mt-3 text-base leading-relaxed">
+            {answer}
+          </p>
+        ) : null}
+
+        {block.verifiedOn || block.sourceUrl ? (
+          <p className="mt-4 flex flex-wrap items-center gap-2 text-small text-muted-foreground">
+            {block.verifiedOn ? (
+              <span>
+                <time dateTime={block.verifiedOn}>{block.verifiedOn}</time>
+              </span>
+            ) : null}
+            {block.sourceUrl ? (
+              <a
+                href={block.sourceUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="underline hover:text-primary"
+              >
+                {block.sourceLabel || block.sourceUrl}
+              </a>
+            ) : null}
+          </p>
+        ) : null}
+      </div>
+    </Section>
+  )
+}
+
+/**
+ * Figures as a real table.
+ *
+ * Numbers pasted in as an image, or laid out with spans, are invisible to
+ * anything that is not a human eye. `<table>` with a header row is extractable
+ * by a crawler, announced correctly by a screen reader, and copyable into a
+ * spreadsheet by the NGO officer who actually needs the numbers.
+ */
+export function TableBlockView({ block, locale }: { block: TableBlock; locale: Locale }) {
+  const columns = block.columns.map((column) => pickI18n(column, locale))
+  const rows = block.rows.map((row) => row.map((cell) => pickI18n(cell, locale)))
+
+  if (columns.length === 0 && rows.length === 0) return null
+
+  const title = pickI18n(block.title, locale)
+  const caption = pickI18n(block.caption, locale)
+  const unitNote = pickI18n(block.unitNote, locale)
+
+  return (
+    <Section layout={block.layout}>
+      {title ? <h2 className="mb-4 text-title">{title}</h2> : null}
+
+      {/* The table scrolls inside its own box; the page never scrolls sideways. */}
+      <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-border">
+        <table className="w-full border-collapse text-sm">
+          {caption || unitNote ? (
+            <caption className="px-4 py-3 text-start text-small text-muted-foreground">
+              {caption}
+              {unitNote ? <span className="block">{unitNote}</span> : null}
+            </caption>
+          ) : null}
+
+          {columns.length > 0 ? (
+            <thead>
+              <tr className="bg-muted">
+                {columns.map((column, index) => (
+                  <th
+                    key={index}
+                    scope="col"
+                    className="px-4 py-3 text-start font-semibold whitespace-nowrap"
+                  >
+                    {column}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+          ) : null}
+
+          <tbody>
+            {rows.map((row, rowIndex) => (
+              <tr key={rowIndex} className="border-t border-border">
+                {row.map((cell, cellIndex) => (
+                  <td key={cellIndex} className="px-4 py-3 align-top">
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </Section>
   )
 }
