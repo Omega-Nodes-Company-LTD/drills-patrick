@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { requireApiUser } from '@/lib/auth/guard'
-import { listMedia, listMediaFolders } from '@/lib/media/service'
+import { getMediaByIds, listMedia, listMediaFolders } from '@/lib/media/service'
 import { mediaUrl } from '@/lib/storage/urls'
 
 export const dynamic = 'force-dynamic'
@@ -12,6 +12,20 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url)
   const kindParam = url.searchParams.get('kind')
+
+  // Resolving stored ids is a lookup, not a search: a cover picked two years
+  // ago is nowhere near the first page of the newest-first listing.
+  const ids = (url.searchParams.get('ids') ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean)
+
+  if (ids.length > 0) {
+    const found = await getMediaByIds(ids.slice(0, 100))
+    return NextResponse.json({
+      items: [...found.values()].map((item) => ({ ...item, url: mediaUrl(item.objectKey) })),
+    })
+  }
 
   const result = await listMedia({
     search: url.searchParams.get('q') ?? undefined,
