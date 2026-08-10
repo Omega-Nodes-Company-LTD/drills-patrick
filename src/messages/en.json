@@ -398,7 +398,8 @@
       "search": "Search…",
       "unsavedChanges": "You have unsaved changes.",
       "title": "Title",
-      "date": "Date"
+      "date": "Date",
+      "systemPageLocked": "This page is part of the site structure and must stay published."
     },
     "media": {
       "title": "Media library",

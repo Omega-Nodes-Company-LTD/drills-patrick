@@ -398,7 +398,8 @@
       "search": "Rechercher…",
       "unsavedChanges": "Des modifications ne sont pas enregistrées.",
       "title": "Titre",
-      "date": "Date"
+      "date": "Date",
+      "systemPageLocked": "Cette page fait partie de la structure du site et doit rester publiée."
     },
     "media": {
       "title": "Médiathèque",

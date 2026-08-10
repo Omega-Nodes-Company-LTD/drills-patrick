@@ -154,10 +154,12 @@ export function PageForm({
               <CardTitle className="text-base">{t('status')}</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
+              {/* A system page has a route pointing at it, so it stays published. */}
               <Select
                 value={status}
                 onChange={(event) => setStatus(event.target.value as typeof status)}
                 aria-label={t('status')}
+                disabled={initial?.isSystem}
               >
                 <option value="draft">{t('draft')}</option>
                 <option value="published">{t('published')}</option>

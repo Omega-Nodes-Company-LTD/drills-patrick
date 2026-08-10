@@ -398,7 +398,8 @@
       "search": "Suchen…",
       "unsavedChanges": "Es gibt ungespeicherte Änderungen.",
       "title": "Titel",
-      "date": "Datum"
+      "date": "Datum",
+      "systemPageLocked": "Diese Seite gehört zur Seitenstruktur und muss veröffentlicht bleiben."
     },
     "media": {
       "title": "Medienbibliothek",

@@ -457,6 +457,19 @@ export async function savePage(input: unknown): Promise<ActionResult<{ id: strin
   let pageId = data.id
 
   if (pageId) {
+    // The home page and the other routed pages must stay reachable: taking one
+    // out of publication would leave the site with a 404 at its own address.
+    const [existing] = await db
+      .select({ isSystem: pages.isSystem, key: pages.key })
+      .from(pages)
+      .where(eq(pages.id, pageId))
+      .limit(1)
+
+    if (existing?.isSystem) {
+      if (data.status !== 'published') return { ok: false, error: 'system_page_published' }
+      values.key = existing.key
+    }
+
     await db.update(pages).set(values).where(eq(pages.id, pageId))
   } else {
     const [created] = await db.insert(pages).values(values).returning({ id: pages.id })
@@ -590,6 +603,16 @@ export async function setPublishStatus(
   if (!user) return { ok: false, error: 'unauthorised' }
 
   const published = status === 'published'
+
+  if (type === 'page' && !published) {
+    const [page] = await db
+      .select({ isSystem: pages.isSystem })
+      .from(pages)
+      .where(eq(pages.id, id))
+      .limit(1)
+
+    if (page?.isSystem) return { ok: false, error: 'system_page_published' }
+  }
 
   if (type === 'project') {
     await db
