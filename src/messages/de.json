@@ -343,7 +343,8 @@
       "faqs": "FAQ",
       "team": "Team",
       "partners": "Partner",
-      "testimonials": "Stimmen"
+      "testimonials": "Stimmen",
+      "messages": "Nachrichten"
     },
     "dashboard": {
       "title": "Übersicht",
@@ -646,6 +647,19 @@
       "entity": "Element",
       "when": "Wann",
       "empty": "Keine Aktivität aufgezeichnet."
+    },
+    "messages": {
+      "title": "Nachrichten",
+      "contacts": "Nachrichten von der Website",
+      "subscribers": "Newsletter",
+      "new": "Neu",
+      "handled": "Erledigt",
+      "markHandled": "Als erledigt markieren",
+      "reopen": "Wieder öffnen",
+      "reply": "Per E-Mail antworten",
+      "confirmed": "Bestätigt",
+      "pending": "Unbestätigt",
+      "unsubscribed": "Abgemeldet"
     }
   }
 }

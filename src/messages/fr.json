@@ -343,7 +343,8 @@
       "faqs": "FAQ",
       "team": "Équipe",
       "partners": "Partenaires",
-      "testimonials": "Témoignages"
+      "testimonials": "Témoignages",
+      "messages": "Messages"
     },
     "dashboard": {
       "title": "Tableau de bord",
@@ -646,6 +647,19 @@
       "entity": "Élément",
       "when": "Quand",
       "empty": "Aucune activité enregistrée."
+    },
+    "messages": {
+      "title": "Messages",
+      "contacts": "Messages du site",
+      "subscribers": "Newsletter",
+      "new": "Nouveau",
+      "handled": "Traité",
+      "markHandled": "Marquer comme traité",
+      "reopen": "Rouvrir",
+      "reply": "Répondre par e-mail",
+      "confirmed": "Confirmé",
+      "pending": "À confirmer",
+      "unsubscribed": "Désabonné"
     }
   }
 }

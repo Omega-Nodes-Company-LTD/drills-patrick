@@ -14,6 +14,7 @@ import {
   LogOut,
   Mailbox,
   Menu,
+  MessageSquare,
   Newspaper,
   Palette,
   Quote,
@@ -74,6 +75,7 @@ const GROUPS: { titleKey: string; items: NavEntry[] }[] = [
     items: [
       { href: '/admin/donations', labelKey: 'donations', icon: HandCoins, permission: 'donations' },
       { href: '/admin/inquiries', labelKey: 'inquiries', icon: Mailbox, permission: 'inquiries' },
+      { href: '/admin/messages', labelKey: 'messages', icon: MessageSquare, permission: 'inquiries' },
     ],
   },
   {

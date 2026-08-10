@@ -343,7 +343,8 @@
       "faqs": "FAQs",
       "team": "Team",
       "partners": "Partners",
-      "testimonials": "Testimonials"
+      "testimonials": "Testimonials",
+      "messages": "Messages"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -646,6 +647,19 @@
       "entity": "Item",
       "when": "When",
       "empty": "No activity recorded yet."
+    },
+    "messages": {
+      "title": "Messages",
+      "contacts": "Contact messages",
+      "subscribers": "Newsletter",
+      "new": "New",
+      "handled": "Handled",
+      "markHandled": "Mark as handled",
+      "reopen": "Reopen",
+      "reply": "Reply by email",
+      "confirmed": "Confirmed",
+      "pending": "Unconfirmed",
+      "unsubscribed": "Unsubscribed"
     }
   }
 }

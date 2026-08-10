@@ -343,7 +343,8 @@
       "faqs": "FAQ",
       "team": "Team",
       "partners": "Partner",
-      "testimonials": "Testimonianze"
+      "testimonials": "Testimonianze",
+      "messages": "Messaggi"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -646,6 +647,19 @@
       "entity": "Elemento",
       "when": "Quando",
       "empty": "Nessuna attività registrata."
+    },
+    "messages": {
+      "title": "Messaggi",
+      "contacts": "Messaggi dal sito",
+      "subscribers": "Newsletter",
+      "new": "Nuovo",
+      "handled": "Gestito",
+      "markHandled": "Segna come gestito",
+      "reopen": "Riapri",
+      "reply": "Rispondi via email",
+      "confirmed": "Confermato",
+      "pending": "Da confermare",
+      "unsubscribed": "Disiscritto"
     }
   }
 }
