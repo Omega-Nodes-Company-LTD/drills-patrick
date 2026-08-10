@@ -346,7 +346,8 @@
       "partners": "Partner",
       "testimonials": "Stimmen",
       "messages": "Nachrichten",
-      "faults": "Störungen"
+      "faults": "Störungen",
+      "quotes": "Angebote"
     },
     "dashboard": {
       "title": "Übersicht",
@@ -692,6 +693,41 @@
       "medianAck": "Median Reaktionszeit",
       "medianResolve": "Median Reparaturzeit",
       "functional": "Beim letzten Besuch in Betrieb"
+    },
+    "quotes": {
+      "title": "Angebote und Preise",
+      "rates": "Preisliste",
+      "noRates": "Noch keine Sätze. Zuerst einen anlegen.",
+      "addRate": "Satz hinzufügen",
+      "label": "Bezeichnung",
+      "band": "Tiefenbereich",
+      "geology": "Geologie",
+      "geologyHint": "any, overburden, basement…",
+      "depthFrom": "Von (m)",
+      "depthTo": "Bis (m)",
+      "perMetre": "Pro Meter",
+      "fixed": "Fixkosten",
+      "currency": "Währung",
+      "invalidBand": "Die obere Tiefe muss größer als die untere sein.",
+      "newQuote": "Neues Angebot",
+      "organisation": "Organisation",
+      "contact": "Ansprechpartner",
+      "email": "E-Mail",
+      "district": "Distrikt",
+      "depth": "Tiefe (m)",
+      "wells": "Wasserstellen",
+      "validUntil": "Gültig bis",
+      "notes": "Notizen",
+      "issue": "Angebot erstellen",
+      "issued": "Erstellte Angebote",
+      "noQuotes": "Noch keine Angebote.",
+      "noRateFor": "Kein Satz deckt diese Tiefe und Geologie ab.",
+      "statuses": {
+        "draft": "Entwurf",
+        "sent": "Gesendet",
+        "accepted": "Angenommen",
+        "declined": "Abgelehnt"
+      }
     }
   },
   "portal": {

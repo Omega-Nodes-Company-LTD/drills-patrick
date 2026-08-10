@@ -346,7 +346,8 @@
       "partners": "Partner",
       "testimonials": "Testimonianze",
       "messages": "Messaggi",
-      "faults": "Guasti"
+      "faults": "Guasti",
+      "quotes": "Preventivi"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -692,6 +693,41 @@
       "medianAck": "Risposta mediana",
       "medianResolve": "Riparazione mediana",
       "functional": "Funzionanti all ultima visita"
+    },
+    "quotes": {
+      "title": "Preventivi e listino",
+      "rates": "Listino",
+      "noRates": "Nessuna tariffa. Aggiungine una prima di fare un preventivo.",
+      "addRate": "Aggiungi tariffa",
+      "label": "Etichetta",
+      "band": "Fascia di profondità",
+      "geology": "Geologia",
+      "geologyHint": "any, overburden, basement…",
+      "depthFrom": "Da (m)",
+      "depthTo": "A (m)",
+      "perMetre": "Al metro",
+      "fixed": "Costo fisso",
+      "currency": "Valuta",
+      "invalidBand": "La profondità massima deve essere maggiore della minima.",
+      "newQuote": "Nuovo preventivo",
+      "organisation": "Organizzazione",
+      "contact": "Referente",
+      "email": "Email",
+      "district": "Distretto",
+      "depth": "Profondità (m)",
+      "wells": "Punti d'acqua",
+      "validUntil": "Valido fino al",
+      "notes": "Note",
+      "issue": "Emetti preventivo",
+      "issued": "Preventivi emessi",
+      "noQuotes": "Nessun preventivo emesso.",
+      "noRateFor": "Nessuna tariffa copre questa profondità e geologia. Aggiungila prima.",
+      "statuses": {
+        "draft": "Bozza",
+        "sent": "Inviato",
+        "accepted": "Accettato",
+        "declined": "Rifiutato"
+      }
     }
   },
   "portal": {

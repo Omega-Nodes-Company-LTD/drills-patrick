@@ -2,6 +2,7 @@
 
 import {
   BarChart3,
+  Calculator,
   ChevronDown,
   ExternalLink,
   FileText,
@@ -55,6 +56,7 @@ const GROUPS: { titleKey: string; items: NavEntry[] }[] = [
       { href: '/admin/projects', labelKey: 'projects', icon: Droplets, permission: 'projects' },
       { href: '/admin/campaigns', labelKey: 'campaigns', icon: Megaphone, permission: 'content' },
       { href: '/admin/faults', labelKey: 'faults', icon: TriangleAlert, permission: 'projects' },
+      { href: '/admin/quotes', labelKey: 'quotes', icon: Calculator, permission: 'projects' },
       { href: '/admin/media', labelKey: 'media', icon: ImageIcon, permission: 'media' },
     ],
   },

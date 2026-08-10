@@ -346,7 +346,8 @@
       "partners": "Partners",
       "testimonials": "Testimonials",
       "messages": "Messages",
-      "faults": "Faults"
+      "faults": "Faults",
+      "quotes": "Quotes"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -692,6 +693,41 @@
       "medianAck": "Median response",
       "medianResolve": "Median repair",
       "functional": "Working at last visit"
+    },
+    "quotes": {
+      "title": "Quotes and rates",
+      "rates": "Price list",
+      "noRates": "No rates yet. Add one before issuing a quote.",
+      "addRate": "Add rate",
+      "label": "Label",
+      "band": "Depth band",
+      "geology": "Geology",
+      "geologyHint": "any, overburden, basement…",
+      "depthFrom": "From (m)",
+      "depthTo": "To (m)",
+      "perMetre": "Per metre",
+      "fixed": "Fixed cost",
+      "currency": "Currency",
+      "invalidBand": "The upper depth must be greater than the lower one.",
+      "newQuote": "New quote",
+      "organisation": "Organisation",
+      "contact": "Contact",
+      "email": "Email",
+      "district": "District",
+      "depth": "Depth (m)",
+      "wells": "Water points",
+      "validUntil": "Valid until",
+      "notes": "Notes",
+      "issue": "Issue quote",
+      "issued": "Issued quotes",
+      "noQuotes": "No quotes issued yet.",
+      "noRateFor": "No rate covers that depth and geology. Add one first.",
+      "statuses": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "accepted": "Accepted",
+        "declined": "Declined"
+      }
     }
   },
   "portal": {

@@ -346,7 +346,8 @@
       "partners": "Partenaires",
       "testimonials": "Témoignages",
       "messages": "Messages",
-      "faults": "Pannes"
+      "faults": "Pannes",
+      "quotes": "Devis"
     },
     "dashboard": {
       "title": "Tableau de bord",
@@ -692,6 +693,41 @@
       "medianAck": "Réponse médiane",
       "medianResolve": "Réparation médiane",
       "functional": "En service à la dernière visite"
+    },
+    "quotes": {
+      "title": "Devis et tarifs",
+      "rates": "Grille tarifaire",
+      "noRates": "Aucun tarif. Ajoutez-en un avant d'établir un devis.",
+      "addRate": "Ajouter un tarif",
+      "label": "Libellé",
+      "band": "Tranche de profondeur",
+      "geology": "Géologie",
+      "geologyHint": "any, overburden, basement…",
+      "depthFrom": "De (m)",
+      "depthTo": "À (m)",
+      "perMetre": "Au mètre",
+      "fixed": "Coût fixe",
+      "currency": "Devise",
+      "invalidBand": "La profondeur maximale doit dépasser la minimale.",
+      "newQuote": "Nouveau devis",
+      "organisation": "Organisation",
+      "contact": "Contact",
+      "email": "E-mail",
+      "district": "District",
+      "depth": "Profondeur (m)",
+      "wells": "Points d'eau",
+      "validUntil": "Valable jusqu'au",
+      "notes": "Notes",
+      "issue": "Établir le devis",
+      "issued": "Devis établis",
+      "noQuotes": "Aucun devis établi.",
+      "noRateFor": "Aucun tarif ne couvre cette profondeur et cette géologie.",
+      "statuses": {
+        "draft": "Brouillon",
+        "sent": "Envoyé",
+        "accepted": "Accepté",
+        "declined": "Refusé"
+      }
     }
   },
   "portal": {
