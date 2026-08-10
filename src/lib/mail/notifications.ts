@@ -139,3 +139,33 @@ export async function sendBankTransferInstructions(
     }),
   })
 }
+
+/**
+ * Tells the office a water point has been reported broken.
+ *
+ * Sent immediately and unconditionally: the response clock in the SLA figures
+ * starts when the report arrives, not when someone next opens the admin.
+ */
+export async function notifyFaultReported(fault: {
+  reference: string
+  projectId: string
+  description: string
+}): Promise<boolean> {
+  const to = await internalRecipient()
+  if (!to) return false
+
+  const settings = await getSiteSettings()
+
+  return sendMail({
+    to,
+    subject: `${settings.siteName} — fault reported ${fault.reference}`,
+    html: renderEmail({
+      title: 'A water point has been reported as faulty',
+      body: `<table role="presentation">${rows([
+        ['Reference', fault.reference],
+        ['Project', fault.projectId],
+      ])}</table><p style="margin-top:16px">${escape(fault.description)}</p>`,
+      footer: absoluteUrl('/admin/faults'),
+    }),
+  })
+}

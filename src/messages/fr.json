@@ -345,7 +345,8 @@
       "team": "Équipe",
       "partners": "Partenaires",
       "testimonials": "Témoignages",
-      "messages": "Messages"
+      "messages": "Messages",
+      "faults": "Pannes"
     },
     "dashboard": {
       "title": "Tableau de bord",
@@ -669,6 +670,28 @@
       "confirmed": "Confirmé",
       "pending": "À confirmer",
       "unsubscribed": "Désabonné"
+    },
+    "faults": {
+      "title": "Pannes et service",
+      "empty": "Aucune panne signalée.",
+      "status": "Statut",
+      "statuses": {
+        "reported": "Signalée",
+        "acknowledged": "Prise en compte",
+        "in_progress": "En cours",
+        "resolved": "Résolue",
+        "closed": "Clôturée"
+      },
+      "reporter": "Signalée par",
+      "phone": "Téléphone",
+      "acknowledged": "Prise en compte",
+      "resolved": "Résolue",
+      "resolutionNote": "Note de clôture",
+      "open": "Pannes ouvertes",
+      "reported12m": "Signalées (12 mois)",
+      "medianAck": "Réponse médiane",
+      "medianResolve": "Réparation médiane",
+      "functional": "En service à la dernière visite"
     }
   },
   "portal": {
@@ -723,5 +746,27 @@
     "publicHint": "Désactivé par défaut. Un certificat nomme un village et une date.",
     "public": "Public",
     "partnersOnly": "Partenaires uniquement"
+  },
+  "report": {
+    "title": "Signaler un problème",
+    "intro": "Dites-nous ce qui ne va pas avec ce point d'eau. Aucun compte n'est nécessaire.",
+    "symptom": "Que se passe-t-il ?",
+    "symptoms": {
+      "no_water": "Pas d'eau du tout",
+      "low_yield": "Très peu d'eau",
+      "broken_handle": "Levier ou pompe cassé",
+      "dirty_water": "L'eau a un aspect ou une odeur anormale",
+      "other": "Autre chose"
+    },
+    "description": "Décrivez le problème",
+    "yourName": "Votre nom",
+    "yourPhone": "Votre téléphone",
+    "optional": "Facultatif",
+    "submit": "Envoyer le signalement",
+    "thanksTitle": "Signalement reçu",
+    "thanksText": "Merci. Notre équipe a été prévenue et viendra vérifier.",
+    "reference": "Référence",
+    "tooMany": "Trop de signalements depuis cet endroit pour le moment. Réessayez sous peu.",
+    "failed": "Le signalement n'a pas pu être envoyé. Réessayez."
   }
 }

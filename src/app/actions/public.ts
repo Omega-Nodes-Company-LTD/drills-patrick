@@ -1,11 +1,23 @@
 'use server'
 
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
+import { z } from 'zod'
 import { db } from '@/db'
-import { contactSubmissions, newsletterSubscribers, ngoInquiries } from '@/db/schema'
+import {
+  contactSubmissions,
+  faultReports,
+  newsletterSubscribers,
+  ngoInquiries,
+  projects,
+} from '@/db/schema'
+import { faultReference } from '@/lib/ngo/faults'
 import { toMinorUnits } from '@/lib/money'
 import { clientIdentifier, rateLimit } from '@/lib/rate-limit'
-import { notifyContactSubmission, notifyNgoInquiry } from '@/lib/mail/notifications'
+import {
+  notifyContactSubmission,
+  notifyFaultReported,
+  notifyNgoInquiry,
+} from '@/lib/mail/notifications'
 import {
   contactSchema,
   newsletterSchema,
@@ -146,4 +158,66 @@ export async function submitNgoInquiry(
   await notifyNgoInquiry(parsed.data)
 
   return { ok: true }
+}
+
+// ------------------------------------------------------------- fault reports
+
+const faultSchema = z.object({
+  projectId: z.string().uuid(),
+  description: z.string().trim().min(5).max(2000),
+  symptom: z.string().trim().max(120).optional(),
+  reporterName: z.string().trim().max(120).optional(),
+  reporterPhone: z.string().trim().max(40).optional(),
+  website: z.string().max(0).optional(),
+})
+
+/**
+ * A fault reported from the field.
+ *
+ * No account, no app: the QR sticker on the well cover opens this form. The
+ * people who notice a broken pump first are the ones fetching water from it,
+ * and any step between them and the report is a step where it stops.
+ */
+export async function reportFault(
+  _prev: ActionResult<{ reference: string }> | null,
+  formData: FormData,
+): Promise<ActionResult<{ reference: string }>> {
+  const parsed = faultSchema.safeParse(Object.fromEntries(formData))
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: 'invalid',
+      fieldErrors: Object.fromEntries(
+        parsed.error.issues.map((issue) => [issue.path.join('.'), issue.message]),
+      ),
+    }
+  }
+  if (parsed.data.website) return { ok: true, data: { reference: '' } }
+
+  // Looser than the contact form: a village with one shared phone should not
+  // be locked out because a neighbour reported a different well an hour ago.
+  if (!(await guard('fault', 10))) return { ok: false, error: 'rate_limited' }
+
+  const [project] = await db
+    .select({ id: projects.id })
+    .from(projects)
+    .where(and(eq(projects.id, parsed.data.projectId), eq(projects.publishStatus, 'published')))
+    .limit(1)
+
+  if (!project) return { ok: false, error: 'invalid' }
+
+  const reference = faultReference()
+
+  await db.insert(faultReports).values({
+    projectId: project.id,
+    reference,
+    description: parsed.data.description,
+    symptom: parsed.data.symptom || null,
+    reporterName: parsed.data.reporterName || null,
+    reporterPhone: parsed.data.reporterPhone || null,
+  })
+
+  await notifyFaultReported({ reference, projectId: project.id, description: parsed.data.description })
+
+  return { ok: true, data: { reference } }
 }

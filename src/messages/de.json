@@ -345,7 +345,8 @@
       "team": "Team",
       "partners": "Partner",
       "testimonials": "Stimmen",
-      "messages": "Nachrichten"
+      "messages": "Nachrichten",
+      "faults": "Störungen"
     },
     "dashboard": {
       "title": "Übersicht",
@@ -669,6 +670,28 @@
       "confirmed": "Bestätigt",
       "pending": "Unbestätigt",
       "unsubscribed": "Abgemeldet"
+    },
+    "faults": {
+      "title": "Störungen und Service",
+      "empty": "Keine Störungen gemeldet.",
+      "status": "Status",
+      "statuses": {
+        "reported": "Gemeldet",
+        "acknowledged": "Angenommen",
+        "in_progress": "In Arbeit",
+        "resolved": "Behoben",
+        "closed": "Geschlossen"
+      },
+      "reporter": "Gemeldet von",
+      "phone": "Telefon",
+      "acknowledged": "Angenommen",
+      "resolved": "Behoben",
+      "resolutionNote": "Abschlussnotiz",
+      "open": "Offene Störungen",
+      "reported12m": "Gemeldet (12 Monate)",
+      "medianAck": "Median Reaktionszeit",
+      "medianResolve": "Median Reparaturzeit",
+      "functional": "Beim letzten Besuch in Betrieb"
     }
   },
   "portal": {
@@ -723,5 +746,27 @@
     "publicHint": "Standardmäßig aus. Ein Zertifikat nennt Dorf und Datum.",
     "public": "Öffentlich",
     "partnersOnly": "Nur Partner"
+  },
+  "report": {
+    "title": "Problem melden",
+    "intro": "Sagen Sie uns, was an dieser Wasserstelle nicht stimmt. Ein Konto ist nicht nötig.",
+    "symptom": "Was ist los?",
+    "symptoms": {
+      "no_water": "Gar kein Wasser",
+      "low_yield": "Sehr wenig Wasser",
+      "broken_handle": "Hebel oder Pumpe defekt",
+      "dirty_water": "Wasser sieht oder riecht falsch",
+      "other": "Etwas anderes"
+    },
+    "description": "Beschreiben Sie das Problem",
+    "yourName": "Ihr Name",
+    "yourPhone": "Ihr Telefon",
+    "optional": "Optional",
+    "submit": "Meldung senden",
+    "thanksTitle": "Meldung erhalten",
+    "thanksText": "Danke. Unser Team wurde benachrichtigt und schaut es sich an.",
+    "reference": "Referenz",
+    "tooMany": "Momentan zu viele Meldungen von hier. Bitte kurz später erneut versuchen.",
+    "failed": "Die Meldung konnte nicht gesendet werden. Bitte erneut versuchen."
   }
 }

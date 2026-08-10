@@ -345,7 +345,8 @@
       "team": "Team",
       "partners": "Partner",
       "testimonials": "Testimonianze",
-      "messages": "Messaggi"
+      "messages": "Messaggi",
+      "faults": "Guasti"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -669,6 +670,28 @@
       "confirmed": "Confermato",
       "pending": "Da confermare",
       "unsubscribed": "Disiscritto"
+    },
+    "faults": {
+      "title": "Guasti e servizio",
+      "empty": "Nessun guasto segnalato.",
+      "status": "Stato",
+      "statuses": {
+        "reported": "Segnalato",
+        "acknowledged": "Preso in carico",
+        "in_progress": "In lavorazione",
+        "resolved": "Risolto",
+        "closed": "Chiuso"
+      },
+      "reporter": "Segnalato da",
+      "phone": "Telefono",
+      "acknowledged": "Preso in carico",
+      "resolved": "Risolto",
+      "resolutionNote": "Nota di chiusura",
+      "open": "Guasti aperti",
+      "reported12m": "Segnalati (12 mesi)",
+      "medianAck": "Risposta mediana",
+      "medianResolve": "Riparazione mediana",
+      "functional": "Funzionanti all ultima visita"
     }
   },
   "portal": {
@@ -723,5 +746,27 @@
     "publicHint": "Disattivo per impostazione predefinita. Un certificato riporta un villaggio e una data.",
     "public": "Pubblico",
     "partnersOnly": "Solo partner"
+  },
+  "report": {
+    "title": "Segnala un problema",
+    "intro": "Dicci cosa non funziona in questo punto d'acqua. Non serve un account.",
+    "symptom": "Cosa succede?",
+    "symptoms": {
+      "no_water": "Non esce acqua",
+      "low_yield": "Esce pochissima acqua",
+      "broken_handle": "Leva o pompa rotta",
+      "dirty_water": "L'acqua ha un aspetto o un odore strano",
+      "other": "Altro"
+    },
+    "description": "Descrivi il problema",
+    "yourName": "Il tuo nome",
+    "yourPhone": "Il tuo telefono",
+    "optional": "Facoltativo",
+    "submit": "Invia segnalazione",
+    "thanksTitle": "Segnalazione ricevuta",
+    "thanksText": "Grazie. Il nostro team è stato avvisato e verrà a controllare.",
+    "reference": "Riferimento",
+    "tooMany": "Troppe segnalazioni da qui in questo momento. Riprova tra poco.",
+    "failed": "Non è stato possibile inviare la segnalazione. Riprova."
   }
 }

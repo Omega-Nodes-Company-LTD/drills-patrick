@@ -345,7 +345,8 @@
       "team": "Team",
       "partners": "Partners",
       "testimonials": "Testimonials",
-      "messages": "Messages"
+      "messages": "Messages",
+      "faults": "Faults"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -669,6 +670,28 @@
       "confirmed": "Confirmed",
       "pending": "Unconfirmed",
       "unsubscribed": "Unsubscribed"
+    },
+    "faults": {
+      "title": "Faults and service",
+      "empty": "No faults have been reported.",
+      "status": "Status",
+      "statuses": {
+        "reported": "Reported",
+        "acknowledged": "Acknowledged",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "closed": "Closed"
+      },
+      "reporter": "Reported by",
+      "phone": "Phone",
+      "acknowledged": "Acknowledged",
+      "resolved": "Resolved",
+      "resolutionNote": "Resolution note",
+      "open": "Open faults",
+      "reported12m": "Reported (12 months)",
+      "medianAck": "Median response",
+      "medianResolve": "Median repair",
+      "functional": "Working at last visit"
     }
   },
   "portal": {
@@ -723,5 +746,27 @@
     "publicHint": "Off by default. A certificate names a village and a date.",
     "public": "Public",
     "partnersOnly": "Partners only"
+  },
+  "report": {
+    "title": "Report a problem",
+    "intro": "Tell us what is wrong with this water point. You do not need an account.",
+    "symptom": "What is happening?",
+    "symptoms": {
+      "no_water": "No water at all",
+      "low_yield": "Very little water",
+      "broken_handle": "Broken handle or pump",
+      "dirty_water": "Water looks or smells wrong",
+      "other": "Something else"
+    },
+    "description": "Describe the problem",
+    "yourName": "Your name",
+    "yourPhone": "Your phone",
+    "optional": "Optional",
+    "submit": "Send report",
+    "thanksTitle": "Report received",
+    "thanksText": "Thank you. Our team has been notified and will come to look at it.",
+    "reference": "Reference",
+    "tooMany": "Too many reports from here just now. Please try again shortly.",
+    "failed": "The report could not be sent. Please try again."
   }
 }
