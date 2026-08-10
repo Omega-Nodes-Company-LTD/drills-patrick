@@ -147,7 +147,8 @@
     "featured": "Hervorgehoben",
     "allPosts": "Alle Beiträge",
     "inCategory": "Beiträge in {name}",
-    "taggedWith": "Beiträge mit {name}"
+    "taggedWith": "Beiträge mit {name}",
+    "updatedOn": "Aktualisiert am {date}"
   },
   "campaigns": {
     "title": "Spendenaktionen",

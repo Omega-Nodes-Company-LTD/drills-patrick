@@ -46,6 +46,7 @@ export async function generateMetadata({
     openGraph: {
       type: 'article',
       publishedTime: result.post.publishedAt?.toISOString(),
+      modifiedTime: result.post.updatedAt.toISOString(),
       title: result.translation?.title,
       description: result.translation?.excerpt ?? undefined,
       images: image ? [image] : undefined,
@@ -82,6 +83,13 @@ export default async function PostPage({
       }).format(post.publishedAt)
     : null
 
+  // "Updated" means the content changed after publication, not that a row
+  // was touched: same-minute saves around publishing are not a revision.
+  const revisedAt =
+    post.publishedAt && post.updatedAt.getTime() - post.publishedAt.getTime() > 60_000
+      ? post.updatedAt
+      : null
+
   const url = localeUrl(locale, `/blog/${translation?.slug ?? slug}`)
 
   // A credited team member carries qualifications; a bare name does not.
@@ -103,7 +111,9 @@ export default async function PostPage({
     headline: translation?.title,
     description: translation?.excerpt ?? undefined,
     datePublished: post.publishedAt?.toISOString(),
-    dateModified: post.updatedAt.toISOString(),
+    // Only when it really moved: a dateModified equal to the publication date
+    // is noise, and a wrong one is worse than none.
+    dateModified: revisedAt?.toISOString(),
     inLanguage: locale,
     author: authorProfile
       ? ref(authorProfile['@id']!)
@@ -126,7 +136,7 @@ export default async function PostPage({
             url,
             name: translation?.title ?? '',
             description: translation?.excerpt,
-            dateModified: post.updatedAt,
+            dateModified: revisedAt,
             speakable: true,
           }),
           sectionBreadcrumb({
@@ -150,6 +160,20 @@ export default async function PostPage({
           ) : null}
           <span aria-hidden>·</span>
           <span>{t('readingTime', { minutes: post.readingMinutes })}</span>
+          {revisedAt ? (
+            <>
+              <span aria-hidden>·</span>
+              <time dateTime={revisedAt.toISOString()}>
+                {t('updatedOn', {
+                  date: new Intl.DateTimeFormat(intlLocale(locale), {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  }).format(revisedAt),
+                })}
+              </time>
+            </>
+          ) : null}
           {authorName ? (
             <>
               <span aria-hidden>·</span>

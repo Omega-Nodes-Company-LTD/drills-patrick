@@ -45,7 +45,12 @@ export async function generateMetadata({
       paths: pathsFromTranslations(result.translations, '/campaigns'),
       enabledLocales: settings.enabledLocales,
     }),
-    openGraph: { title: result.translation?.title, images: image ? [image] : undefined },
+    openGraph: {
+      type: 'article',
+      modifiedTime: result.campaign.updatedAt.toISOString(),
+      title: result.translation?.title,
+      images: image ? [image] : undefined,
+    },
   }
 }
 

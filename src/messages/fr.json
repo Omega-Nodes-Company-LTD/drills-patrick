@@ -147,7 +147,8 @@
     "featured": "À la une",
     "allPosts": "Tous les articles",
     "inCategory": "Articles dans {name}",
-    "taggedWith": "Articles étiquetés {name}"
+    "taggedWith": "Articles étiquetés {name}",
+    "updatedOn": "Mis à jour le {date}"
   },
   "campaigns": {
     "title": "Collecte de fonds",

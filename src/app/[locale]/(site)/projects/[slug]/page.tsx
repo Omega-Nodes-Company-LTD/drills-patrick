@@ -58,6 +58,7 @@ export async function generateMetadata({
     }),
     openGraph: {
       type: 'article',
+      modifiedTime: result.project.updatedAt.toISOString(),
       title: result.translation?.title,
       description: result.translation?.summary ?? undefined,
       images: image ? [image] : undefined,

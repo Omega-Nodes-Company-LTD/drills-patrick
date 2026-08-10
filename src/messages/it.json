@@ -147,7 +147,8 @@
     "featured": "In evidenza",
     "allPosts": "Tutti gli articoli",
     "inCategory": "Articoli in {name}",
-    "taggedWith": "Articoli con tag {name}"
+    "taggedWith": "Articoli con tag {name}",
+    "updatedOn": "Aggiornato il {date}"
   },
   "campaigns": {
     "title": "Raccolta fondi",

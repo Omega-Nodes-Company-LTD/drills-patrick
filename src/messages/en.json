@@ -147,7 +147,8 @@
     "featured": "Featured",
     "allPosts": "All articles",
     "inCategory": "Articles in {name}",
-    "taggedWith": "Articles tagged {name}"
+    "taggedWith": "Articles tagged {name}",
+    "updatedOn": "Updated on {date}"
   },
   "campaigns": {
     "title": "Fundraising",

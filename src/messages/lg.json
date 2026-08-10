@@ -147,7 +147,8 @@
     "featured": "Ekyekitiibwa",
     "allPosts": "Ebiwandiiko byonna",
     "inCategory": "Ebiwandiiko mu {name}",
-    "taggedWith": "Ebiwandiiko ebirina akabonero {name}"
+    "taggedWith": "Ebiwandiiko ebirina akabonero {name}",
+    "updatedOn": "Kyakyusibwa ku {date}"
   },
   "campaigns": {
     "title": "Okukuŋŋaanya ssente",
