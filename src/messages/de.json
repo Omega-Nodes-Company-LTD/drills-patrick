@@ -416,7 +416,9 @@
       "deleteWarning": "Die Datei wird auch aus dem Bucket gelöscht.",
       "empty": "Noch keine Medien hochgeladen.",
       "tooLarge": "Die Datei überschreitet die Maximalgröße von {size}.",
-      "unsupported": "Dieser Dateityp wird nicht unterstützt."
+      "unsupported": "Dieser Dateityp wird nicht unterstützt.",
+      "tooManyPixels": "Das Bild hat zu viele Pixel. Bitte vor dem Hochladen verkleinern.",
+      "typeMismatch": "Der Dateiinhalt passt nicht zum angegebenen Typ."
     },
     "editor": {
       "bold": "Fett",

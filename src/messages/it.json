@@ -416,7 +416,9 @@
       "deleteWarning": "Il file sarà rimosso anche dal bucket.",
       "empty": "Nessun file caricato.",
       "tooLarge": "Il file supera la dimensione massima di {size}.",
-      "unsupported": "Tipo di file non supportato."
+      "unsupported": "Tipo di file non supportato.",
+      "tooManyPixels": "L'immagine ha troppi pixel. Ridimensionala prima di caricarla.",
+      "typeMismatch": "Il contenuto del file non corrisponde al tipo dichiarato."
     },
     "editor": {
       "bold": "Grassetto",
