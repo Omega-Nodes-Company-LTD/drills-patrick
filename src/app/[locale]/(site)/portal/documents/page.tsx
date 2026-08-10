@@ -1,8 +1,9 @@
-import { Download, FileText } from 'lucide-react'
+import { Download, FileText, PenLine } from 'lucide-react'
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { requirePartner } from '@/app/actions/partner'
 import { PortalHeader } from '@/components/portal/portal-header'
+import { SignaturePad } from '@/components/portal/signature-pad'
 import { Badge } from '@/components/ui/badge'
 import type { Locale } from '@/i18n/config'
 import { intlLocale } from '@/i18n/config'
@@ -138,6 +139,26 @@ export default async function PortalDocumentsPage({
                     <Download className="size-4" aria-hidden />
                     {t('download')}
                   </a>
+                ) : null}
+
+                {document.signatures.length > 0 ? (
+                  <ul className="w-full border-t border-border pt-3 text-xs text-muted-foreground">
+                    {document.signatures.map((signature, index) => (
+                      <li key={index} className="flex flex-wrap items-center gap-2">
+                        <PenLine className="size-3.5" aria-hidden />
+                        <span className="font-medium text-foreground">{signature.signerName}</span>
+                        {signature.signerRole ? <span>{signature.signerRole}</span> : null}
+                        <span>{signature.signedAt.slice(0, 10)}</span>
+                        {signature.valid ? null : (
+                          <Badge variant="warning">{t('signatureStale')}</Badge>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : document.kind === 'handover' ? (
+                  <div className="w-full">
+                    <SignaturePad documentId={document.id} documentTitle={document.title} />
+                  </div>
                 ) : null}
               </li>
             )

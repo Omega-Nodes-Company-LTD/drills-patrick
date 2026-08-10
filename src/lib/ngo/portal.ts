@@ -3,6 +3,7 @@ import { and, desc, eq, inArray } from 'drizzle-orm'
 import { db } from '@/db'
 import {
   contractProjects,
+  documentSignatures,
   faultReports,
   maintenanceContracts,
   maintenanceVisits,
@@ -14,6 +15,7 @@ import {
 } from '@/db/schema'
 import { pickTranslation } from '@/lib/content/translations'
 import { getMediaByIds } from '@/lib/media/service'
+import { signatureMatches } from './signatures'
 import type { Locale } from '@/i18n/config'
 
 /**
@@ -119,6 +121,8 @@ export type PortalDocument = {
   issuedOn: string | null
   expiresOn: string | null
   file: MediaRow | null
+  /** Signatures already on the document, and whether they still match it. */
+  signatures: { signerName: string; signerRole: string | null; signedAt: string; valid: boolean }[]
 }
 
 /** Documents on the partner's projects, newest first. */
@@ -159,6 +163,19 @@ export async function listPortalDocuments(
     titles.set(id, pickTranslation(forProject, locale)?.title ?? '—')
   }
 
+  const signatures =
+    rows.length > 0
+      ? await db
+          .select()
+          .from(documentSignatures)
+          .where(
+            inArray(
+              documentSignatures.documentId,
+              rows.map((row) => row.id),
+            ),
+          )
+      : []
+
   return rows.map((row) => ({
     id: row.id,
     projectId: row.projectId,
@@ -169,6 +186,16 @@ export async function listPortalDocuments(
     issuedOn: row.issuedOn,
     expiresOn: row.expiresOn,
     file: row.mediaId ? (files.get(row.mediaId) ?? null) : null,
+    signatures: signatures
+      .filter((signature) => signature.documentId === row.id)
+      .map((signature) => ({
+        signerName: signature.signerName,
+        signerRole: signature.signerRole,
+        signedAt: signature.signedAt.toISOString(),
+        // A document edited after signing no longer matches its hash, and the
+        // portal says so rather than showing a signature that means nothing.
+        valid: signatureMatches(row, signature.contentHash),
+      })),
   }))
 }
 

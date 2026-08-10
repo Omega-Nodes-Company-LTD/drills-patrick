@@ -824,7 +824,16 @@
     "coverage": "Punti d'acqua coperti",
     "responseTime": "Tempo di risposta garantito",
     "hours": "{count} h",
-    "noContracts": "Non risulta alcun contratto di manutenzione per la tua organizzazione."
+    "noContracts": "Non risulta alcun contratto di manutenzione per la tua organizzazione.",
+    "signTitle": "Firma: {title}",
+    "signerName": "Il tuo nome",
+    "signerRole": "Il tuo ruolo",
+    "signHere": "Firma qui",
+    "sign": "Firma",
+    "signed": "Firma registrata",
+    "clear": "Cancella",
+    "signDisclaimer": "Registra che hai firmato questo documento in questo momento. È una prova testimoniale, non una firma elettronica qualificata.",
+    "signatureStale": "Documento modificato dopo la firma"
   },
   "documents": {
     "kinds": {

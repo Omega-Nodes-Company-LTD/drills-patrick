@@ -824,7 +824,16 @@
     "coverage": "Points d'eau couverts",
     "responseTime": "Délai de réponse garanti",
     "hours": "{count} h",
-    "noContracts": "Aucun contrat de maintenance n'est enregistré pour votre organisation."
+    "noContracts": "Aucun contrat de maintenance n'est enregistré pour votre organisation.",
+    "signTitle": "Signer : {title}",
+    "signerName": "Votre nom",
+    "signerRole": "Votre fonction",
+    "signHere": "Signez ici",
+    "sign": "Signer",
+    "signed": "Signature enregistrée",
+    "clear": "Effacer",
+    "signDisclaimer": "Ceci atteste que vous avez signé ce document à cet instant. C'est une preuve, non une signature électronique qualifiée.",
+    "signatureStale": "Document modifié après la signature"
   },
   "documents": {
     "kinds": {

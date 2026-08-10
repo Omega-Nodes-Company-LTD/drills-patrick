@@ -824,7 +824,16 @@
     "coverage": "Abgedeckte Wasserstellen",
     "responseTime": "Zugesagte Reaktionszeit",
     "hours": "{count} Std.",
-    "noContracts": "Für Ihre Organisation liegt kein Wartungsvertrag vor."
+    "noContracts": "Für Ihre Organisation liegt kein Wartungsvertrag vor.",
+    "signTitle": "Unterschreiben: {title}",
+    "signerName": "Ihr Name",
+    "signerRole": "Ihre Funktion",
+    "signHere": "Hier unterschreiben",
+    "sign": "Unterschreiben",
+    "signed": "Unterschrift gespeichert",
+    "clear": "Löschen",
+    "signDisclaimer": "Dies hält fest, dass Sie dieses Dokument zu diesem Zeitpunkt unterschrieben haben. Es ist ein Nachweis, keine qualifizierte elektronische Signatur.",
+    "signatureStale": "Dokument nach der Unterschrift geändert"
   },
   "documents": {
     "kinds": {

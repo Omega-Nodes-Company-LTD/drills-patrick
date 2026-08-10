@@ -824,7 +824,16 @@
     "coverage": "Water points covered",
     "responseTime": "Response time promised",
     "hours": "{count} h",
-    "noContracts": "No maintenance contract is on file for your organisation."
+    "noContracts": "No maintenance contract is on file for your organisation.",
+    "signTitle": "Sign: {title}",
+    "signerName": "Your name",
+    "signerRole": "Your role",
+    "signHere": "Sign here",
+    "sign": "Sign",
+    "signed": "Signature recorded",
+    "clear": "Clear",
+    "signDisclaimer": "This records that you signed this document at this time. It is a witnessed record, not a qualified electronic signature.",
+    "signatureStale": "Document changed since signing"
   },
   "documents": {
     "kinds": {
