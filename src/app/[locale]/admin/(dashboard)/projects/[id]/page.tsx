@@ -2,9 +2,10 @@ import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { ProjectForm } from '@/components/admin/project-form'
+import { ProjectUpdatesEditor } from '@/components/admin/project-updates-editor'
 import { features } from '@/env'
 import type { Locale } from '@/i18n/config'
-import { adminGetProject } from '@/lib/admin/queries'
+import { adminGetProject, adminListProjectUpdates } from '@/lib/admin/queries'
 import { requirePermission } from '@/lib/auth/guard'
 import { fromMinorUnits } from '@/lib/money'
 import { getSiteSettings } from '@/lib/settings/service'
@@ -23,10 +24,11 @@ export default async function EditProjectPage({
   setRequestLocale(locale)
   await requirePermission('projects')
 
-  const [t, record, settings] = await Promise.all([
+  const [t, record, settings, updates] = await Promise.all([
     getTranslations('admin.nav'),
     adminGetProject(id),
     getSiteSettings(),
+    adminListProjectUpdates(id),
   ])
 
   if (!record) notFound()
@@ -87,6 +89,25 @@ export default async function EditProjectPage({
           sortOrder: text(project.sortOrder),
           translations,
         }}
+      />
+
+      <ProjectUpdatesEditor
+        projectId={project.id}
+        enabledLocales={settings.enabledLocales}
+        storageEnabled={features.storage}
+        rows={updates.map((update) => ({
+          id: update.id,
+          mediaId: update.mediaId,
+          happenedOn: update.happenedOn,
+          sortOrder: update.sortOrder,
+          isPublished: update.isPublished,
+          translations: Object.fromEntries(
+            update.translations.map((translation) => [
+              translation.locale,
+              { title: translation.title, body: translation.body },
+            ]),
+          ),
+        }))}
       />
     </div>
   )

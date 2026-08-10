@@ -395,7 +395,9 @@
       "filters": "Filter",
       "export": "CSV exportieren",
       "search": "Suchen…",
-      "unsavedChanges": "Es gibt ungespeicherte Änderungen."
+      "unsavedChanges": "Es gibt ungespeicherte Änderungen.",
+      "title": "Titel",
+      "date": "Datum"
     },
     "media": {
       "title": "Medienbibliothek",

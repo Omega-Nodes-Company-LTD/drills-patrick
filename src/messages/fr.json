@@ -395,7 +395,9 @@
       "filters": "Filtres",
       "export": "Exporter en CSV",
       "search": "Rechercher…",
-      "unsavedChanges": "Des modifications ne sont pas enregistrées."
+      "unsavedChanges": "Des modifications ne sont pas enregistrées.",
+      "title": "Titre",
+      "date": "Date"
     },
     "media": {
       "title": "Médiathèque",

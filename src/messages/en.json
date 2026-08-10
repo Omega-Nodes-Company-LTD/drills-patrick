@@ -395,7 +395,9 @@
       "filters": "Filters",
       "export": "Export CSV",
       "search": "Search…",
-      "unsavedChanges": "You have unsaved changes."
+      "unsavedChanges": "You have unsaved changes.",
+      "title": "Title",
+      "date": "Date"
     },
     "media": {
       "title": "Media library",

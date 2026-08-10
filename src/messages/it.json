@@ -395,7 +395,9 @@
       "filters": "Filtri",
       "export": "Esporta CSV",
       "search": "Cerca…",
-      "unsavedChanges": "Ci sono modifiche non salvate."
+      "unsavedChanges": "Ci sono modifiche non salvate.",
+      "title": "Titolo",
+      "date": "Data"
     },
     "media": {
       "title": "Libreria media",
