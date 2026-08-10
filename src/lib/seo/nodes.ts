@@ -112,6 +112,80 @@ export function breadcrumbNode(params: {
   }
 }
 
+/**
+ * A water point as a place on the ground.
+ *
+ * This is the site's core entity and the one an answer engine is most often
+ * asked about — "is there a borehole near X", "how deep", "how many people
+ * does it serve". A `Place` with coordinates and an address answers the
+ * first; the measurements go in as `PropertyValue`s with units, which is what
+ * makes a number extractable rather than a string in a paragraph.
+ *
+ * Coordinates are only emitted when both are present: a half-set pair would
+ * put the well at the equator.
+ */
+export function waterPointNode(params: {
+  url: string
+  name: string
+  description?: string | null
+  typeLabel?: string | null
+  latitude?: string | number | null
+  longitude?: string | number | null
+  country?: string | null
+  region?: string | null
+  district?: string | null
+  village?: string | null
+  depthMeters?: number | null
+  yieldLitersPerHour?: number | null
+  beneficiaries?: number | null
+  image?: string | null
+}): GraphNode {
+  const lat = params.latitude != null ? Number(params.latitude) : null
+  const lng = params.longitude != null ? Number(params.longitude) : null
+  const hasGeo = lat != null && lng != null && Number.isFinite(lat) && Number.isFinite(lng)
+
+  const measurements = [
+    params.depthMeters != null && {
+      '@type': 'PropertyValue',
+      name: 'depth',
+      value: params.depthMeters,
+      unitCode: 'MTR',
+    },
+    params.yieldLitersPerHour != null && {
+      '@type': 'PropertyValue',
+      name: 'yield',
+      value: params.yieldLitersPerHour,
+      unitCode: 'E32',
+    },
+    params.beneficiaries
+      ? { '@type': 'PropertyValue', name: 'peopleServed', value: params.beneficiaries }
+      : null,
+  ].filter(Boolean)
+
+  const address = {
+    '@type': 'PostalAddress',
+    streetAddress: params.village || undefined,
+    addressLocality: params.district || undefined,
+    addressRegion: params.region || undefined,
+    addressCountry: params.country || undefined,
+  }
+
+  return {
+    '@type': 'Place',
+    '@id': `${params.url}#waterpoint`,
+    name: params.name,
+    description: params.description ?? undefined,
+    additionalType: params.typeLabel || undefined,
+    image: params.image || undefined,
+    address:
+      address.streetAddress || address.addressLocality || address.addressRegion
+        ? address
+        : undefined,
+    ...(hasGeo ? { geo: { '@type': 'GeoCoordinates', latitude: lat, longitude: lng } } : {}),
+    additionalProperty: measurements.length > 0 ? measurements : undefined,
+  }
+}
+
 /** Home › section › page, the shape every detail route needs. */
 export function sectionBreadcrumb(params: {
   locale: Locale

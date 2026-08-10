@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { NODE_ID, buildGraph, compact, ref } from '@/lib/seo/graph'
-import { breadcrumbNode, sectionBreadcrumb } from '@/lib/seo/nodes'
+import { breadcrumbNode, sectionBreadcrumb, waterPointNode } from '@/lib/seo/nodes'
 
 describe('structured data graph', () => {
   it('drops empty values instead of emitting nulls', () => {
@@ -55,5 +55,32 @@ describe('breadcrumbs', () => {
     const items = node?.itemListElement as { position: number; name: string }[]
     expect(items.map((item) => item.position)).toEqual([1, 2, 3])
     expect(items.map((item) => item.name)).toEqual(['Home', 'Projects', 'Kayunga borehole'])
+  })
+})
+
+describe('water point', () => {
+  it('omits coordinates unless both are present', () => {
+    // Half a pair would put the well on the equator or the prime meridian.
+    const partial = waterPointNode({ url: 'u', name: 'Well', latitude: '0.34' })
+    expect(partial.geo).toBeUndefined()
+
+    const full = waterPointNode({ url: 'u', name: 'Well', latitude: '0.34', longitude: '32.58' })
+    expect(full.geo).toEqual({ '@type': 'GeoCoordinates', latitude: 0.34, longitude: 32.58 })
+  })
+
+  it('publishes measurements as values with units', () => {
+    const node = waterPointNode({
+      url: 'u',
+      name: 'Well',
+      depthMeters: 62,
+      yieldLitersPerHour: 3000,
+      beneficiaries: 850,
+    })
+
+    expect(node.additionalProperty).toEqual([
+      { '@type': 'PropertyValue', name: 'depth', value: 62, unitCode: 'MTR' },
+      { '@type': 'PropertyValue', name: 'yield', value: 3000, unitCode: 'E32' },
+      { '@type': 'PropertyValue', name: 'peopleServed', value: 850 },
+    ])
   })
 })

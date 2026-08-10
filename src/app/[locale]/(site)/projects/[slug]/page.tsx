@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
 import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
-import { sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
+import { sectionBreadcrumb, waterPointNode, webPageNode } from '@/lib/seo/nodes'
 import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
 import { redirect } from '@/i18n/navigation'
@@ -131,6 +131,22 @@ export default async function ProjectPage({
             section: { name: tNav('projects'), path: '/projects' },
             pageName: translation?.title ?? '',
             pageUrl: url,
+          }),
+          waterPointNode({
+            url,
+            name: translation?.title ?? '',
+            description: translation?.summary,
+            typeLabel: t(`type.${project.waterPointType}`),
+            latitude: project.latitude,
+            longitude: project.longitude,
+            country: project.country,
+            region: project.region,
+            district: project.district,
+            village: project.village,
+            depthMeters: project.depthMeters,
+            yieldLitersPerHour: project.yieldLitersPerHour,
+            beneficiaries: project.beneficiaries,
+            image: mediaUrl(cover?.objectKey) || null,
           }),
         ]}
       />
