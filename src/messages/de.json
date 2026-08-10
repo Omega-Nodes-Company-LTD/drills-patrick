@@ -701,5 +701,27 @@
     "coverage": "Abgedeckte Wasserstellen",
     "responseTime": "Zugesagte Reaktionszeit",
     "hours": "{count} Std."
+  },
+  "documents": {
+    "kinds": {
+      "water_quality": "Wasseranalyse-Zertifikat",
+      "drilling_log": "Bohrprotokoll",
+      "handover": "Übergabeprotokoll",
+      "commissioning": "Abnahmeprüfung",
+      "contract": "Vertrag",
+      "report": "Bericht",
+      "other": "Sonstiges"
+    },
+    "title": "Dokumente",
+    "kind": "Typ",
+    "file": "Datei",
+    "description": "Beschreibung",
+    "issuedOn": "Ausgestellt am",
+    "expiresOn": "Gültig bis",
+    "expiresHint": "Leer lassen, wenn unbefristet.",
+    "makePublic": "Auf der Projektseite veröffentlichen",
+    "publicHint": "Standardmäßig aus. Ein Zertifikat nennt Dorf und Datum.",
+    "public": "Öffentlich",
+    "partnersOnly": "Nur Partner"
   }
 }

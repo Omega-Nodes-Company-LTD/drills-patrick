@@ -701,5 +701,27 @@
     "coverage": "Water points covered",
     "responseTime": "Response time promised",
     "hours": "{count} h"
+  },
+  "documents": {
+    "kinds": {
+      "water_quality": "Water quality certificate",
+      "drilling_log": "Drilling log",
+      "handover": "Handover certificate",
+      "commissioning": "Commissioning test",
+      "contract": "Contract",
+      "report": "Report",
+      "other": "Other"
+    },
+    "title": "Documents",
+    "kind": "Type",
+    "file": "File",
+    "description": "Description",
+    "issuedOn": "Issued on",
+    "expiresOn": "Expires on",
+    "expiresHint": "Leave empty if it does not expire.",
+    "makePublic": "Publish on the project page",
+    "publicHint": "Off by default. A certificate names a village and a date.",
+    "public": "Public",
+    "partnersOnly": "Partners only"
   }
 }

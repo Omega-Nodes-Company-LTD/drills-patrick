@@ -701,5 +701,27 @@
     "coverage": "Punti d'acqua coperti",
     "responseTime": "Tempo di risposta garantito",
     "hours": "{count} h"
+  },
+  "documents": {
+    "kinds": {
+      "water_quality": "Certificato qualità acqua",
+      "drilling_log": "Log di perforazione",
+      "handover": "Verbale di consegna",
+      "commissioning": "Collaudo",
+      "contract": "Contratto",
+      "report": "Report",
+      "other": "Altro"
+    },
+    "title": "Documenti",
+    "kind": "Tipo",
+    "file": "File",
+    "description": "Descrizione",
+    "issuedOn": "Data di emissione",
+    "expiresOn": "Scadenza",
+    "expiresHint": "Lascia vuoto se non scade.",
+    "makePublic": "Pubblica sulla pagina del progetto",
+    "publicHint": "Disattivo per impostazione predefinita. Un certificato riporta un villaggio e una data.",
+    "public": "Pubblico",
+    "partnersOnly": "Solo partner"
   }
 }

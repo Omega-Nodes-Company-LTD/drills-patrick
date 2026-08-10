@@ -2,10 +2,15 @@ import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { ProjectForm } from '@/components/admin/project-form'
+import { ProjectDocumentsEditor } from '@/components/admin/project-documents-editor'
 import { ProjectUpdatesEditor } from '@/components/admin/project-updates-editor'
 import { features } from '@/env'
 import type { Locale } from '@/i18n/config'
-import { adminGetProject, adminListProjectUpdates } from '@/lib/admin/queries'
+import {
+  adminGetProject,
+  adminListProjectDocuments,
+  adminListProjectUpdates,
+} from '@/lib/admin/queries'
 import { requirePermission } from '@/lib/auth/guard'
 import { fromMinorUnits } from '@/lib/money'
 import { getSiteSettings } from '@/lib/settings/service'
@@ -24,11 +29,12 @@ export default async function EditProjectPage({
   setRequestLocale(locale)
   await requirePermission('projects')
 
-  const [t, record, settings, updates] = await Promise.all([
+  const [t, record, settings, updates, documents] = await Promise.all([
     getTranslations('admin.nav'),
     adminGetProject(id),
     getSiteSettings(),
     adminListProjectUpdates(id),
+    adminListProjectDocuments(id),
   ])
 
   if (!record) notFound()
@@ -107,6 +113,21 @@ export default async function EditProjectPage({
               { title: translation.title, body: translation.body },
             ]),
           ),
+        }))}
+      />
+
+      <ProjectDocumentsEditor
+        projectId={project.id}
+        storageEnabled={features.storage}
+        rows={documents.map((document) => ({
+          id: document.id,
+          mediaId: document.mediaId,
+          kind: document.kind,
+          title: document.title,
+          description: document.description,
+          issuedOn: document.issuedOn,
+          expiresOn: document.expiresOn,
+          isPublic: document.isPublic,
         }))}
       />
     </div>

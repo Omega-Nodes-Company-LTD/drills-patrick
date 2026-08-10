@@ -13,6 +13,7 @@ import {
   posts,
   projectTranslations,
   projectUpdateTranslations,
+  projectDocuments,
   projectUpdates,
   projects,
   teamMembers,
@@ -174,6 +175,15 @@ export async function adminGetProject(id: string) {
     .where(eq(projectTranslations.projectId, id))
 
   return { project, translations }
+}
+
+/** Documents attached to a project, in the order the office reads them. */
+export async function adminListProjectDocuments(projectId: string) {
+  return db
+    .select()
+    .from(projectDocuments)
+    .where(eq(projectDocuments.projectId, projectId))
+    .orderBy(desc(projectDocuments.issuedOn), desc(projectDocuments.createdAt))
 }
 
 /** Team members who can carry a public byline on an article. */

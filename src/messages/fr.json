@@ -701,5 +701,27 @@
     "coverage": "Points d'eau couverts",
     "responseTime": "Délai de réponse garanti",
     "hours": "{count} h"
+  },
+  "documents": {
+    "kinds": {
+      "water_quality": "Certificat de qualité de l'eau",
+      "drilling_log": "Journal de forage",
+      "handover": "Procès-verbal de remise",
+      "commissioning": "Essai de réception",
+      "contract": "Contrat",
+      "report": "Rapport",
+      "other": "Autre"
+    },
+    "title": "Documents",
+    "kind": "Type",
+    "file": "Fichier",
+    "description": "Description",
+    "issuedOn": "Date d'émission",
+    "expiresOn": "Expiration",
+    "expiresHint": "Laissez vide s'il n'expire pas.",
+    "makePublic": "Publier sur la page du projet",
+    "publicHint": "Désactivé par défaut. Un certificat nomme un village et une date.",
+    "public": "Public",
+    "partnersOnly": "Partenaires uniquement"
   }
 }
