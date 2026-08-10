@@ -2,6 +2,7 @@ import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from 'luc
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { pickI18n, type Locale } from '@/i18n/config'
+import { formatAddress, identityOf } from '@/lib/settings/identity'
 import { getNavigation, getSiteSettings } from '@/lib/settings/service'
 import { isExternalHref } from '@/lib/utils'
 import { NewsletterForm } from './newsletter-form'
@@ -21,7 +22,10 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
     getTranslations('footer'),
   ])
 
-  const { contact, social } = settings
+  const { social } = settings
+  // One source for name, address and phone, shared with the structured data
+  // and the receipts.
+  const identity = identityOf(settings)
   const socialEntries = (Object.keys(socialIcons) as (keyof typeof socialIcons)[])
     .map((key) => ({ key, url: social[key] }))
     .filter((entry): entry is { key: keyof typeof socialIcons; url: string } => Boolean(entry.url))
@@ -88,35 +92,33 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
         <div className="flex flex-col gap-3">
           <p className="text-sm font-semibold">{t('contactUs')}</p>
           <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
-            {contact.email ? (
+            {identity.email ? (
               <li>
                 <a
-                  href={`mailto:${contact.email}`}
+                  href={`mailto:${identity.email}`}
                   className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
                 >
                   <Mail className="size-4 shrink-0" aria-hidden />
-                  {contact.email}
+                  {identity.email}
                 </a>
               </li>
             ) : null}
-            {contact.phone ? (
+            {identity.phone ? (
               <li>
                 <a
-                  href={`tel:${contact.phone.replace(/\s+/g, '')}`}
+                  href={`tel:${identity.phone.replace(/\s+/g, '')}`}
                   className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
                 >
                   <Phone className="size-4 shrink-0" aria-hidden />
-                  {contact.phone}
+                  {identity.phone}
                 </a>
               </li>
             ) : null}
-            {contact.addressLines.length > 0 || contact.city ? (
+            {formatAddress(identity) ? (
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />
                 <span>
-                  {[...contact.addressLines, contact.city, contact.country]
-                    .filter(Boolean)
-                    .join(', ')}
+                  {formatAddress(identity)}
                 </span>
               </li>
             ) : null}
@@ -135,7 +137,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
       <div className="border-t border-border">
         <div className="container-page flex flex-col gap-3 py-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {settings.organisation.legalName || settings.siteName}.{' '}
+            © {new Date().getFullYear()} {identity.legalName ?? identity.name}.{' '}
             {t('rights')}
           </p>
           {legalItems.length > 0 ? (

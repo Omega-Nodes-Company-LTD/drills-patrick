@@ -1,4 +1,5 @@
 import type { Locale } from '@/i18n/config'
+import { identityOf } from '@/lib/settings/identity'
 import type { SiteSettings } from '@/lib/settings/service'
 import { NODE_ID, ref, type GraphNode } from './graph'
 import { localeUrl } from './index'
@@ -19,6 +20,8 @@ import { localeUrl } from './index'
  */
 export function organisationNode(settings: SiteSettings, locale: Locale): GraphNode {
   const { contact, organisation, social } = settings
+  // Same name, address and phone the footer and the receipts show.
+  const identity = identityOf(settings)
 
   // Every profile the operator entered, in one list: this is what ties the
   // site to bodies that already vouch for the organisation.
@@ -33,23 +36,23 @@ export function organisationNode(settings: SiteSettings, locale: Locale): GraphN
 
   const address = {
     '@type': 'PostalAddress',
-    streetAddress: contact.addressLines.filter(Boolean).join(', ') || undefined,
-    addressLocality: contact.city || undefined,
-    addressCountry: contact.country || undefined,
+    streetAddress: identity.addressLines.join(', ') || undefined,
+    addressLocality: identity.city || undefined,
+    addressCountry: identity.country || undefined,
   }
 
   return {
     '@type': ['NGO', 'Organization'],
     '@id': NODE_ID.organisation(locale),
-    name: settings.siteName,
-    legalName: organisation.legalName || undefined,
+    name: identity.name,
+    legalName: identity.legalName ?? undefined,
     url: localeUrl(locale, '/'),
-    email: contact.email || undefined,
-    telephone: contact.phone || undefined,
+    email: identity.email ?? undefined,
+    telephone: identity.phone ?? undefined,
     address: address.streetAddress || address.addressLocality ? address : undefined,
     foundingDate: organisation.foundedYear ? String(organisation.foundedYear) : undefined,
     taxID: organisation.vatNumber || undefined,
-    identifier: organisation.registrationNumber || undefined,
+    identifier: identity.registrationNumber ?? undefined,
     sameAs: sameAs.length > 0 ? sameAs : undefined,
     ...(contact.mapLat != null && contact.mapLng != null
       ? { geo: { '@type': 'GeoCoordinates', latitude: contact.mapLat, longitude: contact.mapLng } }
