@@ -401,7 +401,9 @@
       "title": "Titolo",
       "date": "Data",
       "systemPageLocked": "Questa pagina fa parte della struttura del sito e deve restare pubblicata.",
-      "author": "Autore"
+      "author": "Autore",
+      "serpPreview": "Anteprima nei risultati",
+      "serpNoDescription": "Nessuna descrizione: i motori ne sceglieranno una da soli."
     },
     "media": {
       "title": "Libreria media",

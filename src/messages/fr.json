@@ -401,7 +401,9 @@
       "title": "Titre",
       "date": "Date",
       "systemPageLocked": "Cette page fait partie de la structure du site et doit rester publiée.",
-      "author": "Auteur"
+      "author": "Auteur",
+      "serpPreview": "Aperçu dans les résultats",
+      "serpNoDescription": "Aucune description : les moteurs en choisiront une eux-mêmes."
     },
     "media": {
       "title": "Médiathèque",

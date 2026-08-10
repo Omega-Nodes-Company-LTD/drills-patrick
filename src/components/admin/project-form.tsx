@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { saveProject } from '@/app/actions/admin/content'
 import { LocaleFields } from '@/components/admin/locale-fields'
+import { SeoFields } from '@/components/admin/seo-fields'
 import { MediaGalleryPicker, MediaPicker } from '@/components/admin/media/media-picker'
 import { RichTextEditor } from '@/components/admin/rich-text-editor'
 import { Button } from '@/components/ui/button'
@@ -230,24 +231,14 @@ export function ProjectForm({
                     storageEnabled={storageEnabled}
                   />
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label={t('seoTitle')} htmlFor={`p-seo-title-${locale}`}>
-                      <Input
-                        id={`p-seo-title-${locale}`}
-                        value={translations[locale].seoTitle}
-                        onChange={(event) => updateTranslation(locale, { seoTitle: event.target.value })}
-                      />
-                    </Field>
-                    <Field label={t('seoDescription')} htmlFor={`p-seo-desc-${locale}`}>
-                      <Input
-                        id={`p-seo-desc-${locale}`}
-                        value={translations[locale].seoDescription}
-                        onChange={(event) =>
-                          updateTranslation(locale, { seoDescription: event.target.value })
-                        }
-                      />
-                    </Field>
-                  </div>
+                  <SeoFields
+                    idPrefix={`project-${locale}`}
+                    title={translations[locale].seoTitle}
+                    description={translations[locale].seoDescription}
+                    fallbackTitle={translations[locale].title}
+                    previewUrl={`${locale}/projects/${translations[locale].slug || '…'}`}
+                    onChange={(patch) => updateTranslation(locale, patch)}
+                  />
                 </>
               )}
             </LocaleFields>

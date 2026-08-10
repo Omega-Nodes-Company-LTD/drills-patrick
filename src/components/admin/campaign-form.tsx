@@ -8,6 +8,7 @@ import { saveCampaign } from '@/app/actions/admin/content'
 import { LocaleFields } from '@/components/admin/locale-fields'
 import { MediaPicker } from '@/components/admin/media/media-picker'
 import { RichTextEditor } from '@/components/admin/rich-text-editor'
+import { SeoFields } from '@/components/admin/seo-fields'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, Input, Select, Textarea } from '@/components/ui/field'
@@ -186,6 +187,15 @@ export function CampaignForm({
                   value={translations[locale].contentHtml}
                   onChange={(html) => updateTranslation(locale, { contentHtml: html })}
                   storageEnabled={storageEnabled}
+                />
+
+                <SeoFields
+                  idPrefix={`campaign-${locale}`}
+                  title={translations[locale].seoTitle}
+                  description={translations[locale].seoDescription}
+                  fallbackTitle={translations[locale].title}
+                  previewUrl={`${locale}/campaigns/${translations[locale].slug || '…'}`}
+                  onChange={(patch) => updateTranslation(locale, patch)}
                 />
               </>
             )}
