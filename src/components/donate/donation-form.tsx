@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Field, Input, Select, Textarea } from '@/components/ui/field'
 import type { Locale } from '@/i18n/config'
 import { useRouter } from '@/i18n/navigation'
-import { currencySymbol, formatMoney, toMinorUnits } from '@/lib/money'
+import { currencySymbol, formatMoney, parseAmount, toMinorUnits } from '@/lib/money'
 import type { ProviderDescriptor, ProviderId } from '@/lib/payments/types'
 import type { DonationStartResult } from '@/lib/validation/donate'
 import { cn } from '@/lib/utils'
@@ -81,7 +81,7 @@ export function DonationForm({
   }, [state, router])
 
   const selected = available.find((entry) => entry.id === provider)
-  const numericAmount = Number(amount.replace(',', '.'))
+  const numericAmount = parseAmount(amount)
   const minimum = minAmounts[currency]
   const isValidAmount = Number.isFinite(numericAmount) && numericAmount > 0
   const belowMinimum = isValidAmount && minimum != null && numericAmount < minimum
@@ -133,7 +133,7 @@ export function DonationForm({
                 onClick={() => setAmount(String(value))}
                 className={cn(
                   'rounded-[var(--radius-md)] border px-3 py-3 text-base font-semibold transition-colors',
-                  Number(amount) === value
+                  numericAmount === value
                     ? 'border-primary bg-primary text-primary-foreground'
                     : 'border-border bg-background hover:border-primary',
                 )}

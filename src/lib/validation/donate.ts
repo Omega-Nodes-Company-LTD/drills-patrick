@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { locales } from '@/i18n/config'
+import { parseAmount } from '@/lib/money'
 
 export const donationProviderSchema = z.enum([
   'stripe',
@@ -11,7 +12,8 @@ export const donationProviderSchema = z.enum([
 ])
 
 export const donationSchema = z.object({
-  amount: z.coerce.number().positive().max(10_000_000),
+  // Five languages share this field, so "1.234,56" and "1,234.56" both arrive.
+  amount: z.preprocess(parseAmount, z.number().positive().max(10_000_000)),
   currency: z.string().trim().length(3),
   provider: donationProviderSchema,
   campaignId: z.string().uuid().optional().or(z.literal('')),

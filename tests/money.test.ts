@@ -3,6 +3,7 @@ import {
   currencyExponent,
   formatMoney,
   fromMinorUnits,
+  parseAmount,
   toMinorUnits,
 } from '@/lib/money'
 
@@ -32,5 +33,38 @@ describe('minor units', () => {
     // Non-breaking spaces vary by ICU build, so assert on the digits.
     expect(formatMoney(5000, 'EUR', 'it', { hideDecimals: true })).toContain('50')
     expect(formatMoney(50_000, 'UGX', 'en')).toContain('50,000')
+  })
+})
+
+describe('parseAmount', () => {
+  it('accepts a comma as the decimal separator', () => {
+    // The bug this covers: "50,5" reached the server as NaN and failed with a
+    // generic error, which is what an Italian or French donor types.
+    expect(parseAmount('50,5')).toBe(50.5)
+    expect(parseAmount('50.5')).toBe(50.5)
+  })
+
+  it('reads both grouping conventions', () => {
+    expect(parseAmount('1.234,56')).toBe(1234.56)
+    expect(parseAmount('1,234.56')).toBe(1234.56)
+    expect(parseAmount('1 234,56')).toBe(1234.56)
+  })
+
+  it('treats a lone separator before three digits as grouping', () => {
+    expect(parseAmount('1,500')).toBe(1500)
+    expect(parseAmount('1.500')).toBe(1500)
+    expect(parseAmount('1,234,567')).toBe(1234567)
+  })
+
+  it('keeps two-digit decimals intact', () => {
+    expect(parseAmount('10,00')).toBe(10)
+    expect(parseAmount('10.75')).toBe(10.75)
+  })
+
+  it('passes numbers through and rejects anything else', () => {
+    expect(parseAmount(42)).toBe(42)
+    expect(parseAmount('abc')).toBeNaN()
+    expect(parseAmount('')).toBeNaN()
+    expect(parseAmount(null)).toBeNaN()
   })
 })
