@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { Download, Plus } from 'lucide-react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { EntityList } from '@/components/admin/entity-list'
@@ -31,12 +31,22 @@ export default async function AdminProjectsPage({
       <AdminPageHeader
         title={t('projects')}
         actions={
-          <Button asChild>
-            <Link href="/admin/projects/new">
-              <Plus className="size-4" aria-hidden />
-              {tCommon('newItem')}
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            {/* A plain link, not a client action: the browser downloads the
+                file straight from the endpoint. */}
+            <Button asChild variant="outline">
+              <a href={`/api/admin/export?locale=${locale}`} download>
+                <Download className="size-4" aria-hidden />
+                {tCommon('export')}
+              </a>
+            </Button>
+            <Button asChild>
+              <Link href="/admin/projects/new">
+                <Plus className="size-4" aria-hidden />
+                {tCommon('newItem')}
+              </Link>
+            </Button>
+          </div>
         }
       />
 

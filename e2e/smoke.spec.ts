@@ -103,10 +103,17 @@ test.describe('regressions', () => {
     // Switching language used to drop the visitor back on the home page.
     await page.goto('/projects')
 
-    // Below `lg` the switcher lives inside the off-canvas menu.
+    // Below `lg` the switcher lives inside the off-canvas menu. The click can
+    // land before hydration attaches the handler, so retry it until the
+    // drawer actually reports itself open rather than waiting on a lost click.
     const switcher = page.getByRole('combobox', { name: 'English' })
-    if (!(await switcher.first().isVisible())) {
-      await page.getByRole('button', { name: 'Menu' }).click()
+    const menu = page.getByRole('button', { name: 'Menu' })
+
+    if (await menu.isVisible()) {
+      await expect(async () => {
+        await menu.click()
+        await expect(menu).toHaveAttribute('aria-expanded', 'true')
+      }).toPass({ timeout: 20_000 })
     }
 
     await switcher.filter({ visible: true }).first().selectOption('fr')
@@ -170,5 +177,46 @@ test.describe('feeds and machine-readable routes', () => {
     await expect(
       page.locator('link[rel="alternate"][type="application/rss+xml"]'),
     ).toHaveAttribute('href', /\/feed\.xml$/)
+  })
+})
+
+test.describe('partner area', () => {
+  test('keeps the portal behind a sign-in', async ({ page }) => {
+    // The portal shows one organisation another organisation's borehole
+    // records, so an anonymous visit must never render any of it.
+    await page.context().clearCookies()
+
+    for (const path of ['/portal', '/portal/documents', '/portal/contracts']) {
+      await page.goto(path)
+      await expect(page, `${path} should redirect`).toHaveURL(/\/portal\/login$/)
+    }
+  })
+
+  test('rejects an unknown partner login', async ({ page }) => {
+    await page.goto('/portal/login')
+
+    await page.getByLabel('Email').fill('nobody@example.test')
+    await page.getByLabel('Password').fill('definitely-wrong')
+    await page.getByRole('button', { name: 'Sign in' }).click()
+
+    await expect(page.locator('p[role="alert"]')).toBeVisible()
+  })
+
+  test('does not let an admin session reach the portal', async ({ page }) => {
+    // Different cookie, different audience claim: signing into the admin must
+    // not hand anyone a partner session.
+    await page.goto('/en/admin/login')
+    await page.getByLabel('Email').fill(ADMIN_EMAIL)
+    await page.getByLabel('Password').fill(ADMIN_PASSWORD)
+    await page.getByRole('button', { name: 'Sign in' }).click()
+    await expect(page).toHaveURL(/\/admin$/)
+
+    await page.goto('/portal')
+    await expect(page).toHaveURL(/\/portal\/login$/)
+  })
+
+  test('keeps the partner area out of the index', async ({ request }) => {
+    const robots = await (await request.get('/robots.txt')).text()
+    expect(robots).toContain('/portal')
   })
 })
