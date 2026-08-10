@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { absoluteUrl } from '@/lib/url'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { db } from '@/db'
 import {
   campaignTranslations,
@@ -70,7 +70,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
       .from(pages)
       .innerJoin(pageTranslations, eq(pageTranslations.pageId, pages.id))
-      .where(eq(pages.status, 'published')),
+      // Pages the editor excluded must not be advertised.
+      .where(and(eq(pages.status, 'published'), eq(pages.showInSitemap, true))),
     db
       .select({
         id: posts.id,
