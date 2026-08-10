@@ -54,7 +54,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const settings = await getSiteSettings()
   const active = locales.filter((locale) => settings.enabledLocales.includes(locale))
 
-  const staticPaths = ['/', '/projects', '/blog', '/campaigns', '/donate']
+  const staticPaths = [
+    '/',
+    '/projects',
+    '/blog',
+    '/campaigns',
+    '/donate',
+    '/faq',
+    '/team',
+    '/partners',
+  ]
   const now = new Date()
 
   const items: MetadataRoute.Sitemap = staticPaths.flatMap((path) =>

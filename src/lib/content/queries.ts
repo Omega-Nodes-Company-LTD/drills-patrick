@@ -11,6 +11,7 @@ import {
   media,
   pageTranslations,
   pages,
+  partnerTranslations,
   partners,
   postTags,
   postTranslations,
@@ -722,6 +723,32 @@ export async function listPartners(ids?: string[]) {
   }))
 }
 
+/**
+ * Same list as `listPartners`, plus the description in the requested language.
+ * The logo strip on a page block does not need it; the partners page does.
+ */
+export async function listPartnersWithDescription(locale: Locale) {
+  const rows = await listPartners()
+  if (rows.length === 0) return []
+
+  const descriptions = await db
+    .select()
+    .from(partnerTranslations)
+    .where(
+      inArray(
+        partnerTranslations.partnerId,
+        rows.map((row) => row.id),
+      ),
+    )
+
+  const byPartner = groupByParent(descriptions, 'partnerId')
+
+  return rows.map((row) => ({
+    ...row,
+    description: pickTranslation(byPartner.get(row.id), locale)?.description ?? null,
+  }))
+}
+
 export async function listTeamMembers(locale: Locale) {
   const rows = await db
     .select({ member: teamMembers, translation: teamMemberTranslations })
@@ -738,7 +765,15 @@ export async function listTeamMembers(locale: Locale) {
 
   const map = new Map<
     string,
-    { id: string; name: string; role: string; bio: string | null; photo: MediaRow | null }
+    {
+      id: string
+      name: string
+      role: string
+      bio: string | null
+      email: string | null
+      linkedinUrl: string | null
+      photo: MediaRow | null
+    }
   >()
   for (const row of rows) {
     if (!map.has(row.member.id) || row.translation.locale === locale) {
@@ -747,6 +782,8 @@ export async function listTeamMembers(locale: Locale) {
         name: row.member.name,
         role: row.translation.role,
         bio: row.translation.bio,
+        email: row.member.email,
+        linkedinUrl: row.member.linkedinUrl,
         photo: row.member.photoId ? (photos.get(row.member.photoId) ?? null) : null,
       })
     }
