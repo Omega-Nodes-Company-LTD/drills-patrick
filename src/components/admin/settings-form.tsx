@@ -343,6 +343,31 @@ export function SettingsForm({
                     }
                   />
                 </Field>
+
+                <Field
+                  label="Content licence"
+                  htmlFor="contentLicence"
+                  hint="e.g. CC BY 4.0. Stated in llms.txt and on the open data endpoint. Left empty, reuse is declared as needing permission."
+                >
+                  <Input
+                    id="contentLicence"
+                    value={values.seo.contentLicence ?? ''}
+                    onChange={(event) =>
+                      set('seo', { ...values.seo, contentLicence: event.target.value })
+                    }
+                  />
+                </Field>
+
+                <Field label="Licence URL" htmlFor="contentLicenceUrl">
+                  <Input
+                    id="contentLicenceUrl"
+                    type="url"
+                    value={values.seo.contentLicenceUrl ?? ''}
+                    onChange={(event) =>
+                      set('seo', { ...values.seo, contentLicenceUrl: event.target.value })
+                    }
+                  />
+                </Field>
               </div>
             </CardContent>
           </Card>
