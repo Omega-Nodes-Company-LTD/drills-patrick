@@ -452,14 +452,60 @@ export async function getPostBySlug(slug: string, locale: Locale) {
 
   const cover = row.post.coverId ? (await getMediaByIds([row.post.coverId])).get(row.post.coverId) : null
 
+  // A public byline, when the editor set one: the team member's name,
+  // qualifications and role rather than the admin account that saved the post.
+  const author = row.post.authorMemberId
+    ? await getAuthorProfile(row.post.authorMemberId, locale)
+    : null
+
   return {
     post: row.post,
     translation: resolved,
     translations: allTranslations,
     redirectTo: redirectSlug(resolved, slug),
-    authorName: row.authorName,
+    authorName: author?.name ?? row.authorName,
+    author,
     cover: cover ?? null,
     tags: [...tagMap.entries()].map(([id, value]) => ({ id, ...value })),
+  }
+}
+
+export type AuthorProfile = {
+  id: string
+  name: string
+  role: string | null
+  credentials: string | null
+  linkedinUrl: string | null
+  photo: MediaRow | null
+}
+
+/** Public profile of a team member credited as the author of a post. */
+export async function getAuthorProfile(
+  memberId: string,
+  locale: Locale,
+): Promise<AuthorProfile | null> {
+  const [member] = await db
+    .select()
+    .from(teamMembers)
+    .where(and(eq(teamMembers.id, memberId), eq(teamMembers.isPublished, true)))
+    .limit(1)
+
+  if (!member) return null
+
+  const translations = await db
+    .select()
+    .from(teamMemberTranslations)
+    .where(eq(teamMemberTranslations.memberId, memberId))
+
+  const photos = member.photoId ? await getMediaByIds([member.photoId]) : null
+
+  return {
+    id: member.id,
+    name: member.name,
+    role: pickTranslation(translations, locale)?.role || null,
+    credentials: member.credentials,
+    linkedinUrl: member.linkedinUrl,
+    photo: member.photoId ? (photos?.get(member.photoId) ?? null) : null,
   }
 }
 

@@ -399,7 +399,8 @@
       "unsavedChanges": "Ci sono modifiche non salvate.",
       "title": "Titolo",
       "date": "Data",
-      "systemPageLocked": "Questa pagina fa parte della struttura del sito e deve restare pubblicata."
+      "systemPageLocked": "Questa pagina fa parte della struttura del sito e deve restare pubblicata.",
+      "author": "Autore"
     },
     "media": {
       "title": "Libreria media",

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/settings/service'
 import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
 import { NODE_ID, ref, type GraphNode } from '@/lib/seo/graph'
-import { sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
+import { authorNode, sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
 import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
 import { redirect } from '@/i18n/navigation'
@@ -70,7 +70,7 @@ export default async function PostPage({
 
   const t = await getTranslations('blog')
   const tNav = await getTranslations('nav')
-  const { post, translation, cover, tags, authorName } = result
+  const { post, translation, cover, tags, authorName, author } = result
 
   const related = await listPosts({ locale, limit: 3, excludeId: post.id })
 
@@ -84,6 +84,19 @@ export default async function PostPage({
 
   const url = localeUrl(locale, `/blog/${translation?.slug ?? slug}`)
 
+  // A credited team member carries qualifications; a bare name does not.
+  const authorProfile = author
+    ? authorNode({
+        url,
+        name: author.name,
+        role: author.role,
+        credentials: author.credentials,
+        profileUrl: author.linkedinUrl,
+        image: mediaUrl(author.photo?.objectKey) || null,
+        worksForLocale: locale,
+      })
+    : null
+
   const article: GraphNode = {
     '@type': 'Article',
     '@id': `${url}#article`,
@@ -92,7 +105,11 @@ export default async function PostPage({
     datePublished: post.publishedAt?.toISOString(),
     dateModified: post.updatedAt.toISOString(),
     inLanguage: locale,
-    author: authorName ? { '@type': 'Person', name: authorName } : undefined,
+    author: authorProfile
+      ? ref(authorProfile['@id']!)
+      : authorName
+        ? { '@type': 'Person', name: authorName }
+        : undefined,
     publisher: ref(NODE_ID.organisation(locale)),
     image: mediaUrl(cover?.objectKey) || undefined,
     // Ties the article to the URL it is published at rather than leaving two
@@ -119,6 +136,7 @@ export default async function PostPage({
             pageName: translation?.title ?? '',
             pageUrl: url,
           }),
+          authorProfile,
           article,
         ]}
       />
@@ -135,7 +153,15 @@ export default async function PostPage({
           {authorName ? (
             <>
               <span aria-hidden>·</span>
-              <span>{t('by', { name: authorName })}</span>
+              <span>
+                {t('by', { name: authorName })}
+                {/* Qualifications are shown, not only published in the markup:
+                    a reader deciding whether to trust a drilling report needs
+                    them as much as a crawler does. */}
+                {author?.credentials ? (
+                  <span className="text-muted-foreground"> — {author.credentials}</span>
+                ) : null}
+              </span>
             </>
           ) : null}
         </div>

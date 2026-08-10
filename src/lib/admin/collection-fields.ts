@@ -66,6 +66,12 @@ export const collections: Record<CollectionKey, CollectionDef> = {
       { name: 'bio', type: 'textarea', label: 'Biography', translated: true },
       { name: 'email', type: 'email', label: 'Email' },
       { name: 'linkedinUrl', type: 'url', label: 'LinkedIn' },
+      {
+        name: 'credentials',
+        type: 'text',
+        label: 'Qualifications',
+        hint: 'MSc Hydrogeology, Makerere University — published with the articles this person signs.',
+      },
       { name: 'isPublished', type: 'switch', label: 'Published' },
     ],
   },

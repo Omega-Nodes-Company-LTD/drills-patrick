@@ -38,12 +38,14 @@ export function PostForm({
   initial,
   categories,
   tags,
+  authors,
   storageEnabled,
 }: {
   initial?: {
     id: string
     coverId: string | null
     categoryId: string | null
+    authorMemberId: string | null
     status: 'draft' | 'published' | 'archived'
     isFeatured: boolean
     tagIds: string[]
@@ -51,6 +53,8 @@ export function PostForm({
   }
   categories: { id: string; name: string }[]
   tags: { id: string; name: string }[]
+  /** Published team members, the people who can carry a public byline. */
+  authors: { id: string; name: string; credentials: string | null }[]
   storageEnabled: boolean
 }) {
   const t = useTranslations('admin.common')
@@ -61,6 +65,7 @@ export function PostForm({
 
   const [coverId, setCoverId] = useState(initial?.coverId ?? null)
   const [categoryId, setCategoryId] = useState(initial?.categoryId ?? '')
+  const [authorMemberId, setAuthorMemberId] = useState(initial?.authorMemberId ?? '')
   const [status, setStatus] = useState(initial?.status ?? 'draft')
   const [isFeatured, setIsFeatured] = useState(initial?.isFeatured ?? false)
   const [tagIds, setTagIds] = useState<string[]>(initial?.tagIds ?? [])
@@ -80,6 +85,7 @@ export function PostForm({
         id: initial?.id,
         coverId,
         categoryId: categoryId || null,
+        authorMemberId: authorMemberId || null,
         status,
         isFeatured,
         tagIds,
@@ -238,6 +244,21 @@ export function PostForm({
                 </option>
               ))}
             </Select>
+
+            <Field label={t('author')} htmlFor="authorMemberId">
+              <Select
+                id="authorMemberId"
+                value={authorMemberId}
+                onChange={(event) => setAuthorMemberId(event.target.value)}
+              >
+                <option value="">—</option>
+                {authors.map((author) => (
+                  <option key={author.id} value={author.id}>
+                    {author.credentials ? `${author.name} — ${author.credentials}` : author.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
 
             {tags.length > 0 ? (
               <div className="flex flex-wrap gap-1.5">

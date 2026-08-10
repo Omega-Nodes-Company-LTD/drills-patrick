@@ -48,6 +48,8 @@ export const teamMembers = pgTable('team_members', {
   photoId: uuid().references(() => media.id, { onDelete: 'set null' }),
   email: text(),
   linkedinUrl: text(),
+  /** Qualifications as the operator writes them: "MSc Hydrogeology, Makerere". */
+  credentials: text(),
   isPublished: boolean().notNull().default(true),
   sortOrder: integer().notNull().default(0),
   ...timestamps,

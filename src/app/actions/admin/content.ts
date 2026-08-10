@@ -140,6 +140,7 @@ export async function savePost(input: unknown): Promise<ActionResult<{ id: strin
   const values = {
     coverId: data.coverId ?? null,
     categoryId: data.categoryId ?? null,
+    authorMemberId: data.authorMemberId ?? null,
     authorId: user.id,
     status: data.status,
     isFeatured: data.isFeatured,

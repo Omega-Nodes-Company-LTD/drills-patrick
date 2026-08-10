@@ -43,6 +43,8 @@ export const postInputSchema = z.object({
   id: z.string().uuid().optional(),
   coverId: z.string().uuid().nullish(),
   categoryId: z.string().uuid().nullish(),
+  /** Public byline: a team member with a profile, not the editing account. */
+  authorMemberId: z.string().uuid().nullish(),
   status: publishStatus.default('draft'),
   isFeatured: z.boolean().default(false),
   tagIds: z.array(z.string().uuid()).default([]),

@@ -225,6 +225,43 @@ export const SPEAKABLE = {
   cssSelector: ['h1', '[data-speakable]'],
 } as const
 
+/**
+ * The person who signed a piece of technical content.
+ *
+ * A drilling log or a water-quality note is worth what its author's
+ * qualifications are worth. A bare name string says nothing; a `Person` with
+ * a job title, stated qualifications and a profile that can be checked is the
+ * difference between content an answer engine will quote and content it will
+ * paraphrase without attribution.
+ *
+ * Everything here is typed in by the operator — no qualification is inferred.
+ */
+export function authorNode(params: {
+  url: string
+  name: string
+  role?: string | null
+  credentials?: string | null
+  profileUrl?: string | null
+  image?: string | null
+  worksForLocale?: Locale
+}): GraphNode {
+  return {
+    '@type': 'Person',
+    '@id': `${params.url}#author`,
+    name: params.name,
+    jobTitle: params.role || undefined,
+    image: params.image || undefined,
+    sameAs: params.profileUrl ? [params.profileUrl] : undefined,
+    hasCredential: params.credentials
+      ? {
+          '@type': 'EducationalOccupationalCredential',
+          name: params.credentials,
+        }
+      : undefined,
+    worksFor: params.worksForLocale ? ref(NODE_ID.organisation(params.worksForLocale)) : undefined,
+  }
+}
+
 /** Home › section › page, the shape every detail route needs. */
 export function sectionBreadcrumb(params: {
   locale: Locale

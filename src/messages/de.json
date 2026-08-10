@@ -399,7 +399,8 @@
       "unsavedChanges": "Es gibt ungespeicherte Änderungen.",
       "title": "Titel",
       "date": "Datum",
-      "systemPageLocked": "Diese Seite gehört zur Seitenstruktur und muss veröffentlicht bleiben."
+      "systemPageLocked": "Diese Seite gehört zur Seitenstruktur und muss veröffentlicht bleiben.",
+      "author": "Autor"
     },
     "media": {
       "title": "Medienbibliothek",

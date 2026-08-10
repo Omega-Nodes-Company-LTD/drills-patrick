@@ -14,6 +14,7 @@ import {
 import type { I18nTextValue } from '@/i18n/schema'
 import type { Block } from '@/lib/blocks/schema'
 import { users } from './auth'
+import { teamMembers } from './crm'
 import { media } from './media'
 import { id, localeEnum, publishStatusEnum, timestamps } from './shared'
 
@@ -113,6 +114,12 @@ export const posts = pgTable(
     coverId: uuid().references(() => media.id, { onDelete: 'set null' }),
     categoryId: uuid().references(() => categories.id, { onDelete: 'set null' }),
     authorId: uuid().references(() => users.id, { onDelete: 'set null' }),
+    /**
+     * Public byline. A technical report is worth what its author's
+     * qualifications are worth, and the admin account that saved it is not
+     * necessarily the person who wrote it.
+     */
+    authorMemberId: uuid().references(() => teamMembers.id, { onDelete: 'set null' }),
     status: publishStatusEnum().notNull().default('draft'),
     isFeatured: boolean().notNull().default(false),
     readingMinutes: integer().notNull().default(3),
@@ -123,6 +130,7 @@ export const posts = pgTable(
   (table) => [
     index('posts_status_published_idx').on(table.status, table.publishedAt),
     index('posts_category_idx').on(table.categoryId),
+    index('posts_author_member_idx').on(table.authorMemberId),
   ],
 )
 
