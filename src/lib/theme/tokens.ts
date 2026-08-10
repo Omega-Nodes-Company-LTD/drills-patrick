@@ -148,19 +148,35 @@ export const defaultThemeTokens: ThemeTokens = {
   effects: { shadowStrength: 0.35, borderWidth: 1 },
 }
 
+const HEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
+
+/** Keeps only the palette entries that are actually valid colours. */
+function mergePalette(base: Palette, partial: Partial<Palette> | undefined): Palette {
+  if (!partial) return base
+
+  const merged = { ...base }
+  for (const [key, value] of Object.entries(partial)) {
+    if (typeof value === 'string' && HEX.test(value)) {
+      merged[key as keyof Palette] = value
+    }
+  }
+  return merged
+}
+
 /** Parses stored tokens, falling back to the defaults for anything invalid. */
 export function parseThemeTokens(value: unknown): ThemeTokens {
   const result = themeTokensSchema.safeParse(value)
   if (result.success) return result.data
 
-  // Merge shallowly so a partially valid stored theme still contributes.
+  // Merge field by field so a partially valid stored theme still contributes
+  // without letting a malformed value reach the stylesheet.
   const partial = (value ?? {}) as Partial<ThemeTokens>
   return {
     ...defaultThemeTokens,
     ...partial,
     colors: {
-      light: { ...defaultThemeTokens.colors.light, ...partial.colors?.light },
-      dark: { ...defaultThemeTokens.colors.dark, ...partial.colors?.dark },
+      light: mergePalette(defaultThemeTokens.colors.light, partial.colors?.light),
+      dark: mergePalette(defaultThemeTokens.colors.dark, partial.colors?.dark),
     },
     fonts: { ...defaultThemeTokens.fonts, ...partial.fonts },
     typography: { ...defaultThemeTokens.typography, ...partial.typography },

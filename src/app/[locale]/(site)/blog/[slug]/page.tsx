@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { absoluteUrl } from '@/lib/url'
 import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PostCard } from '@/components/site/cards'
@@ -9,7 +10,7 @@ import { intlLocale, type Locale } from '@/i18n/config'
 import { Link } from '@/i18n/navigation'
 import { getPostBySlug, listPosts } from '@/lib/content/queries'
 import { sanitizeHtml } from '@/lib/sanitize'
-import { absoluteUrl } from '@/lib/utils'
+
 import { mediaUrl } from '@/lib/storage/urls'
 
 export const dynamic = 'force-dynamic'

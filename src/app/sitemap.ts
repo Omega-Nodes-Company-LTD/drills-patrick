@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { absoluteUrl } from '@/lib/url'
 import { eq } from 'drizzle-orm'
 import { db } from '@/db'
 import {
@@ -12,7 +13,7 @@ import {
   projects,
 } from '@/db/schema'
 import { defaultLocale, locales, type Locale } from '@/i18n/config'
-import { absoluteUrl } from '@/lib/utils'
+
 
 // Rendered per request: the content lives in the database, so the Docker
 // build never needs a database connection.

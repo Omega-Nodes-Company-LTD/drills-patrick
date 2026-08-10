@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { absoluteUrl } from '@/lib/url'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 import { BlockList } from '@/components/blocks/render'
@@ -6,7 +7,7 @@ import { EmptyPageNotice } from '@/components/site/empty-page-notice'
 import type { Locale } from '@/i18n/config'
 import { parseBlocks } from '@/lib/blocks/schema'
 import { getPageBySlug } from '@/lib/content/queries'
-import { absoluteUrl } from '@/lib/utils'
+
 
 /**
  * Catch-all for editor-managed pages (about, contact, legal pages, and any

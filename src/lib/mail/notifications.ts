@@ -1,8 +1,9 @@
 import { getSiteSettings } from '@/lib/settings/service'
+import { absoluteUrl } from '@/lib/url'
 import { formatMoney } from '@/lib/money'
 import type { ContactInput, NgoInquiryInput } from '@/lib/validation/public'
 import type { DonationRow } from '@/db/schema'
-import { absoluteUrl } from '@/lib/utils'
+
 import { renderEmail, sendMail } from './mailer'
 
 function escape(value: string): string {

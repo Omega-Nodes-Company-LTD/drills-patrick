@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { env } from '@/env'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -20,10 +19,6 @@ export function slugify(value: string): string {
     .slice(0, 90)
 }
 
-export function absoluteUrl(path = '/'): string {
-  return `${env.APP_URL}${path.startsWith('/') ? path : `/${path}`}`
-}
-
 /** Strips HTML tags and collapses whitespace — used for excerpts and indexing. */
 export function htmlToPlainText(html: string): string {
   return html
@@ -39,6 +34,8 @@ export function htmlToPlainText(html: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/[ \t]+/g, ' ')
+    // Opening tags leave a space at the start of the line they broke.
+    .replace(/[ \t]*\n[ \t]*/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim()
 }

@@ -29,7 +29,6 @@ export default async function AdminDashboardLayout({
 
   return (
     <AdminShell
-      locale={locale}
       user={{ name: user.name, email: user.email, role: user.role }}
       permissions={permissionsOf(user.role)}
       siteName={settings.siteName}

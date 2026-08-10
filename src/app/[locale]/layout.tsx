@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { absoluteUrl } from '@/lib/url'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -10,7 +11,7 @@ import { routing } from '@/i18n/routing'
 import { getSiteSettings } from '@/lib/settings/service'
 import { mediaUrl } from '@/lib/storage/urls'
 import { getMediaById } from '@/lib/media/service'
-import { absoluteUrl } from '@/lib/utils'
+
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
@@ -31,9 +32,10 @@ export async function generateMetadata({
     pickI18n(settings.description, activeLocale)
 
   // Wrapped so a missing database during a build never breaks metadata.
-  const ogImage = settings.ogImageId
-    ? await getMediaById(settings.ogImageId).catch(() => null)
-    : null
+  const [ogImage, favicon] = await Promise.all([
+    settings.ogImageId ? getMediaById(settings.ogImageId).catch(() => null) : null,
+    settings.faviconId ? getMediaById(settings.faviconId).catch(() => null) : null,
+  ])
 
   return {
     metadataBase: new URL(absoluteUrl('/')),
@@ -64,6 +66,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       site: settings.seo.twitterHandle,
     },
+    icons: favicon ? { icon: mediaUrl(favicon.objectKey) } : undefined,
     verification: settings.seo.googleSiteVerification
       ? { google: settings.seo.googleSiteVerification }
       : undefined,

@@ -23,7 +23,6 @@ import {
 import { useTranslations } from 'next-intl'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, usePathname } from '@/i18n/navigation'
-import type { Locale } from '@/i18n/config'
 import type { Permission } from '@/lib/auth/session'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
@@ -76,14 +75,12 @@ const GROUPS: { titleKey: string; items: NavEntry[] }[] = [
  */
 export function AdminShell({
   children,
-  locale,
   user,
   permissions,
   siteName,
   signOutAction,
 }: {
   children: ReactNode
-  locale: Locale
   user: { name: string; email: string; role: string }
   permissions: Permission[]
   siteName: string

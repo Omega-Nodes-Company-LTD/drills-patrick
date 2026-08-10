@@ -1,6 +1,6 @@
 'use server'
 
-import { absoluteUrl } from '@/lib/utils'
+import { absoluteUrl } from '@/lib/url'
 import { createDonation, setProviderRef } from '@/lib/payments/donations'
 import { getConfiguredProvider } from '@/lib/payments/registry'
 import { getSiteSettings } from '@/lib/settings/service'
