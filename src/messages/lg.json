@@ -1,0 +1,344 @@
+{
+  "common": {
+    "skipToContent": "Genda ku bikwatibwako",
+    "loading": "Bitikkibwa…",
+    "save": "Tereka",
+    "saving": "Kiterekebwa…",
+    "cancel": "Sazaamu",
+    "delete": "Gyawo",
+    "edit": "Kyusa",
+    "create": "Tondawo",
+    "duplicate": "Kopa",
+    "search": "Noonya",
+    "close": "Ggalawo",
+    "open": "Ggulawo",
+    "back": "Ddayo",
+    "next": "Eddako",
+    "previous": "Ekyasoose",
+    "readMore": "Soma ebisingawo",
+    "learnMore": "Manya ebisingawo",
+    "viewAll": "Laba byonna",
+    "submit": "Weereza",
+    "required": "Kyetaagisa",
+    "optional": "Si kya buwaze",
+    "yes": "Yee",
+    "no": "Nedda",
+    "all": "Byonna",
+    "menu": "Menu",
+    "language": "Olulimi",
+    "share": "Gabana",
+    "copyLink": "Kopa ekikwaso",
+    "linkCopied": "Ekikwaso kikopeddwa",
+    "page": "Olupapula",
+    "of": "ku",
+    "results": "ebivuddemu",
+    "noResults": "Tewali kivuddemu",
+    "theme": {
+      "label": "Enkula y'amabala",
+      "system": "Nga sisitemu",
+      "light": "Ekitangaala",
+      "dark": "Ekiddugavu"
+    },
+    "error": {
+      "generic": "Waliwo ekitagenze bulungi. Ddamu ogezeeko.",
+      "network": "Waliwo obuzibu mu kunyweza. Kebera yintaneeti oddemu ogezeeko."
+    },
+    "success": {
+      "saved": "Enkyukakyuka ziterekeddwa",
+      "deleted": "Kigyiddwaawo",
+      "created": "Kitondeddwa"
+    }
+  },
+  "nav": {
+    "home": "Awaka",
+    "about": "Ebitukwatako",
+    "projects": "Pulojekiti",
+    "blog": "Amawulire",
+    "campaigns": "Okukuŋŋaanya ssente",
+    "donate": "Waayo",
+    "contact": "Tutuukirire",
+    "faq": "Ebibuuzo ebibuuzibwa ennyo",
+    "team": "Abakozi baffe",
+    "partners": "Bakolagana naffe",
+    "search": "Noonya",
+    "adminArea": "Ekitundu ky'abakulembeze"
+  },
+  "footer": {
+    "rights": "Eddembe lyonna literekeddwa.",
+    "followUs": "Tugoberere",
+    "quickLinks": "Ebikwaso ebyangu",
+    "contactUs": "Tutuukirire",
+    "newsletterTitle": "Amawulire ag'oku ttaka eri ONG",
+    "newsletterText": "Alipoota za pulojekiti, ebibalo by'enzizi n'emikisa gy'obuyambi. Email emu buli mwezi.",
+    "legal": "By'amateeka"
+  },
+  "newsletter": {
+    "placeholder": "yiyo@ekibiina.org",
+    "submit": "Wewandiise",
+    "success": "Weebale — kakasa mu email gye tukuweerezza.",
+    "error": "Tetusobodde kuwandiika kwewandiisa kwo. Ddamu ogezeeko.",
+    "alreadySubscribed": "Endagiriro eno yamala kwewandiisa.",
+    "privacy": "Tuweereza mawulire ga pulojekiti gokka. Osobola okuva mu lukalala buli kiseera."
+  },
+  "projects": {
+    "title": "Pulojekiti",
+    "subtitle": "Buli luzzi lwe tusima, okuva ku kwekenneenya okutuuka ku kuweebwayo eri abatuuze.",
+    "empty": "Tewali pulojekiti etuukagana n'ebisale bino.",
+    "filters": {
+      "status": "Embeera",
+      "type": "Ekika ky'ekifo ky'amazzi",
+      "district": "Disitulikiti",
+      "reset": "Ggyawo ebisale"
+    },
+    "status": {
+      "all": "Byonna",
+      "planned": "Ezitegekeddwa",
+      "in_progress": "Ezigenda mu maaso",
+      "completed": "Ezimaliriziddwa"
+    },
+    "type": {
+      "borehole": "Oluzzi olusimibwa",
+      "shallow_well": "Oluzzi olutali luwanvu",
+      "spring_protection": "Ensulo etaasibwa",
+      "rainwater_harvesting": "Okukuŋŋaanya amazzi g'enkuba",
+      "solar_pump": "Ppampu ey'amasannyalaze g'enjuba",
+      "rehabilitation": "Okuddaabiriza",
+      "piped_scheme": "Enkola y'emiguwa gy'amazzi"
+    },
+    "facts": {
+      "title": "Ebibalo by'obukugu",
+      "beneficiaries": "Abantu abaganyulwa",
+      "households": "Amaka",
+      "wells": "Ebifo by'amazzi",
+      "depth": "Obuwanvu",
+      "yield": "Amazzi agafuluma",
+      "schools": "Amasomero",
+      "healthFacilities": "Amalwaliro",
+      "started": "Byatandika",
+      "completed": "Byaggwa",
+      "plannedCompletion": "Bisuubirwa okuggwa",
+      "location": "Ekifo",
+      "budget": "Ssente ezeetaagisa",
+      "funded": "Ssente ezifunise",
+      "quality": "Omutindo gw'amazzi"
+    },
+    "units": {
+      "metres": "m",
+      "litresPerHour": "l/ssaawa",
+      "people": "abantu"
+    },
+    "timeline": "Entambula ya pulojekiti",
+    "gallery": "Ebifaananyi",
+    "supportThisProject": "Wagira pulojekiti eno",
+    "relatedProjects": "Pulojekiti endala",
+    "map": "Gye tukolera",
+    "backToProjects": "Pulojekiti zonna"
+  },
+  "blog": {
+    "title": "Amawulire okuva ku ttaka",
+    "subtitle": "Alipoota, ebibalo by'amazzi n'emboozi z'abatuuze be tukolagana nabo.",
+    "empty": "Tewannaba kiwandiiko kifulumizibwa.",
+    "readingTime": "ddakiika {minutes} ez'okusoma",
+    "publishedOn": "Kyafulumizibwa nga {date}",
+    "by": "kyawandiikibwa {name}",
+    "categories": "Ebibinja",
+    "tags": "Emitwe",
+    "related": "Ebiwandiiko ebikwatagana",
+    "featured": "Ekyekitiibwa",
+    "allPosts": "Ebiwandiiko byonna",
+    "inCategory": "Ebiwandiiko mu {name}",
+    "taggedWith": "Ebiwandiiko ebirina akabonero {name}"
+  },
+  "campaigns": {
+    "title": "Okukuŋŋaanya ssente",
+    "subtitle": "Sasulira ekifo ky'amazzi ekimu era okigoberere okutuuka ku kuweebwayo.",
+    "empty": "Tewali kaweefube akakola kati.",
+    "goal": "Ekigendererwa",
+    "raised": "Ezikuŋŋaanyiziddwa",
+    "remaining": "Ezikyetaagisa",
+    "supporters": "{count, plural, =0 {tewannaba abawagizi} one {omuwagizi #} other {abawagizi #}}",
+    "daysLeft": "{count, plural, one {olunaku # olusigadde} other {ennaku # ezisigadde}}",
+    "ended": "Kaweefube aggweeredde",
+    "completed": "Ekigendererwa kituukiriziddwa",
+    "donateNow": "Waayo kati",
+    "supportCampaign": "Wagira kaweefube ono",
+    "linkedProject": "Pulojekiti ekwatagana"
+  },
+  "donate": {
+    "title": "Waayo obuyambi",
+    "subtitle": "Buli kye owaayo kigenda mu kusima, okussaawo ebyuma n'okulabirira ebifo by'amazzi.",
+    "chooseAmount": "Londa omuwendo",
+    "customAmount": "Omuwendo omulala",
+    "currency": "Ssente",
+    "frequency": "Emirundi",
+    "oneOff": "Omulundi gumu",
+    "monthly": "Buli mwezi",
+    "yourDetails": "Ebikukwatako",
+    "name": "Erinnya lyo eddyokka",
+    "email": "Email",
+    "phone": "Essimu",
+    "organisation": "Ekibiina (si kya buwaze)",
+    "country": "Eggwanga",
+    "anonymous": "Tolaga rinnya lyange mu lujjudde",
+    "message": "Obubaka (si bwa buwaze)",
+    "paymentMethod": "Engeri y'okusasula",
+    "methods": {
+      "stripe": "Kaadi",
+      "paypal": "PayPal",
+      "pesapal": "PesaPal",
+      "mtn": "MTN Mobile Money",
+      "airtel": "Airtel Money",
+      "bank": "Okuyisa mu bbanka"
+    },
+    "methodHints": {
+      "stripe": "Visa, Mastercard, Amex — okusasula okukuumibwa.",
+      "paypal": "Sasula ng'okozesa PayPal oba kaadi.",
+      "pesapal": "Kaadi ne mobile money mu buvanjuba bwa Afirika.",
+      "mtn": "Ojja kufuna obubaka ku ssimu yo obw'okukakasa.",
+      "airtel": "Ojja kufuna obubaka ku ssimu yo obw'okukakasa.",
+      "bank": "Tujja kukuweereza ebikwata ku bbanka mu email."
+    },
+    "noMethods": "Okusasula ku yintaneeti kukyateekebwateekebwa. Kozesa bbanka oba otutuukirire.",
+    "submit": "Waayo {amount}",
+    "processing": "Obuyambi bwo bukolebwako…",
+    "mobileMoneyPrompt": "Kakasa okusasula ku ssimu yo, olupapula luno lusigale nga luggule.",
+    "minAmount": "Omuwendo omutono ogusobola okuweebwayo gwe {amount}.",
+    "invalidAmount": "Wandiika omuwendo omutuufu.",
+    "bankInstructions": "Ebikwata ku bbanka",
+    "bankReference": "Kozesa akabonero kano mu kusindika ssente",
+    "success": {
+      "title": "Weebale",
+      "text": "Obuyambi bwo tubufunye. Lisiiti ejja mu email yo.",
+      "reference": "Akabonero"
+    },
+    "pending": {
+      "title": "Obuyambi bulindirira",
+      "text": "Tetunnafuna bukakafu. Olupapula luno lwekyusa lwokka.",
+      "check": "Kebera embeera"
+    },
+    "failed": {
+      "title": "Okusasula tekumaliriziddwa",
+      "text": "Tewali ssente ziggiddwa. Osobola okuddamu oba okukozesa engeri endala.",
+      "retry": "Ddamu ogezeeko"
+    },
+    "impact": "Enkyukakyuka gy'oleeta",
+    "backToCampaign": "Ddayo ku kaweefube"
+  },
+  "contact": {
+    "title": "Twogere naffe",
+    "subtitle": "Tubuulire gy'okolera n'ekyo kye weetaaga — tuddamu mu nnaku bbiri ez'emirimu.",
+    "name": "Erinnya lyo",
+    "email": "Email",
+    "phone": "Essimu",
+    "subject": "Omutwe",
+    "message": "Obubaka",
+    "send": "Weereza obubaka",
+    "success": "Obubaka buweerezeddwa. Tujja kukuddamu mangu.",
+    "error": "Obubaka tebusobodde kuweerezebwa. Ddamu ogezeeko.",
+    "details": "Ebituukirirwako",
+    "openingHours": "Essaawa ez'emirimu",
+    "ngo": {
+      "title": "Saba ekigero ky'ebbeeyi",
+      "subtitle": "Eri ONG, ebitongole n'ebibiina ebiteekateeka pulogulaamu y'amazzi.",
+      "organisation": "Ekibiina",
+      "contactName": "Omuntu gwe tuyinza okutuukirira",
+      "country": "Eggwanga gye mukolera",
+      "region": "Ekitundu oba disitulikiti",
+      "interventionType": "Ekika ky'omulimu",
+      "wells": "Omuwendo gw'ebifo by'amazzi",
+      "beneficiaries": "Abantu abasuubirwa okuganyulwa",
+      "budget": "Ssente ezisuubirwa",
+      "timeframe": "Ebiseera",
+      "timeframes": {
+        "urgent": "Mu myezi 3",
+        "sixMonths": "Wakati wa myezi 3 ne 6",
+        "year": "Mu mwaka gumu",
+        "exploring": "Tukyakebera"
+      },
+      "message": "Waliwo ekirala kye twandimanyi?",
+      "submit": "Weereza okusaba",
+      "success": "Okusaba kutuweereddwa. Abakozi baffe bajja kukutuukirira mangu.",
+      "privacy": "Ebikukwatako tubikozesa kuddamu kusaba kuno kwokka."
+    }
+  },
+  "search": {
+    "title": "Noonya",
+    "placeholder": "Noonya pulojekiti, ebiwandiiko, kaweefube…",
+    "submit": "Noonya",
+    "resultsFor": "Ebivuddemu ku “{query}”",
+    "noResults": "Tewali kizuuliddwa ku “{query}”.",
+    "suggestions": "Gezaako ekigambo ekinene oba oyite mu pulojekiti.",
+    "semantic": "Okunoonya okw'amagezi",
+    "types": {
+      "post": "Ekiwandiiko",
+      "project": "Pulojekiti",
+      "campaign": "Kaweefube",
+      "page": "Olupapula",
+      "faq": "Ekibuuzo"
+    }
+  },
+  "chat": {
+    "title": "Buuza ku mulimu gwaffe",
+    "open": "Buuza ekibuuzo",
+    "placeholder": "Enzizi zammwe mu Karamoja ziwanvu zitya?",
+    "send": "Weereza",
+    "clear": "Emboozi empya",
+    "greeting": "Gyebale! Mbuuza ku pulojekiti zaffe, ku bbeeyi, ku biseera oba engeri gye tukolagana ne ONG.",
+    "sources": "Ensibuko",
+    "disclaimer": "Eby'okuddamu bikolebwa okuva ku bikwatibwako by'omukutu guno era biyinza obutaba bijjuvu.",
+    "error": "Omuyambi taliiwo kaakati."
+  },
+  "faq": {
+    "title": "Ebibuuzo ebibuuzibwa ennyo",
+    "subtitle": "Ebbeeyi, ebiseera, okulabirira n'engeri gye tukolagana ne bakolagana naffe."
+  },
+  "team": {
+    "title": "Abakozi baffe",
+    "subtitle": "Abakugu mu by'amazzi ag'omu ttaka, abasimi n'abakubiriza b'abatuuze."
+  },
+  "partners": {
+    "title": "Bakolagana naffe",
+    "subtitle": "ONG n'ebitongole bye tukolagana nabyo."
+  },
+  "errors": {
+    "notFoundTitle": "Olupapula terulabiddwa",
+    "notFoundText": "Olupapula lw'onoonya lwajjulukuka oba terwabaawo.",
+    "goHome": "Ddayo awaka",
+    "serverTitle": "Waliwo ekitagenze bulungi",
+    "serverText": "Waliwo ensobi etasuubirwa. Abakozi baffe bamanyiziddwa.",
+    "retry": "Ddamu ogezeeko"
+  },
+  "admin": {
+    "title": "Obukulembeze",
+    "signIn": {
+      "title": "Yingira",
+      "subtitle": "Yingira mu kitundu ky'obukulembeze.",
+      "email": "Email",
+      "password": "Ekigambo eky'ekyama",
+      "submit": "Yingira",
+      "invalid": "Email oba ekigambo eky'ekyama si kituufu.",
+      "inactive": "Akawunti eno eyimiriziddwa.",
+      "tooMany": "Ogezezzaako emirundi mingi. Ddamu oluvannyuma lw'ebbanga."
+    },
+    "nav": {
+      "dashboard": "Olubaawo",
+      "content": "Ebiwandiiko",
+      "pages": "Empapula",
+      "posts": "Ebiwandiiko",
+      "categories": "Ebibinja",
+      "projects": "Pulojekiti",
+      "campaigns": "Kaweefube",
+      "donations": "Obuyambi",
+      "inquiries": "Okusaba",
+      "media": "Ebifaananyi",
+      "appearance": "Endabika",
+      "theme": "Amabala",
+      "navigation": "Menu",
+      "settings": "Enteekateeka",
+      "users": "Abakozesa",
+      "audit": "Ebikoleddwa",
+      "viewSite": "Laba omukutu",
+      "signOut": "Fuluma"
+    }
+  }
+}
