@@ -36,12 +36,6 @@ Recommended:
 
 ```
 CRON_SECRET=<openssl rand -base64 32>
-S3_ENDPOINT=https://fsn1.your-objectstorage.com
-S3_REGION=fsn1
-S3_BUCKET=shared-bucket
-S3_ACCESS_KEY_ID=…
-S3_SECRET_ACCESS_KEY=…
-S3_PREFIX=wells-company
 S3_FORCE_PATH_STYLE=true
 SMTP_URL=smtps://user:password@smtp.example.com:465
 MAIL_FROM=Wells Company <no-reply@your-domain.tld>
@@ -52,6 +46,35 @@ Add only the providers you actually use; the others stay hidden.
 
 `APP_URL` must match the public domain exactly: payment redirects, webhook
 callbacks, canonical URLs and the sitemap are all derived from it.
+
+### Object storage from the shared server variables
+
+The S3 credentials are defined once at server level in Coolify, so the
+application should reference them instead of repeating the values:
+
+```
+S3_ACCESS_KEY_ID={{ server.S3_ACCESS_KEY_ID }}
+S3_SECRET_ACCESS_KEY={{ server.S3_SECRET_ACCESS_KEY }}
+S3_ENDPOINT={{ server.S3_ENDPOINT }}
+S3_REGION={{ server.S3_REGION }}
+S3_BUCKET={{ server.S3_BUCKET }}
+S3_PREFIX={{ server.S3_PREFIX }}
+```
+
+Coolify substitutes the values when it injects the environment, so nothing in
+the application needs to know they came from the server scope.
+
+`S3_PREFIX` scopes every object key. If the same bucket serves several sites,
+override it per application with a literal value — for example
+`S3_PREFIX=wells-company` — rather than pointing it at the shared variable.
+
+> **Mark `S3_ENDPOINT` and `S3_PUBLIC_BASE_URL` as build variables.**
+> Next.js compiles the list of hosts its image optimiser will accept, so those
+> two are read while the image is being built, not at run time. If they are only
+> present at run time the optimiser has no allowed host: the application detects
+> this and falls back to serving the originals unoptimised, so pictures still
+> appear, but they are no longer resized or converted to WebP/AVIF. The other S3
+> variables are used only at run time and need no such flag.
 
 ## 3. First boot
 
