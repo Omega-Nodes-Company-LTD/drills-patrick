@@ -13,7 +13,9 @@ import {
   projects,
 } from '@/db/schema'
 import { defaultLocale, locales, type Locale } from '@/i18n/config'
+import { getMediaByIds } from '@/lib/media/service'
 import { getSiteSettings } from '@/lib/settings/service'
+import { mediaUrl } from '@/lib/storage/urls'
 
 
 // Rendered per request: the content lives in the database, so the Docker
@@ -35,6 +37,7 @@ function entry(
   paths: Partial<Record<Locale, string>>,
   lastModified: Date,
   priority: number,
+  images?: string[],
 ): MetadataRoute.Sitemap {
   const languages = Object.fromEntries(
     Object.entries(paths).map(([locale, path]) => [locale, url(locale as Locale, path!)]),
@@ -46,6 +49,10 @@ function entry(
     changeFrequency: 'weekly' as const,
     priority,
     alternates: { languages },
+    // Photographs of the finished water point are the site's most reusable
+    // asset and the only way a project appears in an image search; nothing
+    // else on the page points a crawler at the gallery.
+    images: images && images.length > 0 ? images : undefined,
   }))
 }
 
@@ -102,6 +109,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         updatedAt: projects.updatedAt,
         locale: projectTranslations.locale,
         slug: projectTranslations.slug,
+        coverId: projects.coverId,
+        galleryIds: projects.galleryIds,
       })
       .from(projects)
       .innerJoin(projectTranslations, eq(projectTranslations.projectId, projects.id))
@@ -118,6 +127,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .where(eq(campaigns.status, 'published')),
   ])
 
+  // Project photographs, resolved once for the whole sitemap.
+  const projectImageIds = projectRows.flatMap((row) =>
+    [row.coverId, ...(row.galleryIds ?? [])].filter((value): value is string => Boolean(value)),
+  )
+  const projectImages = await getMediaByIds(projectImageIds)
+
+  const imagesFor = (row: (typeof projectRows)[number]): string[] =>
+    [row.coverId, ...(row.galleryIds ?? [])]
+      .filter((value): value is string => Boolean(value))
+      .map((id) => mediaUrl(projectImages.get(id)?.objectKey))
+      .filter((value): value is string => Boolean(value))
+
   const groups: [typeof pageRows, string, number][] = [
     [pageRows, '', 0.6],
     [postRows, '/blog', 0.7],
@@ -126,17 +147,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   for (const [rows, prefix, priority] of groups) {
-    const byEntity = new Map<string, { updatedAt: Date; paths: Partial<Record<Locale, string>> }>()
+    const byEntity = new Map<
+      string,
+      { updatedAt: Date; paths: Partial<Record<Locale, string>>; images: string[] }
+    >()
 
     for (const row of rows) {
       if (!active.includes(row.locale as Locale)) continue
-      const current = byEntity.get(row.id) ?? { updatedAt: row.updatedAt, paths: {} }
+      const current = byEntity.get(row.id) ?? {
+        updatedAt: row.updatedAt,
+        paths: {},
+        images: 'galleryIds' in row ? imagesFor(row as (typeof projectRows)[number]) : [],
+      }
       current.paths[row.locale as Locale] = `${prefix}/${row.slug}`
       byEntity.set(row.id, current)
     }
 
     for (const value of byEntity.values()) {
-      items.push(...entry(value.paths, value.updatedAt, priority))
+      items.push(...entry(value.paths, value.updatedAt, priority, value.images))
     }
   }
 
