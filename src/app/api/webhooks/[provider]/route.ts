@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
 import {
   applyDonationStatus,
+  claimProviderEvent,
   getDonationByProviderRef,
   getDonationByReference,
-  recordProviderEvent,
+  recordUnprocessedEvent,
 } from '@/lib/payments/donations'
 import { getConfiguredProvider } from '@/lib/payments/registry'
 import type { ProviderId } from '@/lib/payments/types'
@@ -47,19 +48,36 @@ async function handle(request: Request, providerId: string) {
       ? await getDonationByProviderRef(provider.id, outcome.providerRef)
       : null
 
-  const fresh = await recordProviderEvent({
+  // The donation may legitimately not be visible yet — the provider can call
+  // back before `setProviderRef` has committed. Store the event unprocessed and
+  // ask for a retry rather than acknowledging a payment we have not applied.
+  if (!donation) {
+    await recordUnprocessedEvent({
+      eventKey: outcome.eventKey,
+      eventType: outcome.eventType,
+      provider: provider.id,
+      payload: outcome.payload,
+      error: 'donation_not_found',
+    })
+
+    console.warn(
+      `[webhook:${providerId}] no donation for ${outcome.donationRef ?? outcome.providerRef}; awaiting retry`,
+    )
+    return NextResponse.json({ error: 'donation_not_found' }, { status: 404 })
+  }
+
+  const claimed = await claimProviderEvent({
     eventKey: outcome.eventKey,
     eventType: outcome.eventType,
     provider: provider.id,
-    donationId: donation?.id ?? null,
+    donationId: donation.id,
     payload: outcome.payload,
-    error: donation ? undefined : 'donation_not_found',
   })
 
-  // Already handled: acknowledge so the provider stops retrying.
-  if (!fresh) return NextResponse.json({ duplicate: true })
+  // Already processed: acknowledge so the provider stops retrying.
+  if (!claimed) return NextResponse.json({ duplicate: true })
 
-  if (donation && outcome.status) {
+  if (outcome.status) {
     await applyDonationStatus(donation.id, {
       status: outcome.status,
       providerRef: outcome.providerRef ?? donation.providerRef,

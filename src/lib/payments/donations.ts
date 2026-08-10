@@ -1,5 +1,5 @@
 import 'server-only'
-import { and, eq, sql } from 'drizzle-orm'
+import { and, eq, isNull, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import {
   campaigns,
@@ -180,32 +180,66 @@ export async function applyDonationStatus(
 }
 
 /**
- * Records a provider event exactly once. Returns false when the event was
- * already stored, which is how webhook replays are ignored.
+ * Claims a provider event for processing.
+ *
+ * Returns false only when the event has **already been processed**, which is
+ * how replays are ignored. An event previously stored as unprocessed — because
+ * its donation could not be resolved at the time — is claimable, so a provider
+ * retry still gets applied instead of being mistaken for a duplicate.
  */
-export async function recordProviderEvent(params: {
+export async function claimProviderEvent(params: {
   eventKey: string
   eventType: string
   provider: PaymentProviderId
-  donationId?: string | null
+  donationId: string
   payload?: Record<string, unknown>
-  error?: string
 }): Promise<boolean> {
-  const inserted = await db
+  const now = new Date()
+
+  const claimed = await db
     .insert(donationEvents)
     .values({
       eventKey: params.eventKey,
       eventType: params.eventType,
       provider: params.provider,
-      donationId: params.donationId ?? null,
+      donationId: params.donationId,
       payload: params.payload ?? null,
-      processedAt: new Date(),
-      error: params.error ?? null,
+      processedAt: now,
     })
-    .onConflictDoNothing({ target: donationEvents.eventKey })
+    .onConflictDoUpdate({
+      target: donationEvents.eventKey,
+      set: { donationId: params.donationId, processedAt: now, error: null },
+      // Only an unprocessed row may be claimed; an already-processed one is a
+      // replay and must not run its side effects again.
+      setWhere: isNull(donationEvents.processedAt),
+    })
     .returning({ id: donationEvents.id })
 
-  return inserted.length > 0
+  return claimed.length > 0
+}
+
+/**
+ * Stores an event we could not act on yet, leaving `processedAt` null so a
+ * later retry can still claim it.
+ */
+export async function recordUnprocessedEvent(params: {
+  eventKey: string
+  eventType: string
+  provider: PaymentProviderId
+  payload?: Record<string, unknown>
+  error: string
+}): Promise<void> {
+  await db
+    .insert(donationEvents)
+    .values({
+      eventKey: params.eventKey,
+      eventType: params.eventType,
+      provider: params.provider,
+      payload: params.payload ?? null,
+      processedAt: null,
+      error: params.error,
+    })
+    .onConflictDoNothing({ target: donationEvents.eventKey })
 }
 
 /** Campaign totals shown on the public pages include offline contributions. */
