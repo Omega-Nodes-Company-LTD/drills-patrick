@@ -53,6 +53,7 @@ export default async function AdminPagesPage({
           meta: `${row.key} · ${row.extra?.blocks ?? 0} ${tBlocks('title').toLowerCase()}`,
           editHref: `/admin/pages/${row.id}`,
           canDelete: !row.isSystem,
+          canUnpublish: !row.isSystem,
         }))}
       />
     </div>

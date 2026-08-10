@@ -17,6 +17,7 @@ type Status = 'pending' | 'processing' | 'succeeded' | 'failed' | 'cancelled' | 
 export function DonationStatusPanel({
   reference,
   status: initialStatus,
+  abandonedByDonor = false,
   provider,
   amountMinor,
   currency,
@@ -42,13 +43,15 @@ export function DonationStatusPanel({
     swift: string | null
   }
   labels: Record<string, string>
+  /** Visitor returned through the provider's cancel link; display only. */
+  abandonedByDonor?: boolean
 }) {
   const [status, setStatus] = useState<Status>(initialStatus)
   const isOpen = status === 'pending' || status === 'processing'
   const isBank = provider === 'bank'
 
   useEffect(() => {
-    if (!isOpen || isBank) return
+    if (!isOpen || isBank || abandonedByDonor) return
 
     let attempts = 0
     const timer = setInterval(async () => {
@@ -73,7 +76,7 @@ export function DonationStatusPanel({
     }, 4000)
 
     return () => clearInterval(timer)
-  }, [isOpen, isBank, reference, status])
+  }, [isOpen, isBank, abandonedByDonor, reference, status])
 
   const amount = formatMoney(amountMinor, currency, locale)
 
@@ -97,7 +100,7 @@ export function DonationStatusPanel({
     )
   }
 
-  if (status === 'failed' || status === 'cancelled') {
+  if (status === 'failed' || status === 'cancelled' || (abandonedByDonor && !isBank)) {
     return (
       <div className="flex flex-col items-start gap-4 rounded-[var(--radius-xl)] border border-danger/40 bg-danger/8 p-8">
         <AlertCircle className="size-9 text-danger" aria-hidden />

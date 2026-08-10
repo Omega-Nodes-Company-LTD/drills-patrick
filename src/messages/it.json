@@ -338,7 +338,13 @@
       "users": "Utenti",
       "audit": "Registro attività",
       "viewSite": "Vedi il sito",
-      "signOut": "Esci"
+      "signOut": "Esci",
+      "collections": "Raccolte",
+      "faqs": "FAQ",
+      "team": "Team",
+      "partners": "Partner",
+      "testimonials": "Testimonianze",
+      "messages": "Messaggi"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -390,7 +396,10 @@
       "filters": "Filtri",
       "export": "Esporta CSV",
       "search": "Cerca…",
-      "unsavedChanges": "Ci sono modifiche non salvate."
+      "unsavedChanges": "Ci sono modifiche non salvate.",
+      "title": "Titolo",
+      "date": "Data",
+      "systemPageLocked": "Questa pagina fa parte della struttura del sito e deve restare pubblicata."
     },
     "media": {
       "title": "Libreria media",
@@ -408,7 +417,9 @@
       "deleteWarning": "Il file sarà rimosso anche dal bucket.",
       "empty": "Nessun file caricato.",
       "tooLarge": "Il file supera la dimensione massima di {size}.",
-      "unsupported": "Tipo di file non supportato."
+      "unsupported": "Tipo di file non supportato.",
+      "tooManyPixels": "L'immagine ha troppi pixel. Ridimensionala prima di caricarla.",
+      "typeMismatch": "Il contenuto del file non corrisponde al tipo dichiarato."
     },
     "editor": {
       "bold": "Grassetto",
@@ -639,6 +650,19 @@
       "entity": "Elemento",
       "when": "Quando",
       "empty": "Nessuna attività registrata."
+    },
+    "messages": {
+      "title": "Messaggi",
+      "contacts": "Messaggi dal sito",
+      "subscribers": "Newsletter",
+      "new": "Nuovo",
+      "handled": "Gestito",
+      "markHandled": "Segna come gestito",
+      "reopen": "Riapri",
+      "reply": "Rispondi via email",
+      "confirmed": "Confermato",
+      "pending": "Da confermare",
+      "unsubscribed": "Disiscritto"
     }
   }
 }

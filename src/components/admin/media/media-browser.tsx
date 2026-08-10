@@ -107,13 +107,17 @@ export function MediaBrowser({
         if (!response.ok) {
           const data = (await response.json().catch(() => ({}))) as { error?: string }
           failures += 1
-          toast.error(
+          const message =
             data.error === 'too_large'
               ? t('tooLarge', { size: '25 MB' })
-              : data.error === 'unsupported'
-                ? t('unsupported')
-                : t('notConfigured'),
-          )
+              : data.error === 'too_many_pixels'
+                ? t('tooManyPixels')
+                : data.error === 'type_mismatch'
+                  ? t('typeMismatch')
+                  : data.error === 'unsupported'
+                    ? t('unsupported')
+                    : t('notConfigured')
+          toast.error(message)
         }
       } catch {
         failures += 1

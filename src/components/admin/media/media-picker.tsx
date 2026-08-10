@@ -38,6 +38,8 @@ export function MediaPicker({
   const [preview, setPreview] = useState<MediaItem | null>(null)
 
   // Resolve the stored id to a preview when the field is first rendered.
+  // Looked up by id rather than searched for in the newest page, or a cover
+  // chosen last year would show as an empty box.
   useEffect(() => {
     if (!value) {
       setPreview(null)
@@ -46,7 +48,7 @@ export function MediaPicker({
     if (preview?.id === value) return
 
     let cancelled = false
-    void fetch(`/api/admin/media?perPage=60`, { cache: 'no-store' })
+    void fetch(`/api/admin/media?ids=${encodeURIComponent(value)}`, { cache: 'no-store' })
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { items: MediaItem[] } | null) => {
         if (cancelled || !data) return
@@ -148,11 +150,14 @@ export function MediaGalleryPicker({
     }
 
     let cancelled = false
-    void fetch('/api/admin/media?perPage=60', { cache: 'no-store' })
+    void fetch(`/api/admin/media?ids=${value.map(encodeURIComponent).join(',')}`, {
+      cache: 'no-store',
+    })
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { items: MediaItem[] } | null) => {
         if (cancelled || !data) return
         const map = new Map(data.items.map((item) => [item.id, item]))
+        // Kept in the order the gallery stores, not the order the API returns.
         setItems(value.map((id) => map.get(id)).filter(Boolean) as MediaItem[])
       })
 

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { staticAlternates } from '@/lib/seo'
 import { absoluteUrl } from '@/lib/url'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -45,15 +46,9 @@ export async function generateMetadata({
     },
     description,
     keywords: settings.seo.keywords,
-    alternates: {
-      canonical: absoluteUrl(activeLocale === routing.defaultLocale ? '/' : `/${activeLocale}`),
-      languages: Object.fromEntries(
-        settings.enabledLocales.map((item) => [
-          item,
-          absoluteUrl(item === routing.defaultLocale ? '/' : `/${item}`),
-        ]),
-      ),
-    },
+    // Only a fallback: pages inherit `alternates` when they do not set it, so
+    // every route below builds its own canonical (see src/lib/seo.ts).
+    alternates: staticAlternates(activeLocale, '/', settings.enabledLocales),
     openGraph: {
       type: 'website',
       siteName: settings.siteName,
@@ -70,7 +65,11 @@ export async function generateMetadata({
     verification: settings.seo.googleSiteVerification
       ? { google: settings.seo.googleSiteVerification }
       : undefined,
-    robots: { index: true, follow: true },
+    // A language the operator switched off stays reachable for existing links
+    // but is withdrawn from the index rather than disappearing abruptly.
+    robots: settings.enabledLocales.includes(activeLocale)
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
   }
 }
 

@@ -20,6 +20,8 @@ export type EntityRow = {
   meta?: string
   editHref: string
   canDelete?: boolean
+  /** False for system pages: a route points at them, so they stay published. */
+  canUnpublish?: boolean
 }
 
 const statusVariant: Record<string, 'success' | 'warning' | 'default'> = {
@@ -60,6 +62,7 @@ export function EntityList({
       const next = row.status === 'published' ? 'draft' : 'published'
       const result = await setPublishStatus(type, row.id, next)
       if (result.ok) toast.success(tCommon('success.saved'))
+      else if (result.error === 'system_page_published') toast.error(t('systemPageLocked'))
       else toast.error(tCommon('error.generic'))
     })
   }
@@ -123,18 +126,20 @@ export function EntityList({
                 <Pencil className="size-4" aria-hidden />
               </Link>
             </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => togglePublish(row)}
-              disabled={pending}
-              title={row.status === 'published' ? t('unpublish') : t('publish')}
-            >
-              <MoreHorizontal className="size-4" aria-hidden />
-              <span className="sr-only md:not-sr-only md:text-xs">
-                {row.status === 'published' ? t('unpublish') : t('publish')}
-              </span>
-            </Button>
+            {row.canUnpublish === false && row.status === 'published' ? null : (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => togglePublish(row)}
+                disabled={pending}
+                title={row.status === 'published' ? t('unpublish') : t('publish')}
+              >
+                <MoreHorizontal className="size-4" aria-hidden />
+                <span className="sr-only md:not-sr-only md:text-xs">
+                  {row.status === 'published' ? t('unpublish') : t('publish')}
+                </span>
+              </Button>
+            )}
             {row.canDelete !== false ? (
               <Button
                 size="iconSm"

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { getSiteSettings } from '@/lib/settings/service'
+import { staticAlternates } from '@/lib/seo'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Suspense } from 'react'
 import { PostCard } from '@/components/site/cards'
@@ -22,7 +24,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = (await params) as { locale: Locale }
   const t = await getTranslations({ locale, namespace: 'blog' })
-  return { title: t('title'), description: t('subtitle') }
+  const settings = await getSiteSettings()
+
+  return {
+    title: t('title'),
+    description: t('subtitle'),
+    alternates: staticAlternates(locale, '/blog', settings.enabledLocales),
+  }
 }
 
 export default async function BlogPage({

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { locales } from '@/i18n/config'
 import { blocksSchema } from '@/lib/blocks/schema'
+import { parseAmount } from '@/lib/money'
 
 /** Payloads accepted by the admin save actions. */
 
@@ -135,7 +136,7 @@ export const categoryInputSchema = z.object({
 })
 
 export const manualDonationSchema = z.object({
-  amount: z.coerce.number().positive(),
+  amount: z.preprocess(parseAmount, z.number().positive()),
   currency: z.string().trim().length(3),
   campaignId: z.string().uuid().nullish(),
   donorName: z.string().trim().max(160).optional(),

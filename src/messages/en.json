@@ -338,7 +338,13 @@
       "users": "Users",
       "audit": "Activity log",
       "viewSite": "View site",
-      "signOut": "Sign out"
+      "signOut": "Sign out",
+      "collections": "Collections",
+      "faqs": "FAQs",
+      "team": "Team",
+      "partners": "Partners",
+      "testimonials": "Testimonials",
+      "messages": "Messages"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -390,7 +396,10 @@
       "filters": "Filters",
       "export": "Export CSV",
       "search": "Search…",
-      "unsavedChanges": "You have unsaved changes."
+      "unsavedChanges": "You have unsaved changes.",
+      "title": "Title",
+      "date": "Date",
+      "systemPageLocked": "This page is part of the site structure and must stay published."
     },
     "media": {
       "title": "Media library",
@@ -408,7 +417,9 @@
       "deleteWarning": "The file will also be removed from the bucket.",
       "empty": "No media uploaded yet.",
       "tooLarge": "The file exceeds the maximum size of {size}.",
-      "unsupported": "This file type is not supported."
+      "unsupported": "This file type is not supported.",
+      "tooManyPixels": "The image is too large in pixels. Resize it before uploading.",
+      "typeMismatch": "The file contents do not match its type."
     },
     "editor": {
       "bold": "Bold",
@@ -639,6 +650,19 @@
       "entity": "Item",
       "when": "When",
       "empty": "No activity recorded yet."
+    },
+    "messages": {
+      "title": "Messages",
+      "contacts": "Contact messages",
+      "subscribers": "Newsletter",
+      "new": "New",
+      "handled": "Handled",
+      "markHandled": "Mark as handled",
+      "reopen": "Reopen",
+      "reply": "Reply by email",
+      "confirmed": "Confirmed",
+      "pending": "Unconfirmed",
+      "unsubscribed": "Unsubscribed"
     }
   }
 }

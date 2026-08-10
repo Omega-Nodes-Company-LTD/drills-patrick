@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { absoluteUrl } from '@/lib/url'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { db } from '@/db'
 import {
   campaignTranslations,
@@ -13,6 +13,7 @@ import {
   projects,
 } from '@/db/schema'
 import { defaultLocale, locales, type Locale } from '@/i18n/config'
+import { getSiteSettings } from '@/lib/settings/service'
 
 
 // Rendered per request: the content lives in the database, so the Docker
@@ -49,12 +50,25 @@ function entry(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPaths = ['/', '/projects', '/blog', '/campaigns', '/donate']
+  // Languages switched off in the settings are not advertised to search engines.
+  const settings = await getSiteSettings()
+  const active = locales.filter((locale) => settings.enabledLocales.includes(locale))
+
+  const staticPaths = [
+    '/',
+    '/projects',
+    '/blog',
+    '/campaigns',
+    '/donate',
+    '/faq',
+    '/team',
+    '/partners',
+  ]
   const now = new Date()
 
   const items: MetadataRoute.Sitemap = staticPaths.flatMap((path) =>
     entry(
-      Object.fromEntries(locales.map((locale) => [locale, path])) as Record<Locale, string>,
+      Object.fromEntries(active.map((locale) => [locale, path])) as Record<Locale, string>,
       now,
       path === '/' ? 1 : 0.8,
     ),
@@ -70,7 +84,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
       .from(pages)
       .innerJoin(pageTranslations, eq(pageTranslations.pageId, pages.id))
-      .where(eq(pages.status, 'published')),
+      // Pages the editor excluded must not be advertised.
+      .where(and(eq(pages.status, 'published'), eq(pages.showInSitemap, true))),
     db
       .select({
         id: posts.id,
@@ -114,6 +129,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const byEntity = new Map<string, { updatedAt: Date; paths: Partial<Record<Locale, string>> }>()
 
     for (const row of rows) {
+      if (!active.includes(row.locale as Locale)) continue
       const current = byEntity.get(row.id) ?? { updatedAt: row.updatedAt, paths: {} }
       current.paths[row.locale as Locale] = `${prefix}/${row.slug}`
       byEntity.set(row.id, current)

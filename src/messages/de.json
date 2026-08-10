@@ -338,7 +338,13 @@
       "users": "Benutzer",
       "audit": "Aktivitätsprotokoll",
       "viewSite": "Website ansehen",
-      "signOut": "Abmelden"
+      "signOut": "Abmelden",
+      "collections": "Sammlungen",
+      "faqs": "FAQ",
+      "team": "Team",
+      "partners": "Partner",
+      "testimonials": "Stimmen",
+      "messages": "Nachrichten"
     },
     "dashboard": {
       "title": "Übersicht",
@@ -390,7 +396,10 @@
       "filters": "Filter",
       "export": "CSV exportieren",
       "search": "Suchen…",
-      "unsavedChanges": "Es gibt ungespeicherte Änderungen."
+      "unsavedChanges": "Es gibt ungespeicherte Änderungen.",
+      "title": "Titel",
+      "date": "Datum",
+      "systemPageLocked": "Diese Seite gehört zur Seitenstruktur und muss veröffentlicht bleiben."
     },
     "media": {
       "title": "Medienbibliothek",
@@ -408,7 +417,9 @@
       "deleteWarning": "Die Datei wird auch aus dem Bucket gelöscht.",
       "empty": "Noch keine Medien hochgeladen.",
       "tooLarge": "Die Datei überschreitet die Maximalgröße von {size}.",
-      "unsupported": "Dieser Dateityp wird nicht unterstützt."
+      "unsupported": "Dieser Dateityp wird nicht unterstützt.",
+      "tooManyPixels": "Das Bild hat zu viele Pixel. Bitte vor dem Hochladen verkleinern.",
+      "typeMismatch": "Der Dateiinhalt passt nicht zum angegebenen Typ."
     },
     "editor": {
       "bold": "Fett",
@@ -639,6 +650,19 @@
       "entity": "Element",
       "when": "Wann",
       "empty": "Keine Aktivität aufgezeichnet."
+    },
+    "messages": {
+      "title": "Nachrichten",
+      "contacts": "Nachrichten von der Website",
+      "subscribers": "Newsletter",
+      "new": "Neu",
+      "handled": "Erledigt",
+      "markHandled": "Als erledigt markieren",
+      "reopen": "Wieder öffnen",
+      "reply": "Per E-Mail antworten",
+      "confirmed": "Bestätigt",
+      "pending": "Unbestätigt",
+      "unsubscribed": "Abgemeldet"
     }
   }
 }

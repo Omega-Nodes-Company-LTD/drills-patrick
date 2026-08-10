@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
-import { absoluteUrl } from '@/lib/url'
+import { getSiteSettings } from '@/lib/settings/service'
+import { buildAlternates, pathsFromTranslations } from '@/lib/seo'
 import { notFound } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PostCard } from '@/components/site/cards'
 import { Badge } from '@/components/ui/badge'
@@ -24,19 +26,20 @@ export async function generateMetadata({
   const result = await getPostBySlug(slug, locale)
   if (!result) return {}
 
+  const settings = await getSiteSettings()
+
   const image = mediaUrl(result.cover?.objectKey)
 
   return {
     title: result.translation?.seoTitle || result.translation?.title,
     description: result.translation?.seoDescription || result.translation?.excerpt || undefined,
-    alternates: {
-      languages: Object.fromEntries(
-        result.translations.map((translation) => [
-          translation.locale,
-          absoluteUrl(`/${translation.locale}/blog/${translation.slug}`),
-        ]),
-      ),
-    },
+    // Own canonical: without it the page would inherit the locale layout's,
+    // which points at the home page.
+    alternates: buildAlternates({
+      locale,
+      paths: pathsFromTranslations(result.translations, '/blog'),
+      enabledLocales: settings.enabledLocales,
+    }),
     openGraph: {
       type: 'article',
       publishedTime: result.post.publishedAt?.toISOString(),
@@ -57,6 +60,10 @@ export default async function PostPage({
 
   const result = await getPostBySlug(slug, locale)
   if (!result) notFound()
+
+  // The slug belongs to another language: send the visitor to the canonical
+  // URL for this one instead of serving the same content twice.
+  if (result.redirectTo) redirect({ href: `/blog/${result.redirectTo}`, locale })
 
   const t = await getTranslations('blog')
   const { post, translation, cover, tags, authorName } = result

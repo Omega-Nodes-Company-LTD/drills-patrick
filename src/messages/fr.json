@@ -338,7 +338,13 @@
       "users": "Utilisateurs",
       "audit": "Journal d'activité",
       "viewSite": "Voir le site",
-      "signOut": "Déconnexion"
+      "signOut": "Déconnexion",
+      "collections": "Collections",
+      "faqs": "FAQ",
+      "team": "Équipe",
+      "partners": "Partenaires",
+      "testimonials": "Témoignages",
+      "messages": "Messages"
     },
     "dashboard": {
       "title": "Tableau de bord",
@@ -390,7 +396,10 @@
       "filters": "Filtres",
       "export": "Exporter en CSV",
       "search": "Rechercher…",
-      "unsavedChanges": "Des modifications ne sont pas enregistrées."
+      "unsavedChanges": "Des modifications ne sont pas enregistrées.",
+      "title": "Titre",
+      "date": "Date",
+      "systemPageLocked": "Cette page fait partie de la structure du site et doit rester publiée."
     },
     "media": {
       "title": "Médiathèque",
@@ -408,7 +417,9 @@
       "deleteWarning": "Le fichier sera aussi supprimé du bucket.",
       "empty": "Aucun média téléversé.",
       "tooLarge": "Le fichier dépasse la taille maximale de {size}.",
-      "unsupported": "Type de fichier non pris en charge."
+      "unsupported": "Type de fichier non pris en charge.",
+      "tooManyPixels": "L'image comporte trop de pixels. Redimensionnez-la avant l'envoi.",
+      "typeMismatch": "Le contenu du fichier ne correspond pas à son type."
     },
     "editor": {
       "bold": "Gras",
@@ -639,6 +650,19 @@
       "entity": "Élément",
       "when": "Quand",
       "empty": "Aucune activité enregistrée."
+    },
+    "messages": {
+      "title": "Messages",
+      "contacts": "Messages du site",
+      "subscribers": "Newsletter",
+      "new": "Nouveau",
+      "handled": "Traité",
+      "markHandled": "Marquer comme traité",
+      "reopen": "Rouvrir",
+      "reply": "Répondre par e-mail",
+      "confirmed": "Confirmé",
+      "pending": "À confirmer",
+      "unsubscribed": "Désabonné"
     }
   }
 }

@@ -31,6 +31,48 @@ export function fromMinorUnits(minor: number, currency: string): number {
   return minor / 10 ** currencyExponent(currency)
 }
 
+/**
+ * Reads an amount the way a person typed it.
+ *
+ * The site runs in five languages, so "1.234,56", "1,234.56", "50,5" and
+ * "50.5" all reach the server from the same field. `Number()` turns three of
+ * those four into NaN. When both separators are present the last one is the
+ * decimal point; when only one is present it is a decimal point unless it
+ * groups exactly three digits.
+ *
+ * Returns NaN for anything that is not a number, so callers keep validating.
+ */
+export function parseAmount(input: unknown): number {
+  if (typeof input === 'number') return input
+  if (typeof input !== 'string') return Number.NaN
+
+  const cleaned = input.replace(/[\s '’]/g, '')
+  if (!cleaned) return Number.NaN
+
+  const lastComma = cleaned.lastIndexOf(',')
+  const lastDot = cleaned.lastIndexOf('.')
+
+  let normalised: string
+
+  if (lastComma >= 0 && lastDot >= 0) {
+    const decimal = lastComma > lastDot ? ',' : '.'
+    const group = decimal === ',' ? '.' : ','
+    normalised = cleaned.split(group).join('').replace(decimal, '.')
+  } else if (lastComma >= 0 || lastDot >= 0) {
+    const separator = lastComma >= 0 ? ',' : '.'
+    const parts = cleaned.split(separator)
+    // "1.234" and "1,234,567" group thousands; "50,5" and "50.75" do not.
+    const grouped = parts.length > 2 || parts[parts.length - 1]!.length === 3
+    normalised = grouped ? parts.join('') : parts.join('.')
+  } else {
+    normalised = cleaned
+  }
+
+  return /^[+-]?\d*\.?\d*$/.test(normalised) && /\d/.test(normalised)
+    ? Number(normalised)
+    : Number.NaN
+}
+
 export function formatMoney(
   minor: number,
   currency: string,

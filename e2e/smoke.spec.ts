@@ -69,3 +69,60 @@ test.describe('admin', () => {
     await expect(page).toHaveURL(/\/admin\/login$/)
   })
 })
+
+test.describe('regressions', () => {
+  test('gives each page its own canonical', async ({ page }) => {
+    // Every page used to inherit the home page's canonical from the layout,
+    // which pointed search engines at the home page for the whole site.
+    await page.goto('/projects')
+    const canonical = page.locator('link[rel="canonical"]')
+    await expect(canonical).toHaveAttribute('href', /\/projects$/)
+
+    await page.goto('/it/projects')
+    await expect(canonical).toHaveAttribute('href', /\/it\/projects$/)
+  })
+
+  test('pairs a page with its translations through hreflang', async ({ page }) => {
+    await page.goto('/blog')
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveCount(1)
+    await expect(page.locator('link[rel="alternate"][hreflang="it"]')).toHaveAttribute(
+      'href',
+      /\/it\/blog$/,
+    )
+  })
+
+  test('leaves a donation alone when the URL says it was cancelled', async ({ request }) => {
+    // ?cancelled=1 used to write the cancelled status straight from the query
+    // string: anyone holding a reference could close someone else's donation
+    // with a GET, and a link prefetch was enough to fire it.
+    const response = await request.get('/donate/status?ref=does-not-exist&cancelled=1')
+    expect(response.status()).toBe(404)
+  })
+
+  test('keeps the language switcher on the current section', async ({ page }) => {
+    // Switching language used to drop the visitor back on the home page.
+    await page.goto('/projects')
+
+    // Below `lg` the switcher lives inside the off-canvas menu.
+    const switcher = page.getByRole('combobox', { name: 'English' })
+    if (!(await switcher.first().isVisible())) {
+      await page.getByRole('button', { name: 'Menu' }).click()
+    }
+
+    await switcher.filter({ visible: true }).first().selectOption('fr')
+    await expect(page).toHaveURL(/\/fr\/projects/)
+  })
+
+  test('does not advertise API routes to crawlers', async ({ request }) => {
+    const response = await request.get('/api/health')
+    expect(response.headers()['x-robots-tag']).toContain('noindex')
+  })
+
+  test('sends the security headers', async ({ request }) => {
+    const response = await request.get('/')
+    const headers = response.headers()
+    expect(headers['content-security-policy']).toContain("frame-ancestors 'none'")
+    expect(headers['x-content-type-options']).toBe('nosniff')
+    expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin')
+  })
+})

@@ -12,6 +12,8 @@ import {
   postTranslations,
   posts,
   projectTranslations,
+  projectUpdateTranslations,
+  projectUpdates,
   projects,
   tagTranslations,
   tags,
@@ -171,6 +173,34 @@ export async function adminGetProject(id: string) {
     .where(eq(projectTranslations.projectId, id))
 
   return { project, translations }
+}
+
+/** Timeline entries of a project, every language, published or not. */
+export async function adminListProjectUpdates(projectId: string) {
+  const rows = await db
+    .select()
+    .from(projectUpdates)
+    .where(eq(projectUpdates.projectId, projectId))
+    .orderBy(desc(projectUpdates.happenedOn))
+
+  if (rows.length === 0) return []
+
+  const translations = await db
+    .select()
+    .from(projectUpdateTranslations)
+    .where(
+      inArray(
+        projectUpdateTranslations.updateId,
+        rows.map((row) => row.id),
+      ),
+    )
+
+  const byUpdate = groupByParent(translations, 'updateId')
+
+  return rows.map((row) => ({
+    ...row,
+    translations: byUpdate.get(row.id) ?? [],
+  }))
 }
 
 export async function adminGetCampaign(id: string) {
