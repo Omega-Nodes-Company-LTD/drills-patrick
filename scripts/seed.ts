@@ -99,7 +99,7 @@ async function seedSettings() {
       contact: { addressLines: [], country: 'Uganda' },
       social: {},
       seo: { keywords: [] },
-      organisation: {},
+      organisation: { registryUrls: [] },
       bankTransfer: {},
       donations: {
         defaultCurrency: 'EUR',

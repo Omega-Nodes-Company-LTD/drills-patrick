@@ -9,7 +9,7 @@ import { I18nField } from '@/components/admin/blocks/i18n-field'
 import { MediaPicker } from '@/components/admin/media/media-picker'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Field, Input, Select } from '@/components/ui/field'
+import { Field, Input, Select, Textarea } from '@/components/ui/field'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { locales, localeLabels, type Locale } from '@/i18n/config'
@@ -266,6 +266,27 @@ export function SettingsForm({
                     set('organisation', {
                       ...values.organisation,
                       registrationNumber: event.target.value,
+                    })
+                  }
+                />
+              </Field>
+              <Field
+                label="Registry and directory pages"
+                htmlFor="registryUrls"
+                hint="One URL per line: the NGO board entry, a donor directory, a charity register. They are published as sameAs, which is how search and answer engines tie the site to a body that vouches for it."
+                className="sm:col-span-2"
+              >
+                <Textarea
+                  id="registryUrls"
+                  rows={3}
+                  value={(values.organisation.registryUrls ?? []).join('\n')}
+                  onChange={(event) =>
+                    set('organisation', {
+                      ...values.organisation,
+                      registryUrls: event.target.value
+                        .split('\n')
+                        .map((line) => line.trim())
+                        .filter(Boolean),
                     })
                   }
                 />

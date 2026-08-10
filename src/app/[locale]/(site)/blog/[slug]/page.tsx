@@ -92,6 +92,7 @@ export default async function PostPage({
     dateModified: post.updatedAt.toISOString(),
     inLanguage: locale,
     author: authorName ? { '@type': 'Person', name: authorName } : undefined,
+    publisher: ref(NODE_ID.organisation(locale)),
     image: mediaUrl(cover?.objectKey) || undefined,
     // Ties the article to the URL it is published at rather than leaving two
     // unrelated descriptions of the same page.

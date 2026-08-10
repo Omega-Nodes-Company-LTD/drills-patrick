@@ -15,6 +15,7 @@ import {
   type SocialLinks,
   donationSettingsSchema,
   featureTogglesSchema,
+  organisationSchema,
   parseNavItems,
 } from '@/lib/settings/schema'
 import { defaultThemeTokens, parseThemeTokens, type ThemeTokens } from '@/lib/theme/tokens'
@@ -57,7 +58,7 @@ const fallbackSettings: SiteSettings = {
   contact: { addressLines: [], country: 'Uganda' },
   social: {},
   seo: { keywords: [] },
-  organisation: {},
+  organisation: { registryUrls: [] },
   bankTransfer: {},
   donations: donationSettingsSchema.parse({}),
   features: featureTogglesSchema.parse({}),
@@ -86,7 +87,9 @@ async function loadSettings(): Promise<SiteSettings> {
     contact: row.contact ?? fallbackSettings.contact,
     social: row.social ?? {},
     seo: row.seo ?? { keywords: [] },
-    organisation: row.organisation ?? {},
+    // Parsed rather than cast: rows written before a field existed have to
+    // come back with its default rather than undefined.
+    organisation: organisationSchema.parse(row.organisation ?? {}),
     bankTransfer: row.bankTransfer ?? {},
     donations: donationSettingsSchema.parse(row.donations ?? {}),
     features: featureTogglesSchema.parse(row.features ?? {}),

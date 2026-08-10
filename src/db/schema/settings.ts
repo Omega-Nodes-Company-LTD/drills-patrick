@@ -37,7 +37,7 @@ export const siteSettings = pgTable('site_settings', {
   contact: jsonb().$type<ContactInfo>().notNull().default({ addressLines: [], country: 'Uganda' }),
   social: jsonb().$type<SocialLinks>().notNull().default({}),
   seo: jsonb().$type<SeoSettings>().notNull().default({ keywords: [] }),
-  organisation: jsonb().$type<OrganisationDetails>().notNull().default({}),
+  organisation: jsonb().$type<OrganisationDetails>().notNull().default({ registryUrls: [] }),
   bankTransfer: jsonb().$type<BankTransferDetails>().notNull().default({}),
   donations: jsonb().$type<DonationSettings>(),
   features: jsonb().$type<FeatureToggles>(),
