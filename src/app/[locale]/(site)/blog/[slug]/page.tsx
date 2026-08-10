@@ -5,7 +5,7 @@ import { NODE_ID, ref, type GraphNode } from '@/lib/seo/graph'
 import { authorNode, sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
 import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
-import { redirect } from '@/i18n/navigation'
+import { permanentRedirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PostCard } from '@/components/site/cards'
 import { Badge } from '@/components/ui/badge'
@@ -65,9 +65,10 @@ export default async function PostPage({
   const result = await getPostBySlug(slug, locale)
   if (!result) notFound()
 
-  // The slug belongs to another language: send the visitor to the canonical
-  // URL for this one instead of serving the same content twice.
-  if (result.redirectTo) redirect({ href: `/blog/${result.redirectTo}`, locale })
+  // Either the slug belongs to another language or it is one the entity
+  // used to live at. Permanent, not temporary: the old URL is not coming
+  // back, and 308 is what moves a search engine's index and its authority.
+  if (result.redirectTo) permanentRedirect({ href: `/blog/${result.redirectTo}`, locale })
 
   const t = await getTranslations('blog')
   const tNav = await getTranslations('nav')

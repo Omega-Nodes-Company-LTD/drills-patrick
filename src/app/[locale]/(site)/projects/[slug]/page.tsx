@@ -4,7 +4,7 @@ import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
 import { sectionBreadcrumb, waterPointNode, webPageNode } from '@/lib/seo/nodes'
 import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
-import { redirect } from '@/i18n/navigation'
+import { permanentRedirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -77,9 +77,10 @@ export default async function ProjectPage({
   const result = await getProjectBySlug(slug, locale)
   if (!result) notFound()
 
-  // The slug belongs to another language: send the visitor to the canonical
-  // URL for this one instead of serving the same content twice.
-  if (result.redirectTo) redirect({ href: `/projects/${result.redirectTo}`, locale })
+  // Either the slug belongs to another language or it is one the entity
+  // used to live at. Permanent, not temporary: the old URL is not coming
+  // back, and 308 is what moves a search engine's index and its authority.
+  if (result.redirectTo) permanentRedirect({ href: `/projects/${result.redirectTo}`, locale })
 
   const t = await getTranslations('projects')
   const tNav = await getTranslations('nav')

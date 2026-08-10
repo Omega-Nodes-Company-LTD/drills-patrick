@@ -30,6 +30,7 @@ import {
   type MediaRow,
 } from '@/db/schema'
 import { defaultLocale, type Locale } from '@/i18n/config'
+import { resolveRetiredSlug } from './redirects'
 import { groupByParent, pickTranslation } from './translations'
 import { getMediaByIds } from '@/lib/media/service'
 
@@ -167,9 +168,21 @@ export async function getProjectBySlug(slug: string, locale: Locale) {
     .where(and(eq(projectTranslations.slug, slug), eq(projectTranslations.locale, locale)))
     .limit(1)
 
-  const [translation] = exact
-    ? [exact]
-    : await db.select().from(projectTranslations).where(eq(projectTranslations.slug, slug)).limit(1)
+  let translation =
+    exact ??
+    (await db.select().from(projectTranslations).where(eq(projectTranslations.slug, slug)).limit(1))[0]
+
+  // Still nothing: the slug may be one the entity used to live at, kept so a
+  // rename does not turn every inbound link into a 404. Resolving through it
+  // leaves `slug` different from the live one, so the caller is told to
+  // redirect rather than serve the retired URL.
+  if (!translation) {
+    const retiredId = await resolveRetiredSlug('project', slug)
+    if (!retiredId) return null
+
+    const live = await db.select().from(projectTranslations).where(eq(projectTranslations.projectId, retiredId))
+    translation = pickTranslation(live, locale)
+  }
 
   if (!translation) return null
 
@@ -412,9 +425,21 @@ export async function getPostBySlug(slug: string, locale: Locale) {
     .where(and(eq(postTranslations.slug, slug), eq(postTranslations.locale, locale)))
     .limit(1)
 
-  const [translation] = exact
-    ? [exact]
-    : await db.select().from(postTranslations).where(eq(postTranslations.slug, slug)).limit(1)
+  let translation =
+    exact ??
+    (await db.select().from(postTranslations).where(eq(postTranslations.slug, slug)).limit(1))[0]
+
+  // Still nothing: the slug may be one the entity used to live at, kept so a
+  // rename does not turn every inbound link into a 404. Resolving through it
+  // leaves `slug` different from the live one, so the caller is told to
+  // redirect rather than serve the retired URL.
+  if (!translation) {
+    const retiredId = await resolveRetiredSlug('post', slug)
+    if (!retiredId) return null
+
+    const live = await db.select().from(postTranslations).where(eq(postTranslations.postId, retiredId))
+    translation = pickTranslation(live, locale)
+  }
 
   if (!translation) return null
 
@@ -624,9 +649,21 @@ export async function getCampaignBySlug(slug: string, locale: Locale) {
     .where(and(eq(campaignTranslations.slug, slug), eq(campaignTranslations.locale, locale)))
     .limit(1)
 
-  const [translation] = exact
-    ? [exact]
-    : await db.select().from(campaignTranslations).where(eq(campaignTranslations.slug, slug)).limit(1)
+  let translation =
+    exact ??
+    (await db.select().from(campaignTranslations).where(eq(campaignTranslations.slug, slug)).limit(1))[0]
+
+  // Still nothing: the slug may be one the entity used to live at, kept so a
+  // rename does not turn every inbound link into a 404. Resolving through it
+  // leaves `slug` different from the live one, so the caller is told to
+  // redirect rather than serve the retired URL.
+  if (!translation) {
+    const retiredId = await resolveRetiredSlug('campaign', slug)
+    if (!retiredId) return null
+
+    const live = await db.select().from(campaignTranslations).where(eq(campaignTranslations.campaignId, retiredId))
+    translation = pickTranslation(live, locale)
+  }
 
   if (!translation) return null
 
@@ -700,9 +737,21 @@ export async function getPageBySlug(slug: string, locale: Locale) {
     .where(and(eq(pageTranslations.slug, slug), eq(pageTranslations.locale, locale)))
     .limit(1)
 
-  const [translation] = exact
-    ? [exact]
-    : await db.select().from(pageTranslations).where(eq(pageTranslations.slug, slug)).limit(1)
+  let translation =
+    exact ??
+    (await db.select().from(pageTranslations).where(eq(pageTranslations.slug, slug)).limit(1))[0]
+
+  // Still nothing: the slug may be one the entity used to live at, kept so a
+  // rename does not turn every inbound link into a 404. Resolving through it
+  // leaves `slug` different from the live one, so the caller is told to
+  // redirect rather than serve the retired URL.
+  if (!translation) {
+    const retiredId = await resolveRetiredSlug('page', slug)
+    if (!retiredId) return null
+
+    const live = await db.select().from(pageTranslations).where(eq(pageTranslations.pageId, retiredId))
+    translation = pickTranslation(live, locale)
+  }
 
   if (!translation) return null
 

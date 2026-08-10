@@ -19,6 +19,7 @@ import {
 import { locales, type Locale } from '@/i18n/config'
 import { recordAudit } from '@/lib/audit'
 import { requireApiUser } from '@/lib/auth/guard'
+import { forgetSlugs, recordSlugChanges } from '@/lib/content/redirects'
 import { indexDocumentInBackground, removeDocument } from '@/lib/embeddings/indexer'
 import { toMinorUnits } from '@/lib/money'
 import { sanitizeHtml } from '@/lib/sanitize'
@@ -163,7 +164,16 @@ export async function savePost(input: unknown): Promise<ActionResult<{ id: strin
     postId = created!.id
   }
 
+  // Read before replacing: the slugs the entity is moving away from
+  // have to be remembered before the rows carrying them are gone.
+  const previousSlugs = await db
+    .select({ locale: postTranslations.locale, slug: postTranslations.slug })
+    .from(postTranslations)
+    .where(eq(postTranslations.postId, postId))
+
   await db.delete(postTranslations).where(eq(postTranslations.postId, postId))
+
+  const newSlugs: { locale: Locale; slug: string }[] = []
 
   for (const locale of present) {
     const translation = data.translations[locale]!
@@ -180,6 +190,7 @@ export async function savePost(input: unknown): Promise<ActionResult<{ id: strin
       seoTitle: translation.seoTitle || null,
       seoDescription: translation.seoDescription || null,
     })
+    newSlugs.push({ locale, slug })
 
     if (data.status === 'published') {
       indexDocumentInBackground({
@@ -201,6 +212,14 @@ export async function savePost(input: unknown): Promise<ActionResult<{ id: strin
   if (data.tagIds.length > 0) {
     await db.insert(postTags).values(data.tagIds.map((tagId) => ({ postId: postId!, tagId })))
   }
+
+  // A rename must not break the links that already point at the old URL.
+  await recordSlugChanges({
+    entityType: 'post',
+    entityId: postId,
+    previous: previousSlugs,
+    current: newSlugs,
+  })
 
   await recordAudit({
     actor: user,
@@ -287,7 +306,16 @@ export async function saveProject(input: unknown): Promise<ActionResult<{ id: st
     projectId = created!.id
   }
 
+  // Read before replacing: the slugs the entity is moving away from
+  // have to be remembered before the rows carrying them are gone.
+  const previousSlugs = await db
+    .select({ locale: projectTranslations.locale, slug: projectTranslations.slug })
+    .from(projectTranslations)
+    .where(eq(projectTranslations.projectId, projectId))
+
   await db.delete(projectTranslations).where(eq(projectTranslations.projectId, projectId))
+
+  const newSlugs: { locale: Locale; slug: string }[] = []
 
   for (const locale of present) {
     const translation = data.translations[locale]!
@@ -298,6 +326,7 @@ export async function saveProject(input: unknown): Promise<ActionResult<{ id: st
       translation.slug || translation.title || '',
       projectId,
     )
+    newSlugs.push({ locale, slug })
 
     await db.insert(projectTranslations).values({
       projectId,
@@ -325,6 +354,14 @@ export async function saveProject(input: unknown): Promise<ActionResult<{ id: st
   if (data.publishStatus !== 'published') {
     await removeDocument('project', projectId)
   }
+
+  // A rename must not break the links that already point at the old URL.
+  await recordSlugChanges({
+    entityType: 'project',
+    entityId: projectId,
+    previous: previousSlugs,
+    current: newSlugs,
+  })
 
   await recordAudit({
     actor: user,
@@ -378,7 +415,16 @@ export async function saveCampaign(input: unknown): Promise<ActionResult<{ id: s
     campaignId = created!.id
   }
 
+  // Read before replacing: the slugs the entity is moving away from
+  // have to be remembered before the rows carrying them are gone.
+  const previousSlugs = await db
+    .select({ locale: campaignTranslations.locale, slug: campaignTranslations.slug })
+    .from(campaignTranslations)
+    .where(eq(campaignTranslations.campaignId, campaignId))
+
   await db.delete(campaignTranslations).where(eq(campaignTranslations.campaignId, campaignId))
+
+  const newSlugs: { locale: Locale; slug: string }[] = []
 
   for (const locale of present) {
     const translation = data.translations[locale]!
@@ -389,6 +435,7 @@ export async function saveCampaign(input: unknown): Promise<ActionResult<{ id: s
       translation.slug || translation.title || '',
       campaignId,
     )
+    newSlugs.push({ locale, slug })
 
     await db.insert(campaignTranslations).values({
       campaignId,
@@ -416,6 +463,14 @@ export async function saveCampaign(input: unknown): Promise<ActionResult<{ id: s
   if (data.status !== 'published') {
     await removeDocument('campaign', campaignId)
   }
+
+  // A rename must not break the links that already point at the old URL.
+  await recordSlugChanges({
+    entityType: 'campaign',
+    entityId: campaignId,
+    previous: previousSlugs,
+    current: newSlugs,
+  })
 
   await recordAudit({
     actor: user,
@@ -477,7 +532,16 @@ export async function savePage(input: unknown): Promise<ActionResult<{ id: strin
     pageId = created!.id
   }
 
+  // Read before replacing: the slugs the entity is moving away from
+  // have to be remembered before the rows carrying them are gone.
+  const previousSlugs = await db
+    .select({ locale: pageTranslations.locale, slug: pageTranslations.slug })
+    .from(pageTranslations)
+    .where(eq(pageTranslations.pageId, pageId))
+
   await db.delete(pageTranslations).where(eq(pageTranslations.pageId, pageId))
+
+  const newSlugs: { locale: Locale; slug: string }[] = []
 
   for (const locale of locales) {
     const translation = data.translations[locale]
@@ -493,7 +557,16 @@ export async function savePage(input: unknown): Promise<ActionResult<{ id: strin
       seoTitle: translation.seoTitle || null,
       seoDescription: translation.seoDescription || null,
     })
+    newSlugs.push({ locale, slug })
   }
+
+  // A rename must not break the links that already point at the old URL.
+  await recordSlugChanges({
+    entityType: 'page',
+    entityId: pageId,
+    previous: previousSlugs,
+    current: newSlugs,
+  })
 
   await recordAudit({
     actor: user,
@@ -586,6 +659,8 @@ export async function deleteEntity(
 
   if (config.entity) {
     await removeDocument(config.entity, id)
+    // The entity is gone, so its old URLs have nowhere to redirect to.
+    await forgetSlugs(config.entity, id)
   }
 
   await recordAudit({ actor: user, action: `${type}.delete`, entityType: type, entityId: id })

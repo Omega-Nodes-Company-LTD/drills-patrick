@@ -219,6 +219,35 @@ export const postTagsRelations = relations(postTags, ({ one }) => ({
   tag: one(tags, { fields: [postTags.tagId], references: [tags.id] }),
 }))
 
+/**
+ * Slugs an entity used to live at.
+ *
+ * Renaming a project or an article is an ordinary editorial act; without this
+ * it silently breaks every inbound link, printed QR code and bookmark. The
+ * detail routes answer from here with a redirect instead of a 404.
+ *
+ * No foreign key on `entityId`: the four content types live in four tables,
+ * and one nullable column per table would be worse than none. Rows are
+ * removed by the action that deletes the entity.
+ */
+export const slugRedirects = pgTable(
+  'slug_redirects',
+  {
+    id: id(),
+    entityType: text().notNull().$type<'post' | 'project' | 'campaign' | 'page'>(),
+    entityId: uuid().notNull(),
+    locale: localeEnum().notNull(),
+    slug: text().notNull(),
+    createdAt: timestamps.createdAt,
+  },
+  (table) => [
+    unique('slug_redirects_type_locale_slug_key').on(table.entityType, table.locale, table.slug),
+    index('slug_redirects_entity_idx').on(table.entityType, table.entityId),
+  ],
+)
+
+export type SlugRedirectRow = typeof slugRedirects.$inferSelect
+
 export type PageRow = typeof pages.$inferSelect
 export type PageTranslationRow = typeof pageTranslations.$inferSelect
 export type PostRow = typeof posts.$inferSelect

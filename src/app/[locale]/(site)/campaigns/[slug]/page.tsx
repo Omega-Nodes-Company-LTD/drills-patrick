@@ -3,7 +3,7 @@ import { buildAlternates, localeUrl, pathsFromTranslations } from '@/lib/seo'
 import { sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
 import { JsonLd } from '@/components/seo/json-ld'
 import { notFound } from 'next/navigation'
-import { redirect } from '@/i18n/navigation'
+import { permanentRedirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { DonationForm } from '@/components/donate/donation-form'
 import { MediaImage } from '@/components/ui/media-image'
@@ -65,9 +65,10 @@ export default async function CampaignPage({
   const result = await getCampaignBySlug(slug, locale)
   if (!result) notFound()
 
-  // The slug belongs to another language: send the visitor to the canonical
-  // URL for this one instead of serving the same content twice.
-  if (result.redirectTo) redirect({ href: `/campaigns/${result.redirectTo}`, locale })
+  // Either the slug belongs to another language or it is one the entity
+  // used to live at. Permanent, not temporary: the old URL is not coming
+  // back, and 308 is what moves a search engine's index and its authority.
+  if (result.redirectTo) permanentRedirect({ href: `/campaigns/${result.redirectTo}`, locale })
 
   const [t, tNav, settings, providers] = await Promise.all([
     getTranslations('campaigns'),
