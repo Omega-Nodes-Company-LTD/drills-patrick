@@ -11,5 +11,9 @@ coverage
 .env
 .env.local
 .env*.local
-Dockerfile
+
+# `Dockerfile` must NOT be listed here. BuildKit resolves the Dockerfile
+# through the build context and honours these patterns while doing so, so
+# ignoring it makes the build fail with
+# "failed to read dockerfile: open Dockerfile: no such file or directory".
 docker-compose.yml
