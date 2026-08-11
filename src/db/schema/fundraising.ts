@@ -126,6 +126,16 @@ export const donations = pgTable(
     receiptNumber: text(),
     receiptSentAt: timestamp({ withTimezone: true }),
 
+    /**
+     * Named on the public supporter wall. Opt-in, and separate from
+     * `isAnonymous`: choosing not to be listed on a wall is a different
+     * decision from wanting the gift itself kept private, and defaulting
+     * either one to "yes" publishes a name nobody agreed to publish.
+     */
+    showOnWall: boolean().notNull().default(false),
+    /** What to call them on the wall, when it is not their legal name. */
+    wallDisplayName: text(),
+
     /** Set when an admin confirms an offline payment. */
     confirmedById: uuid().references(() => users.id, { onDelete: 'set null' }),
     confirmedAt: timestamp({ withTimezone: true }),

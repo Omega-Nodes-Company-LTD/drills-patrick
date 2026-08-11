@@ -6,6 +6,7 @@ import type {
   ContactInfo,
   DonationSettings,
   FeatureToggles,
+  InvoicingSettings,
   NavItem,
   OrganisationDetails,
   SeoSettings,
@@ -40,6 +41,7 @@ export const siteSettings = pgTable('site_settings', {
   organisation: jsonb().$type<OrganisationDetails>().notNull().default({ registryUrls: [] }),
   bankTransfer: jsonb().$type<BankTransferDetails>().notNull().default({}),
   donations: jsonb().$type<DonationSettings>(),
+  invoicing: jsonb().$type<InvoicingSettings>(),
   features: jsonb().$type<FeatureToggles>(),
 
   ...timestamps,
