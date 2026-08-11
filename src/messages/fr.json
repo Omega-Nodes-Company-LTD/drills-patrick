@@ -899,5 +899,26 @@
     "interventionTypes": "Types d'intervention",
     "teamQualifications": "Équipe et qualifications",
     "generated": "Générée le {date} à partir des projets publiés."
+  },
+  "registry": {
+    "title": "Registre des points d'eau",
+    "subtitle": "Chaque forage réalisé, avec son débit et qui l'a vérifié.",
+    "summary": "{points} points d'eau dans {districts} districts, {certificates} certificats de qualité publiés.",
+    "licence": "Réutilisable sous {licence}.",
+    "licenceUnset": "Aucune licence de réutilisation déclarée : demandez-nous avant de republier.",
+    "search": "Rechercher par nom ou lieu",
+    "filterDistrict": "Tous les districts",
+    "filterStatus": "Tous les statuts",
+    "measuredOn": "mesuré le",
+    "columns": {
+      "name": "Point d'eau",
+      "place": "Lieu",
+      "status": "Statut",
+      "depth": "Profondeur",
+      "yield": "Débit",
+      "people": "Personnes desservies",
+      "completed": "Achevé",
+      "certificates": "Certificats"
+    }
   }
 }

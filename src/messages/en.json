@@ -899,5 +899,26 @@
     "interventionTypes": "Types of intervention",
     "teamQualifications": "Team and qualifications",
     "generated": "Generated on {date} from published project records."
+  },
+  "registry": {
+    "title": "Water point register",
+    "subtitle": "Every borehole we have drilled, with what it produces and who verified it.",
+    "summary": "{points} water points across {districts} districts, {certificates} published water-quality certificates.",
+    "licence": "Reusable under {licence}.",
+    "licenceUnset": "No reuse licence stated yet — please ask before republishing.",
+    "search": "Search by name or place",
+    "filterDistrict": "All districts",
+    "filterStatus": "All statuses",
+    "measuredOn": "measured",
+    "columns": {
+      "name": "Water point",
+      "place": "Place",
+      "status": "Status",
+      "depth": "Depth",
+      "yield": "Yield",
+      "people": "People served",
+      "completed": "Completed",
+      "certificates": "Certificates"
+    }
   }
 }

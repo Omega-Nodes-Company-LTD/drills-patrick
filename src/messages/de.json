@@ -899,5 +899,26 @@
     "interventionTypes": "Interventionsarten",
     "teamQualifications": "Team und Qualifikationen",
     "generated": "Erstellt am {date} aus veröffentlichten Projektdaten."
+  },
+  "registry": {
+    "title": "Register der Wasserstellen",
+    "subtitle": "Jede gebohrte Wasserstelle, mit Ergiebigkeit und Prüfnachweis.",
+    "summary": "{points} Wasserstellen in {districts} Distrikten, {certificates} veröffentlichte Wasseranalysen.",
+    "licence": "Nachnutzbar unter {licence}.",
+    "licenceUnset": "Keine Nachnutzungslizenz angegeben — bitte vor einer Veröffentlichung nachfragen.",
+    "search": "Nach Name oder Ort suchen",
+    "filterDistrict": "Alle Distrikte",
+    "filterStatus": "Alle Status",
+    "measuredOn": "gemessen am",
+    "columns": {
+      "name": "Wasserstelle",
+      "place": "Ort",
+      "status": "Status",
+      "depth": "Tiefe",
+      "yield": "Ergiebigkeit",
+      "people": "Versorgte Menschen",
+      "completed": "Fertiggestellt",
+      "certificates": "Zertifikate"
+    }
   }
 }

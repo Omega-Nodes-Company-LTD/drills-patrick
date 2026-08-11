@@ -899,5 +899,26 @@
     "interventionTypes": "Tipi di intervento",
     "teamQualifications": "Team e qualifiche",
     "generated": "Generata il {date} dai progetti pubblicati."
+  },
+  "registry": {
+    "title": "Registro dei punti d'acqua",
+    "subtitle": "Ogni pozzo che abbiamo perforato, con quanto produce e chi lo ha verificato.",
+    "summary": "{points} punti d'acqua in {districts} distretti, {certificates} certificati di qualità pubblicati.",
+    "licence": "Riutilizzabile secondo {licence}.",
+    "licenceUnset": "Nessuna licenza di riutilizzo dichiarata: chiedici prima di ripubblicare.",
+    "search": "Cerca per nome o luogo",
+    "filterDistrict": "Tutti i distretti",
+    "filterStatus": "Tutti gli stati",
+    "measuredOn": "misurata il",
+    "columns": {
+      "name": "Punto d'acqua",
+      "place": "Luogo",
+      "status": "Stato",
+      "depth": "Profondità",
+      "yield": "Portata",
+      "people": "Persone servite",
+      "completed": "Completato",
+      "certificates": "Certificati"
+    }
   }
 }
