@@ -920,5 +920,21 @@
       "completed": "Fertiggestellt",
       "certificates": "Zertifikate"
     }
+  },
+  "readings": {
+    "title": "Ergiebigkeit im Zeitverlauf",
+    "change": "Veränderung seit der ersten Messung: {percent}",
+    "showTable": "Messwerte anzeigen",
+    "date": "Datum",
+    "yield": "Ergiebigkeit",
+    "level": "Wasserstand",
+    "note": "Notiz"
+  },
+  "beforeAfter": {
+    "title": "Was sich für die Haushalte geändert hat",
+    "walk": "Weg zum Wasser",
+    "queue": "Wartezeit an der Quelle",
+    "minutes": "{count} Min.",
+    "saved": "{count} Minuten pro Weg gespart"
   }
 }

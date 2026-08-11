@@ -920,5 +920,21 @@
       "completed": "Completato",
       "certificates": "Certificati"
     }
+  },
+  "readings": {
+    "title": "Portata nel tempo",
+    "change": "Variazione dalla prima misura: {percent}",
+    "showTable": "Mostra le misure",
+    "date": "Data",
+    "yield": "Portata",
+    "level": "Livello acqua",
+    "note": "Nota"
+  },
+  "beforeAfter": {
+    "title": "Cosa è cambiato per le famiglie",
+    "walk": "Cammino fino all'acqua",
+    "queue": "Attesa alla fonte",
+    "minutes": "{count} min",
+    "saved": "{count} minuti risparmiati a ogni viaggio"
   }
 }

@@ -920,5 +920,21 @@
       "completed": "Achevé",
       "certificates": "Certificats"
     }
+  },
+  "readings": {
+    "title": "Débit dans le temps",
+    "change": "Évolution depuis la première mesure : {percent}",
+    "showTable": "Afficher les mesures",
+    "date": "Date",
+    "yield": "Débit",
+    "level": "Niveau d'eau",
+    "note": "Note"
+  },
+  "beforeAfter": {
+    "title": "Ce qui a changé pour les ménages",
+    "walk": "Marche jusqu'à l'eau",
+    "queue": "Attente au point d'eau",
+    "minutes": "{count} min",
+    "saved": "{count} minutes gagnées à chaque trajet"
   }
 }

@@ -920,5 +920,21 @@
       "completed": "Completed",
       "certificates": "Certificates"
     }
+  },
+  "readings": {
+    "title": "Yield over time",
+    "change": "Change since the first reading: {percent}",
+    "showTable": "Show the measurements",
+    "date": "Date",
+    "yield": "Yield",
+    "level": "Water level",
+    "note": "Note"
+  },
+  "beforeAfter": {
+    "title": "What changed for households",
+    "walk": "Walk to water",
+    "queue": "Wait at the source",
+    "minutes": "{count} min",
+    "saved": "{count} minutes saved on every trip"
   }
 }

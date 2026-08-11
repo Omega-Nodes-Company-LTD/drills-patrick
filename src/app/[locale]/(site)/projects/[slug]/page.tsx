@@ -12,9 +12,12 @@ import { Button } from '@/components/ui/button'
 import { MediaImage } from '@/components/ui/media-image'
 import { Progress } from '@/components/ui/progress'
 import { ProjectCard } from '@/components/site/cards'
+import { BeforeAfter } from '@/components/site/before-after'
+import { ReadingsChart } from '@/components/site/readings-chart'
 import { intlLocale, type Locale } from '@/i18n/config'
 import { Link } from '@/i18n/navigation'
 import { getProjectBySlug, listProjects } from '@/lib/content/queries'
+import { listReadings } from '@/lib/transparency/registry'
 import { formatMoney, formatNumber } from '@/lib/money'
 import { sanitizeHtml } from '@/lib/sanitize'
 import { percentage } from '@/lib/utils'
@@ -86,7 +89,10 @@ export default async function ProjectPage({
   const tNav = await getTranslations('nav')
   const { project, translation, cover, gallery, updates, campaignId } = result
 
-  const related = await listProjects({ locale, limit: 3 })
+  const [related, readings] = await Promise.all([
+    listProjects({ locale, limit: 3 }),
+    listReadings(project.id),
+  ])
   const others = related.items.filter((item) => item.id !== project.id).slice(0, 3)
 
   const facts: { label: string; value: string }[] = []
@@ -208,6 +214,14 @@ export default async function ProjectPage({
               dangerouslySetInnerHTML={{ __html: sanitizeHtml(translation.contentHtml) }}
             />
           ) : null}
+
+          <BeforeAfter
+            locale={locale}
+            walk={{ before: project.preWalkMinutes, after: project.postWalkMinutes }}
+            queue={{ before: project.preQueueMinutes, after: project.postQueueMinutes }}
+          />
+
+          <ReadingsChart readings={readings} locale={locale} />
 
           {gallery.length > 0 ? (
             <section>
