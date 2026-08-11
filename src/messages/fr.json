@@ -349,7 +349,8 @@
       "faults": "Pannes",
       "quotes": "Devis",
       "contracts": "Contrats",
-      "partnerAccess": "Accès partenaires"
+      "partnerAccess": "Accès partenaires",
+      "transparency": "Chiffres publiés"
     },
     "dashboard": {
       "title": "Tableau de bord",
@@ -792,6 +793,35 @@
         "monthly": "Mensuel",
         "quarterly": "Trimestriel"
       }
+    },
+    "transparency": {
+      "title": "Chiffres publiés",
+      "indicators": "Indicateurs d'impact",
+      "spending": "Dépenses",
+      "key": "Clé",
+      "value": "Valeur",
+      "unit": "Unité",
+      "methodology": "Comment cela a été mesuré",
+      "methodologyHint": "Affiché au public à côté du chiffre. Un indicateur sans méthode déclarée n'est qu'une affirmation.",
+      "methodRequired": "Une méthodologie d'au moins dix caractères est requise.",
+      "source": "Source",
+      "verifiedOn": "Vérifié le",
+      "verified": "vérifié",
+      "unverified": "non vérifié",
+      "label": "Libellé",
+      "year": "Année",
+      "category": "Catégorie",
+      "amount": "Montant",
+      "currency": "Devise",
+      "note": "Note"
+    },
+    "readings": {
+      "title": "Mesures",
+      "hint": "Le débit le jour du forage est un argument de vente. Le débit après trois saisons sèches est une preuve.",
+      "yield": "Débit (l/h)",
+      "level": "Niveau d'eau (m)",
+      "measuredBy": "Mesuré par",
+      "note": "Note"
     }
   },
   "portal": {
@@ -899,5 +929,64 @@
     "interventionTypes": "Types d'intervention",
     "teamQualifications": "Équipe et qualifications",
     "generated": "Générée le {date} à partir des projets publiés."
+  },
+  "registry": {
+    "title": "Registre des points d'eau",
+    "subtitle": "Chaque forage réalisé, avec son débit et qui l'a vérifié.",
+    "summary": "{points} points d'eau dans {districts} districts, {certificates} certificats de qualité publiés.",
+    "licence": "Réutilisable sous {licence}.",
+    "licenceUnset": "Aucune licence de réutilisation déclarée : demandez-nous avant de republier.",
+    "search": "Rechercher par nom ou lieu",
+    "filterDistrict": "Tous les districts",
+    "filterStatus": "Tous les statuts",
+    "measuredOn": "mesuré le",
+    "columns": {
+      "name": "Point d'eau",
+      "place": "Lieu",
+      "status": "Statut",
+      "depth": "Profondeur",
+      "yield": "Débit",
+      "people": "Personnes desservies",
+      "completed": "Achevé",
+      "certificates": "Certificats"
+    }
+  },
+  "readings": {
+    "title": "Débit dans le temps",
+    "change": "Évolution depuis la première mesure : {percent}",
+    "showTable": "Afficher les mesures",
+    "date": "Date",
+    "yield": "Débit",
+    "level": "Niveau d'eau",
+    "note": "Note"
+  },
+  "beforeAfter": {
+    "title": "Ce qui a changé pour les ménages",
+    "walk": "Marche jusqu'à l'eau",
+    "queue": "Attente au point d'eau",
+    "minutes": "{count} min",
+    "saved": "{count} minutes gagnées à chaque trajet",
+    "admin": {
+      "preWalk": "Marche avant (min)",
+      "postWalk": "Marche après (min)",
+      "preQueue": "File avant (min)",
+      "postQueue": "File après (min)"
+    }
+  },
+  "spending": {
+    "title": "Comment nous dépensons",
+    "subtitle": "Ce qui entre, où cela va, et comment chaque chiffre publié a été obtenu.",
+    "indicators": "Indicateurs d'impact",
+    "verifiedOn": "Vérifié le {date}",
+    "notVerified": "Pas encore vérifié de façon indépendante",
+    "empty": "Les dépenses ne sont pas encore publiées.",
+    "yearHeading": "Dépenses {year}",
+    "category": "Catégorie",
+    "amount": "Montant",
+    "share": "Part"
+  },
+  "updates": {
+    "title": "Avancement des projets",
+    "subtitle": "Tout ce qui s'est passé sur nos projets, du plus récent au plus ancien."
   }
 }

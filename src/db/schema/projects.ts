@@ -53,6 +53,17 @@ export const projects = pgTable(
     depthMeters: integer(),
     yieldLitersPerHour: integer(),
     waterQualityNote: text(),
+    /**
+     * What changed for the households, before and after.
+     *
+     * The walk to water and the queue at the source are the two numbers a
+     * community actually feels; beneficiaries served is the number a funder
+     * reads. Both are needed, and neither can be derived from the other.
+     */
+    preWalkMinutes: integer(),
+    postWalkMinutes: integer(),
+    preQueueMinutes: integer(),
+    postQueueMinutes: integer(),
 
     // Impact
     beneficiaries: integer().notNull().default(0),

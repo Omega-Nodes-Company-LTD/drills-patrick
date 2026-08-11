@@ -349,7 +349,8 @@
       "faults": "Faults",
       "quotes": "Quotes",
       "contracts": "Contracts",
-      "partnerAccess": "Partner access"
+      "partnerAccess": "Partner access",
+      "transparency": "Published figures"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -792,6 +793,35 @@
         "monthly": "Monthly",
         "quarterly": "Quarterly"
       }
+    },
+    "transparency": {
+      "title": "Published figures",
+      "indicators": "Impact indicators",
+      "spending": "Spending",
+      "key": "Key",
+      "value": "Value",
+      "unit": "Unit",
+      "methodology": "How this was measured",
+      "methodologyHint": "Shown to the public next to the figure. An indicator without a stated method is a claim.",
+      "methodRequired": "A methodology of at least ten characters is required.",
+      "source": "Source",
+      "verifiedOn": "Verified on",
+      "verified": "verified",
+      "unverified": "not verified",
+      "label": "Label",
+      "year": "Year",
+      "category": "Category",
+      "amount": "Amount",
+      "currency": "Currency",
+      "note": "Note"
+    },
+    "readings": {
+      "title": "Measurements",
+      "hint": "Yield on the day of drilling is a sales figure. Yield three dry seasons later is evidence.",
+      "yield": "Yield (l/h)",
+      "level": "Water level (m)",
+      "measuredBy": "Measured by",
+      "note": "Note"
     }
   },
   "portal": {
@@ -899,5 +929,64 @@
     "interventionTypes": "Types of intervention",
     "teamQualifications": "Team and qualifications",
     "generated": "Generated on {date} from published project records."
+  },
+  "registry": {
+    "title": "Water point register",
+    "subtitle": "Every borehole we have drilled, with what it produces and who verified it.",
+    "summary": "{points} water points across {districts} districts, {certificates} published water-quality certificates.",
+    "licence": "Reusable under {licence}.",
+    "licenceUnset": "No reuse licence stated yet — please ask before republishing.",
+    "search": "Search by name or place",
+    "filterDistrict": "All districts",
+    "filterStatus": "All statuses",
+    "measuredOn": "measured",
+    "columns": {
+      "name": "Water point",
+      "place": "Place",
+      "status": "Status",
+      "depth": "Depth",
+      "yield": "Yield",
+      "people": "People served",
+      "completed": "Completed",
+      "certificates": "Certificates"
+    }
+  },
+  "readings": {
+    "title": "Yield over time",
+    "change": "Change since the first reading: {percent}",
+    "showTable": "Show the measurements",
+    "date": "Date",
+    "yield": "Yield",
+    "level": "Water level",
+    "note": "Note"
+  },
+  "beforeAfter": {
+    "title": "What changed for households",
+    "walk": "Walk to water",
+    "queue": "Wait at the source",
+    "minutes": "{count} min",
+    "saved": "{count} minutes saved on every trip",
+    "admin": {
+      "preWalk": "Walk before (min)",
+      "postWalk": "Walk after (min)",
+      "preQueue": "Queue before (min)",
+      "postQueue": "Queue after (min)"
+    }
+  },
+  "spending": {
+    "title": "How we spend it",
+    "subtitle": "What comes in, where it goes, and how every published figure was arrived at.",
+    "indicators": "Impact figures",
+    "verifiedOn": "Verified {date}",
+    "notVerified": "Not yet independently verified",
+    "empty": "Spending has not been published yet.",
+    "yearHeading": "Spending in {year}",
+    "category": "Category",
+    "amount": "Amount",
+    "share": "Share"
+  },
+  "updates": {
+    "title": "Project updates",
+    "subtitle": "Everything that has happened across our projects, newest first."
   }
 }

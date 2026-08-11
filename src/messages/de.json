@@ -349,7 +349,8 @@
       "faults": "Störungen",
       "quotes": "Angebote",
       "contracts": "Verträge",
-      "partnerAccess": "Partnerzugänge"
+      "partnerAccess": "Partnerzugänge",
+      "transparency": "Veröffentlichte Zahlen"
     },
     "dashboard": {
       "title": "Übersicht",
@@ -792,6 +793,35 @@
         "monthly": "Monatlich",
         "quarterly": "Vierteljährlich"
       }
+    },
+    "transparency": {
+      "title": "Veröffentlichte Zahlen",
+      "indicators": "Wirkungskennzahlen",
+      "spending": "Ausgaben",
+      "key": "Schlüssel",
+      "value": "Wert",
+      "unit": "Einheit",
+      "methodology": "Wie wurde gemessen",
+      "methodologyHint": "Wird öffentlich neben der Zahl angezeigt. Eine Kennzahl ohne Methode ist nur eine Behauptung.",
+      "methodRequired": "Eine Methodik von mindestens zehn Zeichen ist erforderlich.",
+      "source": "Quelle",
+      "verifiedOn": "Geprüft am",
+      "verified": "geprüft",
+      "unverified": "ungeprüft",
+      "label": "Bezeichnung",
+      "year": "Jahr",
+      "category": "Kategorie",
+      "amount": "Betrag",
+      "currency": "Währung",
+      "note": "Notiz"
+    },
+    "readings": {
+      "title": "Messungen",
+      "hint": "Die Ergiebigkeit am Bohrtag ist eine Verkaufszahl. Die Ergiebigkeit nach drei Trockenzeiten ist ein Beleg.",
+      "yield": "Ergiebigkeit (l/h)",
+      "level": "Wasserstand (m)",
+      "measuredBy": "Gemessen von",
+      "note": "Notiz"
     }
   },
   "portal": {
@@ -899,5 +929,64 @@
     "interventionTypes": "Interventionsarten",
     "teamQualifications": "Team und Qualifikationen",
     "generated": "Erstellt am {date} aus veröffentlichten Projektdaten."
+  },
+  "registry": {
+    "title": "Register der Wasserstellen",
+    "subtitle": "Jede gebohrte Wasserstelle, mit Ergiebigkeit und Prüfnachweis.",
+    "summary": "{points} Wasserstellen in {districts} Distrikten, {certificates} veröffentlichte Wasseranalysen.",
+    "licence": "Nachnutzbar unter {licence}.",
+    "licenceUnset": "Keine Nachnutzungslizenz angegeben — bitte vor einer Veröffentlichung nachfragen.",
+    "search": "Nach Name oder Ort suchen",
+    "filterDistrict": "Alle Distrikte",
+    "filterStatus": "Alle Status",
+    "measuredOn": "gemessen am",
+    "columns": {
+      "name": "Wasserstelle",
+      "place": "Ort",
+      "status": "Status",
+      "depth": "Tiefe",
+      "yield": "Ergiebigkeit",
+      "people": "Versorgte Menschen",
+      "completed": "Fertiggestellt",
+      "certificates": "Zertifikate"
+    }
+  },
+  "readings": {
+    "title": "Ergiebigkeit im Zeitverlauf",
+    "change": "Veränderung seit der ersten Messung: {percent}",
+    "showTable": "Messwerte anzeigen",
+    "date": "Datum",
+    "yield": "Ergiebigkeit",
+    "level": "Wasserstand",
+    "note": "Notiz"
+  },
+  "beforeAfter": {
+    "title": "Was sich für die Haushalte geändert hat",
+    "walk": "Weg zum Wasser",
+    "queue": "Wartezeit an der Quelle",
+    "minutes": "{count} Min.",
+    "saved": "{count} Minuten pro Weg gespart",
+    "admin": {
+      "preWalk": "Weg vorher (Min.)",
+      "postWalk": "Weg nachher (Min.)",
+      "preQueue": "Warten vorher (Min.)",
+      "postQueue": "Warten nachher (Min.)"
+    }
+  },
+  "spending": {
+    "title": "Wie wir Mittel einsetzen",
+    "subtitle": "Was hereinkommt, wohin es geht und wie jede veröffentlichte Zahl zustande kam.",
+    "indicators": "Wirkungskennzahlen",
+    "verifiedOn": "Geprüft am {date}",
+    "notVerified": "Noch nicht unabhängig geprüft",
+    "empty": "Die Mittelverwendung ist noch nicht veröffentlicht.",
+    "yearHeading": "Ausgaben {year}",
+    "category": "Kategorie",
+    "amount": "Betrag",
+    "share": "Anteil"
+  },
+  "updates": {
+    "title": "Projektfortschritt",
+    "subtitle": "Alles, was auf unseren Projekten passiert ist, neueste zuerst."
   }
 }

@@ -33,7 +33,8 @@ export type SlaMetrics = {
   functionalRate: number | null
 }
 
-function median(values: number[]): number | null {
+/** Exported for tests: the choice of median over mean is the point, so pin it. */
+export function median(values: number[]): number | null {
   if (values.length === 0) return null
   const sorted = [...values].sort((a, b) => a - b)
   const middle = Math.floor(sorted.length / 2)

@@ -78,6 +78,11 @@ export const projectInputSchema = z.object({
   depthMeters: z.coerce.number().int().min(0).max(5000).nullish(),
   yieldLitersPerHour: z.coerce.number().int().min(0).max(1_000_000).nullish(),
   waterQualityNote: z.string().trim().max(300).optional(),
+  /** Minutes walked and queued, before and after. Published as a comparison. */
+  preWalkMinutes: z.coerce.number().int().min(0).max(1440).nullish(),
+  postWalkMinutes: z.coerce.number().int().min(0).max(1440).nullish(),
+  preQueueMinutes: z.coerce.number().int().min(0).max(1440).nullish(),
+  postQueueMinutes: z.coerce.number().int().min(0).max(1440).nullish(),
   beneficiaries: z.coerce.number().int().min(0).max(10_000_000).default(0),
   households: z.coerce.number().int().min(0).max(1_000_000).nullish(),
   schoolsServed: z.coerce.number().int().min(0).max(10_000).nullish(),

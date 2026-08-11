@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { ProjectForm } from '@/components/admin/project-form'
 import { MaintenanceVisitsEditor } from '@/components/admin/maintenance-visits-editor'
+import { ReadingsEditor } from '@/components/admin/readings-editor'
 import { ProjectDocumentsEditor } from '@/components/admin/project-documents-editor'
 import { ProjectUpdatesEditor } from '@/components/admin/project-updates-editor'
 import { features } from '@/env'
@@ -11,6 +12,7 @@ import {
   adminGetProject,
   adminListMaintenanceVisits,
   adminListProjectDocuments,
+  adminListReadings,
   adminListProjectUpdates,
 } from '@/lib/admin/queries'
 import { requirePermission } from '@/lib/auth/guard'
@@ -31,13 +33,14 @@ export default async function EditProjectPage({
   setRequestLocale(locale)
   await requirePermission('projects')
 
-  const [t, record, settings, updates, documents, visits] = await Promise.all([
+  const [t, record, settings, updates, documents, visits, readings] = await Promise.all([
     getTranslations('admin.nav'),
     adminGetProject(id),
     getSiteSettings(),
     adminListProjectUpdates(id),
     adminListProjectDocuments(id),
     adminListMaintenanceVisits(id),
+    adminListReadings(id),
   ])
 
   if (!record) notFound()
@@ -81,6 +84,10 @@ export default async function EditProjectPage({
           depthMeters: text(project.depthMeters),
           yieldLitersPerHour: text(project.yieldLitersPerHour),
           waterQualityNote: text(project.waterQualityNote),
+          preWalkMinutes: text(project.preWalkMinutes),
+          postWalkMinutes: text(project.postWalkMinutes),
+          preQueueMinutes: text(project.preQueueMinutes),
+          postQueueMinutes: text(project.postQueueMinutes),
           beneficiaries: text(project.beneficiaries),
           households: text(project.households),
           schoolsServed: text(project.schoolsServed),
@@ -145,6 +152,18 @@ export default async function EditProjectPage({
           workDone: visit.workDone,
           partsUsed: visit.partsUsed,
           functionalAfter: visit.functionalAfter,
+        }))}
+      />
+
+      <ReadingsEditor
+        projectId={project.id}
+        rows={readings.map((reading) => ({
+          id: reading.id,
+          measuredOn: reading.measuredOn,
+          yieldLitersPerHour: reading.yieldLitersPerHour,
+          staticLevelM: reading.staticLevelM,
+          note: reading.note,
+          measuredBy: reading.measuredBy,
         }))}
       />
     </div>

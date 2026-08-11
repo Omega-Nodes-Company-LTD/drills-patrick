@@ -36,6 +36,13 @@
       "when": 1786401706158,
       "tag": "0004_ngo_partner_area",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786429609723,
+      "tag": "0005_transparency",
+      "breakpoints": true
     }
   ]
 }
