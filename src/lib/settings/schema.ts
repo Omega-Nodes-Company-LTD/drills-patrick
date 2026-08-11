@@ -72,6 +72,35 @@ export const donationSettingsSchema = z.object({
   thankYouMessage: i18nRichTextSchema.optional(),
 })
 
+/**
+ * How corporate invoices are numbered and taxed.
+ *
+ * Deliberately all operator-set. Numbering conventions, whether a donation
+ * attracts VAT, and the wording that justifies an exemption differ by country
+ * and change between financial years — inventing defaults here would be
+ * inventing a fiscal policy on someone else's behalf, and the cost of getting
+ * it wrong lands on them, not on this code.
+ *
+ * `nextSequence` is the number the next invoice in the current year will take,
+ * so an organisation migrating mid-year can continue its existing series
+ * instead of restarting at one and creating a duplicate.
+ */
+export const invoicingSettingsSchema = z.object({
+  enabled: z.boolean().default(false),
+  series: z.string().trim().max(12).default(''),
+  nextSequence: z.number().int().min(1).default(1),
+  /** Digits to pad the sequence to, e.g. 4 gives 0007. */
+  sequencePadding: z.number().int().min(1).max(10).default(4),
+  /** Basis points: 2200 is 22%. Zero when the gift is outside the tax scope. */
+  taxRateBp: z.number().int().min(0).max(10_000).default(0),
+  /** The sentence printed under the total explaining the tax treatment. */
+  taxNote: z.string().trim().max(400).default(''),
+  /** Default wording of the invoice line. */
+  description: z.string().trim().max(200).default(''),
+  /** Payment terms and any footer the accountant requires. */
+  footer: z.string().trim().max(600).default(''),
+})
+
 export const featureTogglesSchema = z.object({
   blog: z.boolean().default(true),
   projects: z.boolean().default(true),
@@ -100,6 +129,7 @@ export type ContactInfo = z.infer<typeof contactInfoSchema>
 export type SeoSettings = z.infer<typeof seoSettingsSchema>
 export type BankTransferDetails = z.infer<typeof bankTransferSchema>
 export type DonationSettings = z.infer<typeof donationSettingsSchema>
+export type InvoicingSettings = z.infer<typeof invoicingSettingsSchema>
 export type FeatureToggles = z.infer<typeof featureTogglesSchema>
 export type OrganisationDetails = z.infer<typeof organisationSchema>
 

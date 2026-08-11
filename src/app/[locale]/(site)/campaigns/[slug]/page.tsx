@@ -6,12 +6,16 @@ import { notFound } from 'next/navigation'
 import { permanentRedirect } from '@/i18n/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { DonationForm } from '@/components/donate/donation-form'
+import { MatchingBanner } from '@/components/site/matching-banner'
+import { MilestoneList } from '@/components/site/milestone-list'
 import { MediaImage } from '@/components/ui/media-image'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
 import type { Locale } from '@/i18n/config'
 import { Link } from '@/i18n/navigation'
 import { getCampaignBySlug } from '@/lib/content/queries'
+import { openPledge } from '@/lib/giving/attach'
+import { listMilestones } from '@/lib/giving/campaign-extras'
 import { formatMoney } from '@/lib/money'
 import { listAvailableProviders } from '@/lib/payments/registry'
 import { sanitizeHtml } from '@/lib/sanitize'
@@ -78,6 +82,11 @@ export default async function CampaignPage({
   ])
 
   const { campaign, translation, cover, supporters } = result
+  const [milestones, pledge] = await Promise.all([
+    listMilestones(campaign.id, locale),
+    openPledge(campaign.id, new Date()),
+  ])
+
   const raised = campaign.raisedAmount + campaign.offlineAmount
   const progress = percentage(raised, campaign.goalAmount)
   const remaining = Math.max(0, campaign.goalAmount - raised)
@@ -128,6 +137,13 @@ export default async function CampaignPage({
             />
           ) : null}
 
+          <MilestoneList
+            milestones={milestones}
+            raisedMinor={raised}
+            currency={campaign.currency}
+            locale={locale}
+          />
+
           {campaign.impactTiers.length > 0 ? (
             <section className="rounded-[var(--radius-lg)] border border-border p-5">
               <h2 className="mb-3 text-subheading font-semibold">{t('supportCampaign')}</h2>
@@ -152,6 +168,8 @@ export default async function CampaignPage({
         </div>
 
         <aside className="flex h-fit flex-col gap-5 lg:sticky lg:top-24">
+          {pledge ? <MatchingBanner pledge={pledge} locale={locale} /> : null}
+
           <div className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-5 text-surface-foreground">
             <Progress value={progress} label={t('raised')} />
             <div className="flex items-baseline justify-between gap-2">

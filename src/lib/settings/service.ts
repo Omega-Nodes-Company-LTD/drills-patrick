@@ -9,12 +9,14 @@ import {
   type ContactInfo,
   type DonationSettings,
   type FeatureToggles,
+  type InvoicingSettings,
   type NavItem,
   type OrganisationDetails,
   type SeoSettings,
   type SocialLinks,
   donationSettingsSchema,
   featureTogglesSchema,
+  invoicingSettingsSchema,
   organisationSchema,
   parseNavItems,
 } from '@/lib/settings/schema'
@@ -41,6 +43,7 @@ export type SiteSettings = {
   organisation: OrganisationDetails
   bankTransfer: BankTransferDetails
   donations: DonationSettings
+  invoicing: InvoicingSettings
   features: FeatureToggles
 }
 
@@ -61,6 +64,7 @@ const fallbackSettings: SiteSettings = {
   organisation: { registryUrls: [] },
   bankTransfer: {},
   donations: donationSettingsSchema.parse({}),
+  invoicing: invoicingSettingsSchema.parse({}),
   features: featureTogglesSchema.parse({}),
 }
 
@@ -92,6 +96,7 @@ async function loadSettings(): Promise<SiteSettings> {
     organisation: organisationSchema.parse(row.organisation ?? {}),
     bankTransfer: row.bankTransfer ?? {},
     donations: donationSettingsSchema.parse(row.donations ?? {}),
+    invoicing: invoicingSettingsSchema.parse(row.invoicing ?? {}),
     features: featureTogglesSchema.parse(row.features ?? {}),
   }
 }

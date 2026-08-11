@@ -43,6 +43,13 @@
       "when": 1786429609723,
       "tag": "0005_transparency",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786433034447,
+      "tag": "0006_giving",
+      "breakpoints": true
     }
   ]
 }

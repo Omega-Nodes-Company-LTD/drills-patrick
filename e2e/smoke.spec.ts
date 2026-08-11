@@ -225,6 +225,72 @@ test.describe('transparency', () => {
   })
 })
 
+test.describe('fundraising', () => {
+  test('serves the supporter-facing pages', async ({ page }) => {
+    for (const path of ['/fundraisers', '/fundraisers/start', '/supporters', '/legacy']) {
+      const response = await page.goto(path)
+      expect(response?.status(), `${path} should render`).toBe(200)
+      await expect(page.locator('h1')).toBeVisible()
+    }
+  })
+
+  test('turns away a token that is not valid', async ({ page }) => {
+    // Every one of these URLs stands in for a password. A wrong token must
+    // show the same nothing as a missing one, never a partial record.
+    for (const path of [
+      '/giving/manage?ref=NOPE&token=definitely-not-a-real-token',
+      '/giving/statement?ref=NOPE&token=definitely-not-a-real-token',
+      '/fundraisers/does-not-exist/manage?token=definitely-not-a-real-token',
+    ]) {
+      await page.goto(path)
+      await expect(page.locator('p[class*="danger"]'), `${path} should refuse`).toBeVisible()
+    }
+  })
+
+  test('refuses a gift card link that was never issued', async ({ page }) => {
+    await page.goto('/gift/not-a-real-token-at-all-here')
+    await expect(page.getByRole('heading').first()).toBeVisible()
+    // No card content leaks for an unknown token.
+    await expect(page.locator('blockquote')).toHaveCount(0)
+  })
+
+  test('keeps token-bearing URLs out of the index', async ({ request }) => {
+    const robots = await (await request.get('/robots.txt')).text()
+
+    for (const path of ['/*/giving/manage', '/*/giving/statement', '/*/gift/']) {
+      expect(robots, `${path} should be disallowed`).toContain(path)
+    }
+  })
+
+  test('lists the new pages in the sitemap', async ({ request }) => {
+    const sitemap = await (await request.get('/sitemap.xml')).text()
+
+    expect(sitemap).toContain('/fundraisers')
+    expect(sitemap).toContain('/supporters')
+    expect(sitemap).toContain('/legacy')
+    // The token-bearing ones must never be advertised.
+    expect(sitemap).not.toContain('/giving/manage')
+    expect(sitemap).not.toContain('/giving/statement')
+  })
+
+  test('takes a supporter through starting a page', async ({ page }) => {
+    await page.goto('/fundraisers/start')
+
+    await page.getByLabel('Page title').fill('Running the Kampala marathon')
+    // Not `exact`: a required field's label carries a trailing asterisk.
+    await page.getByLabel('Your name').fill('Test Supporter')
+    await page.getByLabel('Your email').fill('supporter@example.test')
+    await page.getByRole('button', { name: 'Create my page' }).click()
+
+    await expect(page.getByRole('heading', { name: 'Your page has been created' })).toBeVisible()
+
+    // Held for review rather than published: these pages carry the
+    // organisation's name.
+    await page.goto('/fundraisers')
+    await expect(page.getByText('Running the Kampala marathon')).toHaveCount(0)
+  })
+})
+
 test.describe('partner area', () => {
   test('keeps the portal behind a sign-in', async ({ page }) => {
     // The portal shows one organisation another organisation's borehole

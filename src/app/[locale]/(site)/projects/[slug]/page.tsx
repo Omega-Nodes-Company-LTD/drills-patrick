@@ -13,10 +13,13 @@ import { MediaImage } from '@/components/ui/media-image'
 import { Progress } from '@/components/ui/progress'
 import { ProjectCard } from '@/components/site/cards'
 import { BeforeAfter } from '@/components/site/before-after'
+import { ProjectBackers } from '@/components/site/project-backers'
 import { ReadingsChart } from '@/components/site/readings-chart'
 import { intlLocale, type Locale } from '@/i18n/config'
 import { Link } from '@/i18n/navigation'
 import { getProjectBySlug, listProjects } from '@/lib/content/queries'
+import { publicAdopters } from '@/lib/giving/adoptions'
+import { projectSponsors } from '@/lib/giving/invoices'
 import { listReadings } from '@/lib/transparency/registry'
 import { formatMoney, formatNumber } from '@/lib/money'
 import { sanitizeHtml } from '@/lib/sanitize'
@@ -89,9 +92,11 @@ export default async function ProjectPage({
   const tNav = await getTranslations('nav')
   const { project, translation, cover, gallery, updates, campaignId } = result
 
-  const [related, readings] = await Promise.all([
+  const [related, readings, sponsors, adopters] = await Promise.all([
     listProjects({ locale, limit: 3 }),
     listReadings(project.id),
+    projectSponsors(project.id),
+    publicAdopters(project.id),
   ])
   const others = related.items.filter((item) => item.id !== project.id).slice(0, 3)
 
@@ -222,6 +227,8 @@ export default async function ProjectPage({
           />
 
           <ReadingsChart readings={readings} locale={locale} />
+
+          <ProjectBackers sponsors={sponsors} adopters={adopters} locale={locale} />
 
           {gallery.length > 0 ? (
             <section>
