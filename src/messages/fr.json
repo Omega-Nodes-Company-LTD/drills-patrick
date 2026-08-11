@@ -342,7 +342,8 @@
     "disabled": "La collecte est actuellement désactivée.",
     "close": "Fermer cette page",
     "closeHint": "La fermeture masque la page. Les dons déjà reçus ne changent pas.",
-    "closed": "Cette page est fermée."
+    "closed": "Cette page est fermée.",
+    "startedNoEmail": "Nous n'avons pas pu vous envoyer de courriel. Enregistrez ce lien maintenant : c'est le seul moyen de modifier votre page, et il ne pourra plus être affiché."
   },
   "supporters": {
     "title": "Nos soutiens",

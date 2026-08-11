@@ -342,7 +342,8 @@
     "disabled": "Das Spendensammeln ist derzeit ausgeschaltet.",
     "close": "Diese Seite schließen",
     "closeHint": "Das Schließen blendet die Seite aus. Bereits erhaltene Spenden bleiben unberührt.",
-    "closed": "Diese Seite ist geschlossen."
+    "closed": "Diese Seite ist geschlossen.",
+    "startedNoEmail": "Wir konnten Ihnen keine E-Mail senden. Sichern Sie diesen Link jetzt — er ist der einzige Weg, Ihre Seite zu bearbeiten, und kann nicht erneut angezeigt werden."
   },
   "supporters": {
     "title": "Unsere Unterstützenden",

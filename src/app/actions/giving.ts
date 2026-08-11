@@ -35,9 +35,9 @@ async function guard(scope: string, limit = 5): Promise<boolean> {
 // -------------------------------------------------------- peer-to-peer page
 
 export async function startFundraiser(
-  _prev: ActionResult<{ slug: string }> | null,
+  _prev: ActionResult<{ slug: string; manageUrl?: string }> | null,
   formData: FormData,
-): Promise<ActionResult<{ slug: string }>> {
+): Promise<ActionResult<{ slug: string; manageUrl?: string }>> {
   const parsed = fundraiserStartSchema.safeParse(Object.fromEntries(formData))
   if (!parsed.success) {
     return {
@@ -80,9 +80,11 @@ export async function startFundraiser(
     endsOn: input.endsOn || null,
   })
 
-  // The link is the only copy of the token, so it goes out before anything
-  // else can fail. A page the owner cannot edit is worse than no page.
-  await sendFundraiserLink({
+  // The link is the only copy of the token — it is stored hashed and cannot be
+  // reissued. If the email does not go out (no SMTP configured, a bounce at
+  // send time), the page would be permanently unowned, so the link is handed
+  // back to the browser instead and the form tells them to keep it.
+  const emailed = await sendFundraiserLink({
     to: input.ownerEmail,
     ownerName: input.ownerName,
     title: input.title,
@@ -90,10 +92,20 @@ export async function startFundraiser(
     token,
     locale: input.locale,
   })
+
   await notifyFundraiserStarted({ title: input.title, ownerName: input.ownerName, slug })
 
   revalidatePath('/fundraisers')
-  return { ok: true, data: { slug } }
+
+  return {
+    ok: true,
+    data: {
+      slug,
+      manageUrl: emailed
+        ? undefined
+        : `/${input.locale}/fundraisers/${slug}/manage?token=${encodeURIComponent(token)}`,
+    },
+  }
 }
 
 export async function editFundraiser(

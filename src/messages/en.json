@@ -342,7 +342,8 @@
     "disabled": "Fundraising is currently switched off.",
     "close": "Close this page",
     "closeHint": "Closing hides the page. Gifts already given are unaffected.",
-    "closed": "This page is closed."
+    "closed": "This page is closed.",
+    "startedNoEmail": "We could not send you an email. Save this link now — it is the only way to edit your page, and it cannot be shown again."
   },
   "supporters": {
     "title": "Our supporters",

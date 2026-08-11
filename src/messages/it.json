@@ -342,7 +342,8 @@
     "disabled": "La raccolta fondi è al momento disattivata.",
     "close": "Chiudi questa pagina",
     "closeHint": "Chiudendola la pagina non sarà più visibile. Le donazioni già ricevute non cambiano.",
-    "closed": "Questa pagina è chiusa."
+    "closed": "Questa pagina è chiusa.",
+    "startedNoEmail": "Non siamo riusciti a inviarti l'email. Salva subito questo link: è l'unico modo per modificare la tua pagina, e non possiamo mostrartelo di nuovo."
   },
   "supporters": {
     "title": "I nostri sostenitori",

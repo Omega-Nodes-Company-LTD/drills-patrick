@@ -39,12 +39,12 @@ export async function sendFundraiserLink(params: {
   slug: string
   token: string
   locale: Locale
-}): Promise<void> {
+}): Promise<boolean> {
   const manageUrl = absoluteUrl(
     `/${params.locale}/fundraisers/${params.slug}/manage?token=${encodeURIComponent(params.token)}`,
   )
 
-  await sendMail({
+  return sendMail({
     to: params.to,
     subject: `Your fundraising page: ${params.title}`,
     html: renderEmail({

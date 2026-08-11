@@ -29,17 +29,34 @@ export function FundraiserStartForm({
   projects: { id: string; title: string }[]
 }) {
   const t = useTranslations('fundraisers')
-  const [state, action, pending] = useActionState<ActionResult<{ slug: string }> | null, FormData>(
-    startFundraiser,
-    null,
-  )
+  const [state, action, pending] = useActionState<
+    ActionResult<{ slug: string; manageUrl?: string }> | null,
+    FormData
+  >(startFundraiser, null)
 
   if (state?.ok) {
+    const manageUrl = state.data?.manageUrl
+
     return (
       <div className="flex flex-col items-start gap-3 rounded-[var(--radius-lg)] border border-success/40 bg-success/8 p-6">
         <CheckCircle2 className="size-8 text-success" aria-hidden />
         <h2 className="text-heading">{t('startedTitle')}</h2>
-        <p className="text-muted-foreground">{t('startedText')}</p>
+
+        {/*
+          The link is shown here only when the email could not be sent. The
+          token is stored hashed and cannot be reissued, so a page whose owner
+          never received it would be permanently uneditable.
+        */}
+        {manageUrl ? (
+          <>
+            <p className="text-muted-foreground">{t('startedNoEmail')}</p>
+            <code className="w-full break-all rounded-[var(--radius-sm)] border border-border bg-background p-3 text-xs">
+              {manageUrl}
+            </code>
+          </>
+        ) : (
+          <p className="text-muted-foreground">{t('startedText')}</p>
+        )}
       </div>
     )
   }
