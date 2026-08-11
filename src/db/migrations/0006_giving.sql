@@ -90,7 +90,8 @@ CREATE TABLE "gift_cards" (
 	"view_token_hash" text NOT NULL,
 	"locale" "locale" DEFAULT 'en' NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "gift_cards_viewTokenHash_unique" UNIQUE("view_token_hash")
 );
 --> statement-breakpoint
 CREATE TABLE "invoices" (

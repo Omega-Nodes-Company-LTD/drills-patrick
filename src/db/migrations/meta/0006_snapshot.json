@@ -1,5 +1,5 @@
 {
-  "id": "5cc505be-75cf-4bb6-a11a-2b8ac8b1536a",
+  "id": "94bc4fbf-246e-42c1-aaea-741d604c07cc",
   "prevId": "5cbe5486-a70d-476f-9118-5e23a8e7a913",
   "version": "7",
   "dialect": "postgresql",
@@ -3927,7 +3927,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "gift_cards_viewTokenHash_unique": {
+          "name": "gift_cards_viewTokenHash_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "view_token_hash"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

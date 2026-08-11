@@ -307,7 +307,8 @@ export const giftCards = pgTable(
     occasion: text(),
     deliverOn: date(),
     sentAt: timestamp({ withTimezone: true }),
-    viewTokenHash: text().notNull(),
+    /** Unique so the lookup by token is one indexed equality, never a scan. */
+    viewTokenHash: text().notNull().unique(),
     locale: localeEnum().notNull().default('en'),
     ...timestamps,
   },
