@@ -4,7 +4,10 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { DonationForm } from '@/components/donate/donation-form'
 import { PageHeader } from '@/components/site/page-header'
 import type { Locale } from '@/i18n/config'
+import { MatchingBanner } from '@/components/site/matching-banner'
 import { listCampaigns } from '@/lib/content/queries'
+import { openPledge } from '@/lib/giving/attach'
+import { getFundraiser } from '@/lib/giving/fundraisers'
 import { listAvailableProviders } from '@/lib/payments/registry'
 import { getSiteSettings } from '@/lib/settings/service'
 import { sanitizeHtml } from '@/lib/sanitize'
@@ -35,20 +38,24 @@ export default async function DonatePage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ campaign?: string }>
+  searchParams: Promise<{ campaign?: string; fundraiser?: string }>
 }) {
   const { locale } = (await params) as { locale: Locale }
   setRequestLocale(locale)
 
-  const { campaign: campaignId } = await searchParams
-  const [t, settings, providers, campaigns] = await Promise.all([
+  const { campaign: campaignId, fundraiser: fundraiserSlug } = await searchParams
+  const [t, settings, providers, campaigns, fundraiser] = await Promise.all([
     getTranslations('donate'),
     getSiteSettings(),
     listAvailableProviders(),
     listCampaigns({ locale, limit: 50, activeOnly: true }),
+    fundraiserSlug ? getFundraiser(fundraiserSlug, locale) : Promise.resolve(null),
   ])
 
   const campaign = campaignId ? campaigns.items.find((item) => item.id === campaignId) : undefined
+  // The offer shown here is the one this gift would actually draw from, so the
+  // banner can never promise a match the donation would not receive.
+  const pledge = await openPledge(campaign?.id ?? null, new Date())
   const currency = campaign?.currency ?? settings.donations.defaultCurrency
   const bankDetails = settings.bankTransfer
 
@@ -70,9 +77,12 @@ export default async function DonatePage({
           minAmounts={settings.donations.minAmount}
           campaignId={campaign?.id ?? null}
           campaignTitle={campaign?.title ?? null}
+          fundraiserSlug={fundraiser?.slug ?? null}
+          fundraiserTitle={fundraiser?.title ?? null}
         />
 
         <aside className="flex h-fit flex-col gap-4">
+          {pledge ? <MatchingBanner pledge={pledge} locale={locale} /> : null}
           {bankDetails.accountName || bankDetails.iban || bankDetails.accountNumber ? (
             <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5 text-surface-foreground">
               <h2 className="mb-3 text-subheading font-semibold">{t('bankInstructions')}</h2>

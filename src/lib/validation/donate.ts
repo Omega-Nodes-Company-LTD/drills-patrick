@@ -32,6 +32,28 @@ export const donationSchema = z.object({
   isAnonymous: z.coerce.boolean().default(false),
   message: z.string().trim().max(1000).optional(),
   locale: z.enum(locales).default('en'),
+  /** Slug of the supporter page this gift came in through. */
+  fundraiser: z.string().trim().max(160).optional(),
+  /**
+   * Opt-in to the public supporter wall. Separate from `isAnonymous`: not
+   * wanting to be listed is a different decision from wanting the gift kept
+   * private, and neither may default to yes.
+   */
+  showOnWall: z.coerce.boolean().default(false),
+  wallDisplayName: z.string().trim().max(120).optional(),
+  /** Solidarity gift: a card for someone else. */
+  isGift: z.coerce.boolean().default(false),
+  giftRecipientName: z.string().trim().max(120).optional(),
+  giftRecipientEmail: z.string().trim().max(254).optional(),
+  giftSenderName: z.string().trim().max(120).optional(),
+  giftMessage: z.string().trim().max(1000).optional(),
+  giftOccasion: z.string().trim().max(80).optional(),
+  giftDeliverOn: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional()
+    .or(z.literal('')),
   website: z.string().max(0).optional(),
 })
 

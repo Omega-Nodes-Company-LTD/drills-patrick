@@ -1,6 +1,7 @@
 'use server'
 
 import { absoluteUrl } from '@/lib/url'
+import { attachToFundraiser, createGiftCard } from '@/lib/giving/attach'
 import { createDonation, setProviderRef } from '@/lib/payments/donations'
 import { getConfiguredProvider } from '@/lib/payments/registry'
 import { getSiteSettings } from '@/lib/settings/service'
@@ -73,9 +74,39 @@ export async function startDonation(
     donorOrganisation: input.donorOrganisation || null,
     donorCountry: input.donorCountry || null,
     isAnonymous: input.isAnonymous,
+    showOnWall: input.showOnWall,
+    wallDisplayName: input.wallDisplayName || null,
     message: input.message || null,
     locale: input.locale,
   })
+
+  // Attached before the provider is called so the link survives a redirect the
+  // donor never comes back from. Both are best-effort: a supporter page that
+  // cannot be found must not stop a payment that is otherwise valid.
+  if (input.fundraiser) {
+    try {
+      await attachToFundraiser(donation.id, input.fundraiser)
+    } catch (error) {
+      console.error('[donate] could not attach to fundraiser:', error)
+    }
+  }
+
+  if (input.isGift && input.giftRecipientName) {
+    try {
+      await createGiftCard(donation.id, {
+        senderName: input.giftSenderName || input.donorName || '',
+        senderEmail: input.donorEmail || null,
+        recipientName: input.giftRecipientName,
+        recipientEmail: input.giftRecipientEmail || null,
+        message: input.giftMessage || null,
+        occasion: input.giftOccasion || null,
+        deliverOn: input.giftDeliverOn || null,
+        locale: input.locale,
+      })
+    } catch (error) {
+      console.error('[donate] could not create gift card:', error)
+    }
+  }
 
   const statusPath = `/${input.locale}/donate/status?ref=${encodeURIComponent(donation.reference)}`
 

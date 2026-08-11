@@ -32,6 +32,9 @@ export function DonationForm({
   campaignId,
   campaignTitle,
   projectId,
+  fundraiserSlug,
+  fundraiserTitle,
+  giftEnabled = true,
 }: {
   locale: Locale
   providers: ProviderDescriptor[]
@@ -42,14 +45,23 @@ export function DonationForm({
   campaignId?: string | null
   campaignTitle?: string | null
   projectId?: string | null
+  /** Set when the donor arrived from a supporter's page. */
+  fundraiserSlug?: string | null
+  fundraiserTitle?: string | null
+  giftEnabled?: boolean
 }) {
   const t = useTranslations('donate')
   const tCommon = useTranslations('common')
+  const tWall = useTranslations('supporters')
+  const tGift = useTranslations('gift')
+  const tFundraisers = useTranslations('fundraisers')
   const router = useRouter()
 
   const [currency, setCurrency] = useState(defaultCurrency)
   const [amount, setAmount] = useState<string>(String(suggestedAmounts[1] ?? suggestedAmounts[0] ?? ''))
   const [provider, setProvider] = useState<ProviderId | null>(null)
+  const [onWall, setOnWall] = useState(false)
+  const [isGift, setIsGift] = useState(false)
   const [state, action, pending] = useActionState<DonationStartResult | null, FormData>(
     startDonation,
     null,
@@ -112,9 +124,15 @@ export function DonationForm({
       <input type="hidden" name="campaignId" value={campaignId ?? ''} />
       <input type="hidden" name="projectId" value={projectId ?? ''} />
       <input type="hidden" name="provider" value={provider ?? ''} />
+      <input type="hidden" name="fundraiser" value={fundraiserSlug ?? ''} />
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
 
-      {campaignTitle ? (
+      {fundraiserTitle ? (
+        <p className="text-sm text-muted-foreground">
+          {tFundraisers('supporting')}:{' '}
+          <span className="font-medium text-foreground">{fundraiserTitle}</span>
+        </p>
+      ) : campaignTitle ? (
         <p className="text-sm text-muted-foreground">
           {t('backToCampaign')}: <span className="font-medium text-foreground">{campaignTitle}</span>
         </p>
@@ -263,7 +281,89 @@ export function DonationForm({
           />
           {t('anonymous')}
         </label>
+
+        {/*
+          Two separate decisions, so two separate boxes. Being listed on the
+          wall is not the same as wanting the gift kept private, and neither
+          may be inferred from the other.
+        */}
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            name="showOnWall"
+            value="true"
+            checked={onWall}
+            onChange={(event) => setOnWall(event.target.checked)}
+            className="size-4 rounded border-border accent-[var(--color-primary)]"
+          />
+          {tWall('optIn')}
+        </label>
+
+        {onWall ? (
+          <Field
+            label={tWall('displayName')}
+            htmlFor="wallDisplayName"
+            hint={tWall('displayNameHint')}
+          >
+            <Input id="wallDisplayName" name="wallDisplayName" maxLength={120} />
+          </Field>
+        ) : null}
       </fieldset>
+
+      {/* ------------------------------------------------- solidarity gift */}
+      {giftEnabled ? (
+        <fieldset className="flex flex-col gap-4 border-t border-border pt-6">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              name="isGift"
+              value="true"
+              checked={isGift}
+              onChange={(event) => setIsGift(event.target.checked)}
+              className="size-4 rounded border-border accent-[var(--color-primary)]"
+            />
+            {tGift('enable')}
+          </label>
+
+          {isGift ? (
+            <>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label={tGift('recipientName')} htmlFor="giftRecipientName" required>
+                  <Input id="giftRecipientName" name="giftRecipientName" required maxLength={120} />
+                </Field>
+                <Field
+                  label={tGift('recipientEmail')}
+                  htmlFor="giftRecipientEmail"
+                  hint={tGift('recipientEmailHint')}
+                >
+                  <Input id="giftRecipientEmail" name="giftRecipientEmail" type="email" />
+                </Field>
+              </div>
+
+              <Field label={tGift('senderName')} htmlFor="giftSenderName">
+                <Input id="giftSenderName" name="giftSenderName" maxLength={120} />
+              </Field>
+
+              <Field label={tGift('message')} htmlFor="giftMessage">
+                <Textarea id="giftMessage" name="giftMessage" rows={3} maxLength={1000} />
+              </Field>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label={tGift('occasion')} htmlFor="giftOccasion">
+                  <Input id="giftOccasion" name="giftOccasion" maxLength={80} />
+                </Field>
+                <Field
+                  label={tGift('deliverOn')}
+                  htmlFor="giftDeliverOn"
+                  hint={tGift('deliverOnHint')}
+                >
+                  <Input id="giftDeliverOn" name="giftDeliverOn" type="date" />
+                </Field>
+              </div>
+            </>
+          ) : null}
+        </fieldset>
+      ) : null}
 
       {state && !state.ok ? (
         <p className="text-sm text-danger">

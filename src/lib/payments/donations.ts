@@ -43,6 +43,9 @@ export type CreateDonationInput = {
   donorOrganisation?: string | null
   donorCountry?: string | null
   isAnonymous?: boolean
+  /** Opt-in to the public supporter wall; never inferred. */
+  showOnWall?: boolean
+  wallDisplayName?: string | null
   message?: string | null
   locale: Locale
   metadata?: Record<string, unknown>
@@ -67,6 +70,8 @@ export async function createDonation(input: CreateDonationInput): Promise<Donati
       donorOrganisation: input.donorOrganisation ?? null,
       donorCountry: input.donorCountry ?? null,
       isAnonymous: input.isAnonymous ?? false,
+      showOnWall: input.showOnWall ?? false,
+      wallDisplayName: input.wallDisplayName ?? null,
       message: input.message ?? null,
       locale: input.locale,
       metadata: input.metadata ?? {},
@@ -164,6 +169,17 @@ export async function applyDonationStatus(
 
   if (updated.campaignId) {
     await recomputeCampaignTotal(updated.campaignId)
+  }
+
+  // Everything that hangs off a donation is best-effort: the payment has been
+  // taken, and a matching pledge that cannot be read or a supporter page that
+  // cannot be recounted must not turn a successful gift into an error.
+  try {
+    const { allocateMatch, refreshFundraiserFor } = await import('@/lib/giving/attach')
+    await refreshFundraiserFor(updated.id)
+    if (becameSuccessful) await allocateMatch(updated)
+  } catch (error) {
+    console.error('[donations] could not update giving records:', error)
   }
 
   if (becameSuccessful) {

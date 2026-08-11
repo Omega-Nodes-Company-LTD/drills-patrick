@@ -74,6 +74,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/data',
     '/spending',
     '/updates',
+    '/fundraisers',
+    '/supporters',
+    '/legacy',
+    // Not listed: /giving/manage, /giving/statement and /gift/… all carry a
+    // token in the URL that stands in for a password.
   ]
   const now = new Date()
 
