@@ -180,6 +180,51 @@ test.describe('feeds and machine-readable routes', () => {
   })
 })
 
+test.describe('transparency', () => {
+  test('serves the public pages', async ({ page }) => {
+    for (const path of ['/data', '/spending', '/updates']) {
+      const response = await page.goto(path)
+      expect(response?.status(), `${path} should render`).toBe(200)
+      await expect(page.locator('h1')).toBeVisible()
+    }
+  })
+
+  test('downloads the register as a spreadsheet, licence first', async ({ request }) => {
+    const response = await request.get('/data.csv')
+    expect(response.status()).toBe(200)
+    expect(response.headers()['content-type']).toContain('text/csv')
+    expect(response.headers()['access-control-allow-origin']).toBe('*')
+    expect(response.headers()['content-disposition']).toContain('water-points-')
+
+    const body = await response.text()
+    // The reuse terms have to travel with the file, not just sit on the page
+    // it was downloaded from.
+    expect(body.split('\n')[0]).toMatch(/^# Licence:/)
+    expect(body.split('\n')[1]).toContain('district')
+  })
+
+  test('serves the badge as an image a partner can paste anywhere', async ({ request }) => {
+    const response = await request.get('/embed/impact')
+    expect(response.status()).toBe(200)
+    expect(response.headers()['content-type']).toContain('image/svg+xml')
+    expect(response.headers()['access-control-allow-origin']).toBe('*')
+
+    const svg = await response.text()
+    expect(svg).toContain('<svg')
+    // No script and no foreign object: it renders on someone else's page.
+    expect(svg).not.toContain('<script')
+    expect(svg).toMatch(/role="img"/)
+  })
+
+  test('falls back to a known language on the badge', async ({ request }) => {
+    for (const query of ['?locale=it&metric=wells', '?locale=zz', '?metric=nonsense']) {
+      const response = await request.get(`/embed/impact${query}`)
+      expect(response.status(), `${query} should still render`).toBe(200)
+      expect(await response.text()).toContain('<svg')
+    }
+  })
+})
+
 test.describe('partner area', () => {
   test('keeps the portal behind a sign-in', async ({ page }) => {
     // The portal shows one organisation another organisation's borehole

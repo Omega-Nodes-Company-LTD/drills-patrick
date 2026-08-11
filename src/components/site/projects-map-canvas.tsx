@@ -5,6 +5,7 @@ import L from 'leaflet'
 import { useMemo, useState } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet'
 import { Link } from '@/i18n/navigation'
+import { clusterMarkers } from '@/lib/transparency/cluster'
 import type { ProjectMarker } from './projects-map'
 
 const statusColors: Record<ProjectMarker['status'], string> = {
@@ -37,48 +38,6 @@ function clusterIcon(count: number) {
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   })
-}
-
-type Cluster = {
-  key: string
-  lat: number
-  lng: number
-  markers: ProjectMarker[]
-}
-
-/**
- * Grid clustering, computed at the current zoom.
- *
- * A hundred boreholes in one district render as a hundred pins on top of each
- * other, which reads as one pin and hides the density that is the whole point
- * of the map. Grouping by a grid cell whose size halves with each zoom level
- * means zooming in splits clusters apart, which is the behaviour people expect.
- *
- * Done here rather than with a plugin: it is a dozen lines, it has no runtime
- * dependency to keep current, and the cell size is tuneable against how these
- * water points are actually distributed.
- */
-function clusterMarkers(markers: ProjectMarker[], zoom: number): Cluster[] {
-  // Degrees per cell: ~2° at the widest, halving with each zoom level, floored so the
-  // grid stops merging anything once the reader is close in.
-  const cell = Math.max(0.02, 8 / 2 ** zoom)
-  const groups = new Map<string, Cluster>()
-
-  for (const marker of markers) {
-    const key = `${Math.floor(marker.lat / cell)}:${Math.floor(marker.lng / cell)}`
-    const group = groups.get(key)
-
-    if (group) group.markers.push(marker)
-    else groups.set(key, { key, lat: marker.lat, lng: marker.lng, markers: [marker] })
-  }
-
-  // A cluster sits at the mean of its members, not at the first one, so the
-  // bubble lands in the middle of the group rather than on its edge.
-  return [...groups.values()].map((group) => ({
-    ...group,
-    lat: group.markers.reduce((total, marker) => total + marker.lat, 0) / group.markers.length,
-    lng: group.markers.reduce((total, marker) => total + marker.lng, 0) / group.markers.length,
-  }))
 }
 
 /**
