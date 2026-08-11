@@ -329,6 +329,25 @@ export async function adminProjectOptions() {
   return [...map.entries()].map(([id, title]) => ({ id, title }))
 }
 
+export async function adminCampaignOptions() {
+  const rows = await db
+    .select({
+      id: campaigns.id,
+      title: campaignTranslations.title,
+      locale: campaignTranslations.locale,
+    })
+    .from(campaigns)
+    .leftJoin(campaignTranslations, eq(campaignTranslations.campaignId, campaigns.id))
+
+  const map = new Map<string, string>()
+  for (const row of rows) {
+    if (!map.has(row.id) || row.locale === defaultLocale) {
+      map.set(row.id, row.title ?? '—')
+    }
+  }
+  return [...map.entries()].map(([id, title]) => ({ id, title }))
+}
+
 export async function adminCategoriesWithTranslations() {
   const rows = await db.select().from(categories).orderBy(categories.sortOrder)
   if (rows.length === 0) return []

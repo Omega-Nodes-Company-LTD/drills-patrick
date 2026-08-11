@@ -29,6 +29,7 @@ export function SettingsForm({
   const t = useTranslations('admin.settings')
   const tCommon = useTranslations('common')
   const tDash = useTranslations('admin.dashboard')
+  const tInvoicing = useTranslations('admin.invoicing')
   const [values, setValues] = useState<SiteSettings>(initial)
   const [pending, startTransition] = useTransition()
 
@@ -457,6 +458,123 @@ export function SettingsForm({
                   }
                 />
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">{tInvoicing('title')}</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+              {/*
+                Nothing here has a sensible default. Numbering conventions and
+                tax treatment differ by country and by financial year, and the
+                cost of getting them wrong lands on the operator.
+              */}
+              <p className="text-sm text-muted-foreground">{tInvoicing('hint')}</p>
+
+              <label className="flex items-center gap-2 text-sm font-medium">
+                <input
+                  type="checkbox"
+                  checked={values.invoicing.enabled}
+                  onChange={(event) =>
+                    set('invoicing', { ...values.invoicing, enabled: event.target.checked })
+                  }
+                  className="size-4 rounded border-border accent-[var(--color-primary)]"
+                />
+                {tInvoicing('enabled')}
+              </label>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <Field label={tInvoicing('series')} htmlFor="invoiceSeries">
+                  <Input
+                    id="invoiceSeries"
+                    value={values.invoicing.series}
+                    onChange={(event) =>
+                      set('invoicing', { ...values.invoicing, series: event.target.value })
+                    }
+                  />
+                </Field>
+                <Field label={tInvoicing('nextSequence')} htmlFor="invoiceNext">
+                  <Input
+                    id="invoiceNext"
+                    type="number"
+                    min={1}
+                    value={values.invoicing.nextSequence}
+                    onChange={(event) =>
+                      set('invoicing', {
+                        ...values.invoicing,
+                        nextSequence: Math.max(1, Number(event.target.value) || 1),
+                      })
+                    }
+                  />
+                </Field>
+                <Field label={tInvoicing('sequencePadding')} htmlFor="invoicePadding">
+                  <Input
+                    id="invoicePadding"
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={values.invoicing.sequencePadding}
+                    onChange={(event) =>
+                      set('invoicing', {
+                        ...values.invoicing,
+                        sequencePadding: Math.min(10, Math.max(1, Number(event.target.value) || 1)),
+                      })
+                    }
+                  />
+                </Field>
+              </div>
+
+              <Field
+                label={tInvoicing('taxRateBp')}
+                htmlFor="invoiceTaxRate"
+                hint={tInvoicing('taxRateHint')}
+              >
+                <Input
+                  id="invoiceTaxRate"
+                  type="number"
+                  min={0}
+                  max={10000}
+                  value={values.invoicing.taxRateBp}
+                  onChange={(event) =>
+                    set('invoicing', {
+                      ...values.invoicing,
+                      taxRateBp: Math.min(10_000, Math.max(0, Number(event.target.value) || 0)),
+                    })
+                  }
+                />
+              </Field>
+
+              <Field label={tInvoicing('taxNote')} htmlFor="invoiceTaxNote">
+                <Input
+                  id="invoiceTaxNote"
+                  value={values.invoicing.taxNote}
+                  onChange={(event) =>
+                    set('invoicing', { ...values.invoicing, taxNote: event.target.value })
+                  }
+                />
+              </Field>
+
+              <Field label={tInvoicing('description')} htmlFor="invoiceDescription">
+                <Input
+                  id="invoiceDescription"
+                  value={values.invoicing.description}
+                  onChange={(event) =>
+                    set('invoicing', { ...values.invoicing, description: event.target.value })
+                  }
+                />
+              </Field>
+
+              <Field label={tInvoicing('footer')} htmlFor="invoiceFooter">
+                <Input
+                  id="invoiceFooter"
+                  value={values.invoicing.footer}
+                  onChange={(event) =>
+                    set('invoicing', { ...values.invoicing, footer: event.target.value })
+                  }
+                />
+              </Field>
             </CardContent>
           </Card>
         </TabsContent>

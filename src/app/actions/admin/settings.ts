@@ -1,5 +1,6 @@
 'use server'
 
+import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '@/db'
 import { siteSettings } from '@/db/schema'
@@ -11,6 +12,7 @@ import { checkEmbeddingsConnection } from '@/lib/embeddings/client'
 import { verifyMailConnection } from '@/lib/mail/mailer'
 import {
   bankTransferSchema,
+  invoicingSettingsSchema,
   contactInfoSchema,
   donationSettingsSchema,
   featureTogglesSchema,
@@ -38,6 +40,7 @@ const settingsSchema = z.object({
   organisation: organisationSchema,
   bankTransfer: bankTransferSchema,
   donations: donationSettingsSchema,
+  invoicing: invoicingSettingsSchema,
   features: featureTogglesSchema,
 })
 
@@ -63,10 +66,29 @@ export async function saveSettings(input: unknown): Promise<ActionResult> {
     return { ok: false, error: 'invalid', fieldErrors: { defaultLocale: 'not_enabled' } }
   }
 
+  // The invoice counter is advanced by issuing invoices, not by this form.
+  // An admin who opened this page before an invoice was issued would otherwise
+  // save a stale number and hand the next invoice a duplicate — which is the
+  // one thing an invoice series must never contain. Only forward moves stick.
+  const [existing] = await db
+    .select({ invoicing: siteSettings.invoicing })
+    .from(siteSettings)
+    .where(eq(siteSettings.id, 1))
+    .limit(1)
+
+  const storedSequence = existing?.invoicing?.nextSequence ?? 1
+  const values = {
+    ...data,
+    invoicing: {
+      ...data.invoicing,
+      nextSequence: Math.max(data.invoicing.nextSequence, storedSequence),
+    },
+  }
+
   await db
     .insert(siteSettings)
-    .values({ id: 1, ...data })
-    .onConflictDoUpdate({ target: siteSettings.id, set: data })
+    .values({ id: 1, ...values })
+    .onConflictDoUpdate({ target: siteSettings.id, set: values })
 
   await recordAudit({ actor: user, action: 'settings.update', entityType: 'settings' })
 

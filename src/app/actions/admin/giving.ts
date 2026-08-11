@@ -17,6 +17,7 @@ import {
 import { locales } from '@/i18n/config'
 import { recordAudit } from '@/lib/audit'
 import { requireApiUser } from '@/lib/auth/guard'
+import { issueInvoice, voidInvoice } from '@/lib/giving/invoices'
 import { parseAmount, toMinorUnits } from '@/lib/money'
 import type { ActionResult } from '@/lib/validation/public'
 
@@ -314,6 +315,87 @@ export async function deleteSponsor(id: string): Promise<ActionResult> {
   if (!user) return { ok: false, error: 'unauthorised' }
 
   await db.delete(corporateSponsors).where(eq(corporateSponsors.id, id))
+  revalidatePath('/admin/giving')
+  return { ok: true }
+}
+
+// --------------------------------------------------------------- invoices
+
+const invoiceInputSchema = z.object({
+  donationId: z.string().uuid().nullish(),
+  sponsorId: z.string().uuid().nullish(),
+  billToName: z.string().trim().min(2).max(200),
+  billToVat: z.string().trim().max(60).optional(),
+  billToAddress: z.string().trim().max(500).optional(),
+  billToCountry: z.string().trim().max(80).optional(),
+  description: z.string().trim().max(300).optional(),
+  amount: z.preprocess(parseAmount, z.number().positive()),
+  currency: z.string().trim().length(3),
+  issuedOn: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+})
+
+export async function createInvoice(
+  input: unknown,
+): Promise<ActionResult<{ id: string; number: string }>> {
+  const user = await requireApiUser('donations')
+  if (!user) return { ok: false, error: 'unauthorised' }
+
+  const parsed = invoiceInputSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, error: 'invalid' }
+
+  const data = parsed.data
+  const result = await issueInvoice({
+    donationId: data.donationId,
+    sponsorId: data.sponsorId,
+    billToName: data.billToName,
+    billToVat: data.billToVat,
+    billToAddress: data.billToAddress,
+    billToCountry: data.billToCountry,
+    description: data.description,
+    grossMinor: toMinorUnits(data.amount, data.currency),
+    currency: data.currency,
+    issuedOn: data.issuedOn,
+  })
+
+  if (!result.ok) return { ok: false, error: result.error }
+
+  await recordAudit({
+    actor: user,
+    action: 'invoice.issue',
+    entityType: 'invoice',
+    entityId: result.id,
+    summary: result.number,
+  })
+
+  revalidatePath('/admin/giving')
+  return { ok: true, data: { id: result.id, number: result.number } }
+}
+
+/** Voided, never deleted: a gap in a series looks like a hidden invoice. */
+export async function cancelInvoice(input: unknown): Promise<ActionResult> {
+  const user = await requireApiUser('donations')
+  if (!user) return { ok: false, error: 'unauthorised' }
+
+  const parsed = z
+    .object({ id: z.string().uuid(), reason: z.string().trim().min(3).max(500) })
+    .safeParse(input)
+
+  if (!parsed.success) return { ok: false, error: 'reason_required' }
+
+  const done = await voidInvoice(parsed.data.id, parsed.data.reason)
+  if (!done) return { ok: false, error: 'already_void' }
+
+  await recordAudit({
+    actor: user,
+    action: 'invoice.void',
+    entityType: 'invoice',
+    entityId: parsed.data.id,
+    summary: parsed.data.reason,
+  })
+
   revalidatePath('/admin/giving')
   return { ok: true }
 }
