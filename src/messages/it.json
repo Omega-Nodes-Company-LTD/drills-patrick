@@ -349,7 +349,8 @@
       "faults": "Guasti",
       "quotes": "Preventivi",
       "contracts": "Contratti",
-      "partnerAccess": "Accessi partner"
+      "partnerAccess": "Accessi partner",
+      "transparency": "Cifre pubblicate"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -792,6 +793,35 @@
         "monthly": "Mensile",
         "quarterly": "Trimestrale"
       }
+    },
+    "transparency": {
+      "title": "Cifre pubblicate",
+      "indicators": "Indicatori di impatto",
+      "spending": "Spese",
+      "key": "Chiave",
+      "value": "Valore",
+      "unit": "Unità",
+      "methodology": "Come è stato misurato",
+      "methodologyHint": "Mostrato al pubblico accanto alla cifra. Un indicatore senza metodo dichiarato è solo un'affermazione.",
+      "methodRequired": "Serve una metodologia di almeno dieci caratteri.",
+      "source": "Fonte",
+      "verifiedOn": "Verificato il",
+      "verified": "verificato",
+      "unverified": "non verificato",
+      "label": "Etichetta",
+      "year": "Anno",
+      "category": "Categoria",
+      "amount": "Importo",
+      "currency": "Valuta",
+      "note": "Nota"
+    },
+    "readings": {
+      "title": "Misurazioni",
+      "hint": "La portata il giorno della perforazione è un dato commerciale. La portata dopo tre stagioni secche è una prova.",
+      "yield": "Portata (l/h)",
+      "level": "Livello acqua (m)",
+      "measuredBy": "Misurata da",
+      "note": "Nota"
     }
   },
   "portal": {
@@ -935,6 +965,28 @@
     "walk": "Cammino fino all'acqua",
     "queue": "Attesa alla fonte",
     "minutes": "{count} min",
-    "saved": "{count} minuti risparmiati a ogni viaggio"
+    "saved": "{count} minuti risparmiati a ogni viaggio",
+    "admin": {
+      "preWalk": "Cammino prima (min)",
+      "postWalk": "Cammino dopo (min)",
+      "preQueue": "Coda prima (min)",
+      "postQueue": "Coda dopo (min)"
+    }
+  },
+  "spending": {
+    "title": "Come spendiamo",
+    "subtitle": "Cosa entra, dove va e come è stata ottenuta ogni cifra pubblicata.",
+    "indicators": "Indicatori di impatto",
+    "verifiedOn": "Verificato il {date}",
+    "notVerified": "Non ancora verificato in modo indipendente",
+    "empty": "La rendicontazione non è ancora pubblicata.",
+    "yearHeading": "Spese {year}",
+    "category": "Categoria",
+    "amount": "Importo",
+    "share": "Quota"
+  },
+  "updates": {
+    "title": "Aggiornamenti dai progetti",
+    "subtitle": "Tutto quello che è successo nei nostri progetti, dal più recente."
   }
 }

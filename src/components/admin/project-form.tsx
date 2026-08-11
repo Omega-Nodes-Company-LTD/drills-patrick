@@ -62,6 +62,10 @@ export type ProjectFormValues = {
   depthMeters: string
   yieldLitersPerHour: string
   waterQualityNote: string
+  preWalkMinutes: string
+  postWalkMinutes: string
+  preQueueMinutes: string
+  postQueueMinutes: string
   beneficiaries: string
   households: string
   schoolsServed: string
@@ -88,6 +92,7 @@ export function ProjectForm({
 }) {
   const t = useTranslations('admin.common')
   const tProjects = useTranslations('projects')
+  const tBeforeAfter = useTranslations('beforeAfter.admin')
   const tCommon = useTranslations('common')
   const router = useRouter()
   const [pending, startTransition] = useTransition()
@@ -108,6 +113,10 @@ export function ProjectForm({
     depthMeters: initial?.depthMeters ?? '',
     yieldLitersPerHour: initial?.yieldLitersPerHour ?? '',
     waterQualityNote: initial?.waterQualityNote ?? '',
+    preWalkMinutes: initial?.preWalkMinutes ?? '',
+    postWalkMinutes: initial?.postWalkMinutes ?? '',
+    preQueueMinutes: initial?.preQueueMinutes ?? '',
+    postQueueMinutes: initial?.postQueueMinutes ?? '',
     beneficiaries: initial?.beneficiaries ?? '0',
     households: initial?.households ?? '',
     schoolsServed: initial?.schoolsServed ?? '',
@@ -341,6 +350,27 @@ export function ProjectForm({
                 onChange={(event) => set('waterQualityNote', event.target.value)}
               />
             </Field>
+
+            {/* Published as a before/after comparison, and only when both
+                halves of a pair are filled in. */}
+            {(
+              [
+                ['preWalkMinutes', 'preWalk'],
+                ['postWalkMinutes', 'postWalk'],
+                ['preQueueMinutes', 'preQueue'],
+                ['postQueueMinutes', 'postQueue'],
+              ] as const
+            ).map(([field, label]) => (
+              <Field key={field} label={tBeforeAfter(label)} htmlFor={field}>
+                <Input
+                  id={field}
+                  type="number"
+                  min={0}
+                  value={values[field]}
+                  onChange={(event) => set(field, event.target.value)}
+                />
+              </Field>
+            ))}
           </CardContent>
         </Card>
 

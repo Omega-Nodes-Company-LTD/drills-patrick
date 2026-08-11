@@ -6,6 +6,8 @@ import {
   impactIndicators,
   projectDocuments,
   projectTranslations,
+  projectUpdateTranslations,
+  projectUpdates,
   projects,
   spendingEntries,
   spendingEntryTranslations,
@@ -214,6 +216,65 @@ export async function listSpending(locale: Locale): Promise<SpendingYear[]> {
           note: entry.note,
         }
       }),
+    }
+  })
+}
+
+export type PublicUpdate = {
+  id: string
+  projectSlug: string
+  projectTitle: string
+  happenedOn: string
+  title: string
+  body: string
+}
+
+/**
+ * Timeline entries across every published project, newest first.
+ *
+ * The per-project timeline answers "how is this one going". This answers "is
+ * anything happening at all", which is the question a donor asks six months
+ * after giving and cannot currently settle without opening projects one by one.
+ */
+export async function listRecentUpdates(locale: Locale, limit = 50): Promise<PublicUpdate[]> {
+  const rows = await db
+    .select({ update: projectUpdates, projectId: projects.id })
+    .from(projectUpdates)
+    .innerJoin(projects, eq(projects.id, projectUpdates.projectId))
+    .where(and(eq(projectUpdates.isPublished, true), eq(projects.publishStatus, 'published')))
+    .orderBy(desc(projectUpdates.happenedOn))
+    .limit(limit)
+
+  if (rows.length === 0) return []
+
+  const updateIds = rows.map((row) => row.update.id)
+  const projectIds = [...new Set(rows.map((row) => row.projectId))]
+
+  const [updateTranslations, projectRows] = await Promise.all([
+    db
+      .select()
+      .from(projectUpdateTranslations)
+      .where(inArray(projectUpdateTranslations.updateId, updateIds)),
+    db.select().from(projectTranslations).where(inArray(projectTranslations.projectId, projectIds)),
+  ])
+
+  return rows.map(({ update, projectId }) => {
+    const translation = pickTranslation(
+      updateTranslations.filter((entry) => entry.updateId === update.id),
+      locale,
+    )
+    const project = pickTranslation(
+      projectRows.filter((entry) => entry.projectId === projectId),
+      locale,
+    )
+
+    return {
+      id: update.id,
+      projectSlug: project?.slug ?? projectId,
+      projectTitle: project?.title ?? '—',
+      happenedOn: update.happenedOn,
+      title: translation?.title ?? '',
+      body: translation?.body ?? '',
     }
   })
 }

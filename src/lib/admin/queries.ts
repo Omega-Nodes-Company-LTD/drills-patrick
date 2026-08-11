@@ -20,6 +20,7 @@ import {
   teamMembers,
   tagTranslations,
   tags,
+  waterPointReadings,
 } from '@/db/schema'
 import { defaultLocale, type Locale } from '@/i18n/config'
 import { groupByParent, pickTranslation } from '@/lib/content/translations'
@@ -185,6 +186,15 @@ export async function adminListProjectDocuments(projectId: string) {
     .from(projectDocuments)
     .where(eq(projectDocuments.projectId, projectId))
     .orderBy(desc(projectDocuments.issuedOn), desc(projectDocuments.createdAt))
+}
+
+/** Readings taken at a water point, most recent first. */
+export async function adminListReadings(projectId: string) {
+  return db
+    .select()
+    .from(waterPointReadings)
+    .where(eq(waterPointReadings.projectId, projectId))
+    .orderBy(desc(waterPointReadings.measuredOn))
 }
 
 /** Maintenance visits to a water point, most recent first. */
