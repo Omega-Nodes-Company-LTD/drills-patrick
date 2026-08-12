@@ -10,12 +10,53 @@ export function withPrefix(key: string): string {
   return clean.startsWith(`${env.S3_PREFIX}/`) ? clean : `${env.S3_PREFIX}/${clean}`
 }
 
-export function publicBaseUrl(): string {
-  if (env.S3_PUBLIC_BASE_URL) return env.S3_PUBLIC_BASE_URL.replace(/\/+$/, '')
-  if (!env.S3_ENDPOINT || !env.S3_BUCKET) return ''
+const stripTrailingSlash = (value: string) => value.replace(/\/+$/, '')
 
-  const endpoint = env.S3_ENDPOINT.replace(/\/+$/, '')
-  return env.S3_FORCE_PATH_STYLE ? `${endpoint}/${env.S3_BUCKET}` : endpoint
+/**
+ * Where a stored object is publicly readable, worked out from configuration.
+ *
+ * Pure, so the addressing rules can be pinned by tests without an environment,
+ * and so the read path and the write path can be shown to agree.
+ */
+export function resolvePublicBaseUrl(config: {
+  publicBaseUrl?: string
+  endpoint?: string
+  bucket?: string
+  forcePathStyle?: boolean
+}): string {
+  if (config.publicBaseUrl) return stripTrailingSlash(config.publicBaseUrl)
+  if (!config.endpoint || !config.bucket) return ''
+
+  const endpoint = stripTrailingSlash(config.endpoint)
+  if (config.forcePathStyle) return `${endpoint}/${config.bucket}`
+
+  // Virtual-hosted style addresses the bucket as a subdomain, so build that
+  // here rather than assuming `S3_ENDPOINT` already carries it. When it does
+  // not, the bucket drops out of the URL entirely and the first path segment —
+  // the prefix — gets read as the bucket instead. That surfaces as NoSuchBucket
+  // from the storage provider, a long way from the setting that caused it, and
+  // only on reads: uploads keep working, because the SDK does this same
+  // subdomain arithmetic itself.
+  try {
+    const url = new URL(endpoint)
+    const alreadyScoped =
+      url.hostname === config.bucket || url.hostname.startsWith(`${config.bucket}.`)
+    if (!alreadyScoped) url.hostname = `${config.bucket}.${url.hostname}`
+    return stripTrailingSlash(url.toString())
+  } catch {
+    // Not a parseable URL. Nothing can be inferred safely, so pass it through
+    // rather than assembling something that looks right and is not.
+    return endpoint
+  }
+}
+
+export function publicBaseUrl(): string {
+  return resolvePublicBaseUrl({
+    publicBaseUrl: env.S3_PUBLIC_BASE_URL,
+    endpoint: env.S3_ENDPOINT,
+    bucket: env.S3_BUCKET,
+    forcePathStyle: env.S3_FORCE_PATH_STYLE,
+  })
 }
 
 /** Absolute URL of a stored object. Returns an empty string when unconfigured. */
