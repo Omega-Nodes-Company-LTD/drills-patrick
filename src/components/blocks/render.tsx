@@ -20,6 +20,7 @@ import {
   PartnersBlockView,
   PostsBlockView,
   ProjectsBlockView,
+  TeamBlockView,
   TestimonialsBlockView,
 } from './data-blocks'
 
@@ -56,6 +57,8 @@ export function BlockView({ block, locale }: { block: Block; locale: Locale }) {
       return <PartnersBlockView block={block} locale={locale} />
     case 'testimonials':
       return <TestimonialsBlockView block={block} locale={locale} />
+    case 'team':
+      return <TeamBlockView block={block} locale={locale} />
     case 'faq':
       return <FaqBlockView block={block} locale={locale} />
     case 'map':

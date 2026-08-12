@@ -411,6 +411,53 @@ export function BlockFields({
         </>
       )
 
+    case 'team':
+      return (
+        <>
+          <I18nField label="Title" value={block.title} onChange={(title) => patch({ title })} />
+          <I18nField
+            label="Subtitle"
+            variant="textarea"
+            value={block.subtitle}
+            onChange={(subtitle) => patch({ subtitle })}
+          />
+          <p className="text-small text-muted-foreground">
+            Everyone published under Team appears here, in the order set on that screen. Edit a
+            person once and they stay right on this page, on the team page, on their article
+            bylines and on the capability statement.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="Columns">
+              <Input
+                type="number"
+                min={2}
+                max={4}
+                value={block.columns}
+                onChange={(event) => patch({ columns: Number(event.target.value) })}
+              />
+            </Field>
+            <label className="flex items-center justify-between gap-2 self-end text-sm">
+              Show qualifications
+              <Switch
+                checked={block.showCredentials}
+                onCheckedChange={(showCredentials) => patch({ showCredentials })}
+              />
+            </label>
+            <label className="flex items-center justify-between gap-2 text-sm">
+              Show biography
+              <Switch checked={block.showBio} onCheckedChange={(showBio) => patch({ showBio })} />
+            </label>
+            <label className="flex items-center justify-between gap-2 text-sm">
+              Show email and LinkedIn
+              <Switch
+                checked={block.showContact}
+                onCheckedChange={(showContact) => patch({ showContact })}
+              />
+            </label>
+          </div>
+        </>
+      )
+
     case 'video':
       return (
         <>
@@ -703,6 +750,16 @@ export function createBlock(kind: Block['kind']): Block {
       return { ...base, kind, partnerIds: [] }
     case 'testimonials':
       return { ...base, kind, testimonialIds: [] }
+    case 'team':
+      return {
+        ...base,
+        kind,
+        memberIds: [],
+        columns: 3,
+        showBio: true,
+        showCredentials: true,
+        showContact: true,
+      }
     case 'faq':
       return { ...base, kind, faqIds: [] }
     case 'map':

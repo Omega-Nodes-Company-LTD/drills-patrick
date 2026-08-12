@@ -1,7 +1,8 @@
-# Wells Company — website and administration
+# VEGA — website and administration
 
-Multilingual website with a full administration area for a Ugandan water-well
-drilling company working with NGOs, foundations and district authorities.
+Multilingual website with a full administration area for VEGA, a Ugandan
+water-well drilling company working with NGOs, foundations and district
+authorities.
 
 Everything the site shows is editable from `/admin`: pages are composed of
 sections, colours and spacing are design tokens stored in the database, text

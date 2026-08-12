@@ -46,7 +46,7 @@ export type SiteSettings = {
 
 /** Used before the seed has run, or if the database is unreachable. */
 const fallbackSettings: SiteSettings = {
-  siteName: 'Patrick Wells',
+  siteName: 'VEGA',
   tagline: {},
   description: {},
   logoLightId: null,
