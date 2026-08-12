@@ -113,7 +113,15 @@ export function schemaFor(key: CollectionKey) {
         target[field.name] = z.boolean().default(true)
         break
       case 'image':
-        target[field.name] = z.string().uuid().nullish()
+        // The form sends '' for "no image" — both for a new row and for an
+        // existing one whose column is null. That is absence, not a malformed
+        // id, and it is already what the writer below assumes when it maps ''
+        // to NULL. Without this the only way to save a member, partner or
+        // testimonial was to give it a picture first.
+        target[field.name] = z.preprocess(
+          (value) => (value === '' ? null : value),
+          z.string().uuid().nullish(),
+        )
         break
       case 'richtext':
         target[field.name] = z.string().max(200_000).optional()
