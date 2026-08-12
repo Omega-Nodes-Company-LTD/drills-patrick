@@ -32,7 +32,7 @@ type L = Record<Locale, string>
 const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL ?? 'admin@example.com'
 const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD ?? 'ChangeMe2026!'
 const ADMIN_NAME = process.env.SEED_ADMIN_NAME ?? 'Administrator'
-const SITE_NAME = process.env.SEED_SITE_NAME ?? 'Wells Company'
+const SITE_NAME = process.env.SEED_SITE_NAME ?? 'VEGA'
 
 async function reset() {
   console.log('Resetting database…')

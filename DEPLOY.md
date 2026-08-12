@@ -38,7 +38,7 @@ Recommended:
 CRON_SECRET=<openssl rand -base64 32>
 S3_FORCE_PATH_STYLE=true
 SMTP_URL=smtps://user:password@smtp.example.com:465
-MAIL_FROM=Wells Company <no-reply@your-domain.tld>
+MAIL_FROM=VEGA <no-reply@your-domain.tld>
 ```
 
 Payments, embeddings and the chat assistant are optional — see `.env.example`.
