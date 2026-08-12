@@ -846,14 +846,19 @@ export async function listPartnersWithDescription(locale: Locale) {
   }))
 }
 
-export async function listTeamMembers(locale: Locale) {
+/** `ids` narrows to a chosen few, keeping their configured order; omit for all. */
+export async function listTeamMembers(locale: Locale, ids?: string[]) {
+  const conditions = [
+    eq(teamMembers.isPublished, true),
+    localeFilter(teamMemberTranslations.locale, locale),
+  ]
+  if (ids && ids.length > 0) conditions.push(inArray(teamMembers.id, ids))
+
   const rows = await db
     .select({ member: teamMembers, translation: teamMemberTranslations })
     .from(teamMembers)
     .innerJoin(teamMemberTranslations, eq(teamMemberTranslations.memberId, teamMembers.id))
-    .where(
-      and(eq(teamMembers.isPublished, true), localeFilter(teamMemberTranslations.locale, locale)),
-    )
+    .where(and(...conditions))
     .orderBy(teamMembers.sortOrder)
 
   const photos = await getMediaByIds(
@@ -867,6 +872,7 @@ export async function listTeamMembers(locale: Locale) {
       name: string
       role: string
       bio: string | null
+      credentials: string | null
       email: string | null
       linkedinUrl: string | null
       photo: MediaRow | null
@@ -879,6 +885,7 @@ export async function listTeamMembers(locale: Locale) {
         name: row.member.name,
         role: row.translation.role,
         bio: row.translation.bio,
+        credentials: row.member.credentials,
         email: row.member.email,
         linkedinUrl: row.member.linkedinUrl,
         photo: row.member.photoId ? (photos.get(row.member.photoId) ?? null) : null,

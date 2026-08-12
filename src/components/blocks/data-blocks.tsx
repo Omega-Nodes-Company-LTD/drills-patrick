@@ -1,3 +1,4 @@
+import { Linkedin, Mail } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import { pickI18n, type Locale } from '@/i18n/config'
 import type {
@@ -9,6 +10,7 @@ import type {
   PartnersBlock,
   PostsBlock,
   ProjectsBlock,
+  TeamBlock,
   TestimonialsBlock,
 } from '@/lib/blocks/schema'
 import {
@@ -18,8 +20,10 @@ import {
   listPosts,
   listProjectMarkers,
   listProjects,
+  listTeamMembers,
   listTestimonials,
 } from '@/lib/content/queries'
+import { initialsOf } from '@/lib/content/initials'
 import { getSiteSettings } from '@/lib/settings/service'
 import { mediaUrl } from '@/lib/storage/urls'
 import { sanitizeHtml } from '@/lib/sanitize'
@@ -30,6 +34,7 @@ import { ProjectsMap } from '@/components/site/projects-map'
 import { FaqAccordion } from '@/components/site/faq-accordion'
 import { DonationForm } from '@/components/donate/donation-form'
 import { listAvailableProviders } from '@/lib/payments/registry'
+import { MediaImage } from '@/components/ui/media-image'
 import { Section, SectionHeading } from './section'
 
 export async function ProjectsBlockView({
@@ -216,6 +221,96 @@ export async function TestimonialsBlockView({
           </figure>
         ))}
       </div>
+    </Section>
+  )
+}
+
+const TEAM_COLUMNS: Record<number, string> = {
+  2: 'sm:grid-cols-2',
+  3: 'sm:grid-cols-2 lg:grid-cols-3',
+  4: 'sm:grid-cols-2 lg:grid-cols-4',
+}
+
+export async function TeamBlockView({ block, locale }: { block: TeamBlock; locale: Locale }) {
+  const members = await listTeamMembers(
+    locale,
+    block.memberIds.length > 0 ? block.memberIds : undefined,
+  )
+  if (members.length === 0) return null
+
+  return (
+    <Section layout={block.layout}>
+      <SectionHeading
+        title={pickI18n(block.title, locale)}
+        subtitle={pickI18n(block.subtitle, locale)}
+        className="mb-8"
+      />
+      <ul className={`grid gap-6 ${TEAM_COLUMNS[block.columns] ?? TEAM_COLUMNS[3]}`}>
+        {members.map((member) => (
+          <li
+            key={member.id}
+            className="flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface text-surface-foreground"
+          >
+            <div className="relative aspect-4/3">
+              {member.photo ? (
+                <MediaImage
+                  media={member.photo}
+                  locale={locale}
+                  alt={member.name}
+                  sizes="(min-width: 1024px) 20rem, (min-width: 640px) 45vw, 90vw"
+                />
+              ) : (
+                // No photograph yet. A neutral monogram reads as deliberate,
+                // where a broken frame reads as a site nobody maintains.
+                <div
+                  className="flex size-full items-center justify-center bg-muted"
+                  aria-hidden
+                >
+                  <span className="text-heading font-semibold text-muted-foreground">
+                    {initialsOf(member.name)}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-1 flex-col gap-2 p-5">
+              <h3 className="text-heading">{member.name}</h3>
+              {member.role ? <p className="text-small text-primary">{member.role}</p> : null}
+              {block.showCredentials && member.credentials ? (
+                <p className="text-small text-muted-foreground">{member.credentials}</p>
+              ) : null}
+              {block.showBio && member.bio ? (
+                <p className="text-small text-muted-foreground">{member.bio}</p>
+              ) : null}
+
+              {block.showContact && (member.email || member.linkedinUrl) ? (
+                <div className="mt-auto flex items-center gap-3 pt-3">
+                  {member.email ? (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="text-muted-foreground transition-colors hover:text-primary"
+                      aria-label={`${member.name} — email`}
+                    >
+                      <Mail className="size-5" aria-hidden />
+                    </a>
+                  ) : null}
+                  {member.linkedinUrl ? (
+                    <a
+                      href={member.linkedinUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="text-muted-foreground transition-colors hover:text-primary"
+                      aria-label={`${member.name} — LinkedIn`}
+                    >
+                      <Linkedin className="size-5" aria-hidden />
+                    </a>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          </li>
+        ))}
+      </ul>
     </Section>
   )
 }

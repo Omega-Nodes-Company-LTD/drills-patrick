@@ -155,6 +155,29 @@ export const testimonialsBlockSchema = z.object({
   testimonialIds: z.array(z.string().uuid()).default([]),
 })
 
+/**
+ * The people who do the work, drawn from the team collection rather than typed
+ * into the page.
+ *
+ * The same rows already carry article bylines and the qualifications listed on
+ * the capability statement, so a member edited once is correct everywhere. A
+ * hand-written list would be a second, competing answer to "who works here",
+ * and would be wrong the first time somebody joins or leaves.
+ */
+export const teamBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('team'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  /** Empty means every published member, in their configured order. */
+  memberIds: z.array(z.string().uuid()).default([]),
+  columns: z.number().int().min(2).max(4).default(3),
+  showBio: z.boolean().default(true),
+  /** Qualifications are the point on a technical site; shown by default. */
+  showCredentials: z.boolean().default(true),
+  showContact: z.boolean().default(true),
+})
+
 export const faqBlockSchema = z.object({
   ...baseFields,
   kind: z.literal('faq'),
@@ -271,6 +294,7 @@ export const blockSchema = z.discriminatedUnion('kind', [
   galleryBlockSchema,
   partnersBlockSchema,
   testimonialsBlockSchema,
+  teamBlockSchema,
   faqBlockSchema,
   stepsBlockSchema,
   ctaBlockSchema,
@@ -295,6 +319,7 @@ export type DonateBlock = z.infer<typeof donateBlockSchema>
 export type GalleryBlock = z.infer<typeof galleryBlockSchema>
 export type PartnersBlock = z.infer<typeof partnersBlockSchema>
 export type TestimonialsBlock = z.infer<typeof testimonialsBlockSchema>
+export type TeamBlock = z.infer<typeof teamBlockSchema>
 export type FaqBlock = z.infer<typeof faqBlockSchema>
 export type StepsBlock = z.infer<typeof stepsBlockSchema>
 export type CtaBlock = z.infer<typeof ctaBlockSchema>
@@ -327,6 +352,7 @@ export const blockKinds = [
   'gallery',
   'partners',
   'testimonials',
+  'team',
   'faq',
   'steps',
   'cta',
