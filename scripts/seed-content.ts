@@ -27,6 +27,13 @@ import type { Locale } from '../src/i18n/config'
  *     skipped if they already carry blocks, so this can never eat work done in
  *     the admin. `--force` overrides that, deliberately.
  *
+ * Note that pages are the exception to rule 1, which is why they are gated on
+ * `--publish`. The bootstrap creates home, about and contact as `published` so
+ * that routing resolves, and a block has no draft state of its own — so writing
+ * blocks into those pages makes them visible immediately, whatever status the
+ * entities carry. A draft run therefore seeds entities only and leaves the home
+ * page exactly as it found it.
+ *
  * The copy is grounded in how this codebase actually works — quotes priced per
  * metre by depth band and geology, medians rather than means for response
  * times, faults reportable without an account — rather than invented. Figures
@@ -1298,10 +1305,10 @@ function homeBlocks({ faqIds }: Ids): unknown[] {
         de: 'Aktueller Stand',
       }),
       subtitle: t({
-        en: 'Recalculated from the delivery record, not typed into a settings field.',
-        fr: 'Recalculé à partir du registre des réalisations, non saisi dans un champ de configuration.',
-        it: 'Ricalcolato dal registro delle realizzazioni, non digitato in un campo di configurazione.',
-        de: 'Aus dem Leistungsregister neu berechnet, nicht in ein Einstellungsfeld getippt.',
+        en: `${MARK}Placeholder figures. Replace with the delivery record before announcing the site.`,
+        fr: `${MARK}Chiffres de remplacement. À remplacer par le registre des réalisations avant l'annonce du site.`,
+        it: `${MARK}Cifre segnaposto. Da sostituire con il registro delle realizzazioni prima di annunciare il sito.`,
+        de: `${MARK}Platzhalterzahlen. Vor Ankündigung der Website durch das Leistungsregister ersetzen.`,
       }),
       items: [
         {
@@ -1565,6 +1572,12 @@ function aboutBlocks({ partnerIds, testimonialIds }: Ids): unknown[] {
       kind: 'stats',
       layout: { tone: 'surface' },
       title: t({ en: 'In numbers', fr: 'En chiffres', it: 'In numeri', de: 'In Zahlen' }),
+      subtitle: t({
+        en: `${MARK}Placeholder figures. Replace with VEGA's own record before announcing the site.`,
+        fr: `${MARK}Chiffres de remplacement. À remplacer par le registre propre à VEGA avant l'annonce du site.`,
+        it: `${MARK}Cifre segnaposto. Da sostituire con il registro di VEGA prima di annunciare il sito.`,
+        de: `${MARK}Platzhalterzahlen. Vor Ankündigung der Website durch VEGAs eigene Daten ersetzen.`,
+      }),
       items: [
         {
           value: '19',
@@ -1746,17 +1759,31 @@ async function main() {
   const ids = await seedPeople(projectIds)
   await seedPosts(categoryIds)
   await seedCampaign(projectIds)
-  await composePages(ids)
+
+  // Pages are the one thing that cannot be held back. The bootstrap creates
+  // home, about and contact as `published` so routing resolves, and blocks have
+  // no draft state of their own — so writing them publishes them, whatever the
+  // entities do. They are therefore composed only when publishing is the
+  // explicit intent.
+  if (PUBLISH) {
+    await composePages(ids)
+  } else {
+    console.log('  pages: skipped — blocks cannot be held in draft (see --publish)')
+  }
 
   console.log('\nDone.')
   if (!PUBLISH) {
     console.log(
-      'Content is in draft: listings, open data, the register and the impact badge will not show it.\n' +
-        'Review it in /admin, or re-run with --purge then --publish to render the site end to end.',
+      'Entities are in draft: listings, open data, the register and the impact badge will not\n' +
+        'show them, and the home page is untouched. Review in /admin.\n\n' +
+        'To render the site end to end — which makes all of it publicly visible — run:\n' +
+        '  pnpm tsx scripts/seed-content.ts --purge\n' +
+        '  pnpm tsx scripts/seed-content.ts --publish',
     )
   } else {
     console.log(
-      'Content is published and publicly visible. Run `pnpm reindex` to index it for search and the assistant.',
+      'Content is published and publicly visible, including the composed pages.\n' +
+        'Run `pnpm reindex` to index it for search and the assistant.',
     )
   }
 }
