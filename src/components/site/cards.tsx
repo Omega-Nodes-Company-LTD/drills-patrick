@@ -35,7 +35,7 @@ export async function ProjectCard({
   const t = await getTranslations('projects')
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface text-surface-foreground transition-shadow hover:shadow-token">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface text-surface-foreground transition-shadow hover:shadow-token">
       <Link href={`/projects/${project.slug}`} className="relative block aspect-[16/10] overflow-hidden bg-muted">
         <MediaImage
           media={project.cover}
