@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { schemaFor } from '@/lib/admin/collections'
+import { baseValuesFor, schemaFor } from '@/lib/admin/collections'
 
 /**
  * The admin form has no concept of "absent": every text-ish field starts life
@@ -67,5 +67,41 @@ describe('collection validation', () => {
       translations,
     })
     expect(result.success).toBe(false)
+  })
+})
+
+/**
+ * Validation accepting '' is only half the journey: the row still has to be
+ * one the database will take. Two base columns are NOT NULL behind optional
+ * form fields, and nulling either is what stopped an FAQ from being saved
+ * without a category.
+ */
+describe('base values for a save', () => {
+  it('leaves a cleared category empty rather than null', () => {
+    const values = baseValuesFor('faq', { category: '', isPublished: true })
+
+    expect(values.category).toBe('')
+    expect(values.isPublished).toBe(true)
+  })
+
+  it('does the same for a partner with no tier', () => {
+    expect(baseValuesFor('partner', { name: 'Sample Foundation', tier: '' }).tier).toBe('')
+  })
+
+  it('still nulls a cleared nullable column', () => {
+    const values = baseValuesFor('team', { name: 'Grace Nabukenya', photoId: '', email: '' })
+
+    expect(values.photoId).toBeNull()
+    expect(values.email).toBeNull()
+  })
+
+  it('passes a real value through untouched', () => {
+    expect(baseValuesFor('faq', { category: 'costs' }).category).toBe('costs')
+  })
+
+  it('carries no translated field into the base row', () => {
+    expect(baseValuesFor('faq', { category: 'costs', question: 'How deep?' })).not.toHaveProperty(
+      'question',
+    )
   })
 })

@@ -17,6 +17,11 @@ export type FieldDef = {
   translated?: boolean
   required?: boolean
   hint?: string
+  /**
+   * The public page groups records by this value, so a typo silently splits a
+   * group in two. The editor offers what has already been used.
+   */
+  groups?: boolean
 }
 
 export type CollectionKey = 'faq' | 'partner' | 'team' | 'testimonial'
@@ -38,7 +43,13 @@ export const collections: Record<CollectionKey, CollectionDef> = {
     fields: [
       { name: 'question', type: 'text', label: 'Question', translated: true, required: true },
       { name: 'answerHtml', type: 'richtext', label: 'Answer', translated: true },
-      { name: 'category', type: 'text', label: 'Category', hint: 'costs, timelines, …' },
+      {
+        name: 'category',
+        type: 'text',
+        label: 'Category',
+        groups: true,
+        hint: 'Headings on the FAQ page — costs, timelines, … Leave empty for no heading.',
+      },
       { name: 'isPublished', type: 'switch', label: 'Published' },
     ],
   },
@@ -50,7 +61,13 @@ export const collections: Record<CollectionKey, CollectionDef> = {
       { name: 'name', type: 'text', label: 'Name', required: true },
       { name: 'logoId', type: 'image', label: 'Logo' },
       { name: 'websiteUrl', type: 'url', label: 'Website' },
-      { name: 'tier', type: 'text', label: 'Tier', hint: 'ngo, foundation, institution' },
+      {
+        name: 'tier',
+        type: 'text',
+        label: 'Tier',
+        groups: true,
+        hint: 'Headings on the partners page — ngo, foundation, institution. Leave empty for no heading.',
+      },
       { name: 'description', type: 'textarea', label: 'Description', translated: true },
       { name: 'isPublished', type: 'switch', label: 'Published' },
     ],

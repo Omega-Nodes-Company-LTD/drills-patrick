@@ -1,5 +1,5 @@
 import 'server-only'
-import { asc, eq, inArray } from 'drizzle-orm'
+import { asc, eq, getTableColumns, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '@/db'
 import {
@@ -149,6 +149,43 @@ export function schemaFor(key: CollectionKey) {
       ),
     ),
   })
+}
+
+/**
+ * Base-column values for a save, with the form's empty strings resolved the way
+ * each column can actually store them.
+ *
+ * Every text-ish field in the admin arrives as '' when the editor leaves it
+ * blank. Most base columns are nullable and read better as NULL, which is what
+ * the writer has always assumed — but two are not: `faqs.category` and
+ * `partners.tier` are NOT NULL with a default, and writing NULL into either is
+ * rejected by the database. That is why an FAQ could not be saved without a
+ * category and a partner not without a tier: the form offers both as optional,
+ * the schema does not.
+ *
+ * The column default is no help here — it applies only when the column is
+ * omitted from the statement, and an update that omits it leaves the old value
+ * in place, so clearing the field would silently do nothing. '' is stored
+ * instead, which is what the editor asked for and what both public pages
+ * already treat as "no group".
+ *
+ * Reading the constraint off the table rather than listing the columns keeps
+ * this correct when a collection gains a field.
+ */
+export function baseValuesFor(
+  key: CollectionKey,
+  values: Record<string, unknown>,
+): Record<string, unknown> {
+  const columns = getTableColumns(tables[key].base) as Record<string, { notNull: boolean }>
+  const def = collections[key]
+  const row: Record<string, unknown> = {}
+
+  for (const field of def.fields.filter((entry) => !entry.translated)) {
+    const value = values[field.name]
+    row[field.name] = value === '' ? (columns[field.name]?.notNull ? '' : null) : value
+  }
+
+  return row
 }
 
 export async function deleteCollectionRow(key: CollectionKey, id: string): Promise<void> {

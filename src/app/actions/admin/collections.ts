@@ -7,6 +7,7 @@ import { locales, type Locale } from '@/i18n/config'
 import { recordAudit } from '@/lib/audit'
 import { requireApiUser } from '@/lib/auth/guard'
 import {
+  baseValuesFor,
   collections,
   deleteCollectionRow,
   schemaFor,
@@ -48,11 +49,9 @@ export async function saveCollectionItem(
   const { base, translation, parent, fk } = tablesFor(key)
   const data = parsed.data
 
-  // Empty strings from the form are stored as NULL rather than ''.
-  const baseValues: Record<string, unknown> = { sortOrder: data.sortOrder }
-  for (const field of def.fields.filter((entry) => !entry.translated)) {
-    const value = (data.base as Record<string, unknown>)[field.name]
-    baseValues[field.name] = value === '' ? null : value
+  const baseValues: Record<string, unknown> = {
+    sortOrder: data.sortOrder,
+    ...baseValuesFor(key, data.base as Record<string, unknown>),
   }
 
   let id = data.id
