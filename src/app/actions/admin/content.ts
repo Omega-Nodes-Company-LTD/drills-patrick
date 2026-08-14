@@ -673,6 +673,68 @@ export async function deleteEntity(
   return { ok: true }
 }
 
+/**
+ * Re-index an entity from what is stored.
+ *
+ * The save actions index from the data they were just handed, which is the
+ * cheapest place to do it. Publishing from a listing screen has no such data:
+ * it flipped a status column and stopped there, so an article published that
+ * way stayed out of search and out of the assistant until somebody opened the
+ * form and saved it again — with nothing on screen to suggest it.
+ */
+async function indexStored(type: 'post' | 'project' | 'campaign', id: string): Promise<void> {
+  if (type === 'post') {
+    const rows = await db.select().from(postTranslations).where(eq(postTranslations.postId, id))
+
+    for (const row of rows) {
+      indexDocumentInBackground({
+        entityType: 'post',
+        entityId: id,
+        locale: row.locale,
+        title: row.title,
+        url: `/${row.locale}/blog/${row.slug}`,
+        body: row.contentHtml ?? '',
+      })
+    }
+    return
+  }
+
+  if (type === 'project') {
+    const rows = await db
+      .select()
+      .from(projectTranslations)
+      .where(eq(projectTranslations.projectId, id))
+
+    for (const row of rows) {
+      indexDocumentInBackground({
+        entityType: 'project',
+        entityId: id,
+        locale: row.locale,
+        title: row.title,
+        url: `/${row.locale}/projects/${row.slug}`,
+        body: `${row.summary ?? ''}\n${row.contentHtml ?? ''}`,
+      })
+    }
+    return
+  }
+
+  const rows = await db
+    .select()
+    .from(campaignTranslations)
+    .where(eq(campaignTranslations.campaignId, id))
+
+  for (const row of rows) {
+    indexDocumentInBackground({
+      entityType: 'campaign',
+      entityId: id,
+      locale: row.locale,
+      title: row.title,
+      url: `/${row.locale}/campaigns/${row.slug}`,
+      body: `${row.summary ?? ''}\n${row.contentHtml ?? ''}`,
+    })
+  }
+}
+
 /** Quick publish/unpublish from the listing screens. */
 export async function setPublishStatus(
   type: 'post' | 'project' | 'campaign' | 'page',
@@ -716,8 +778,9 @@ export async function setPublishStatus(
       .where(eq(pages.id, id))
   }
 
-  if (!published && type !== 'page') {
-    await removeDocument(type, id)
+  if (type !== 'page') {
+    if (published) await indexStored(type, id)
+    else await removeDocument(type, id)
   }
 
   await recordAudit({
