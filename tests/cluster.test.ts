@@ -9,9 +9,21 @@ describe('cellSize', () => {
     expect(cellSize(8)).toBeCloseTo(cellSize(7) / 2)
   })
 
-  it('stops shrinking once the reader is close in', () => {
-    expect(cellSize(20)).toBe(0.02)
-    expect(cellSize(30)).toBe(0.02)
+  it('keeps halving across every zoom a tile layer can reach', () => {
+    for (let zoom = 2; zoom < 19; zoom += 1) {
+      expect(cellSize(zoom + 1)).toBeCloseTo(cellSize(zoom) / 2, 12)
+    }
+  })
+
+  it('is small enough at full zoom to separate two water points in one village', () => {
+    // A hundred metres is about 0.0009°, and two boreholes that far apart are
+    // ordinary. The cell has to be under that well before the map runs out of
+    // zoom, or they can never be told apart.
+    expect(cellSize(16)).toBeLessThan(0.0009)
+  })
+
+  it('stops shrinking once the cell is meaningless', () => {
+    expect(cellSize(30)).toBe(2e-6)
   })
 })
 
@@ -40,6 +52,22 @@ describe('clusterMarkers', () => {
 
     expect(clusterMarkers(markers, 5)).toHaveLength(1)
     expect(clusterMarkers(markers, 12)).toHaveLength(2)
+  })
+
+  it('separates boreholes in the same village once the reader is close in', () => {
+    // The three from the grouping test above, about a kilometre apart. They
+    // used to stay merged at every zoom, so their popups could not be opened
+    // at all.
+    const markers = [point(0.34, 32.58), point(0.35, 32.59), point(0.36, 32.6)]
+
+    expect(clusterMarkers(markers, 5)).toHaveLength(1)
+    expect(clusterMarkers(markers, 14)).toHaveLength(3)
+  })
+
+  it('separates two water points a hundred metres apart', () => {
+    const markers = [point(0.34, 32.58), point(0.3409, 32.5809)]
+
+    expect(clusterMarkers(markers, 17)).toHaveLength(2)
   })
 
   it('places a cluster at the mean of its members, not the first one', () => {

@@ -132,7 +132,10 @@
     "supportThisProject": "Support this project",
     "relatedProjects": "Other projects",
     "map": "Where we work",
-    "backToProjects": "All projects"
+    "backToProjects": "All projects",
+    "viewProject": "View project",
+    "mapOtherLocations": "Other locations",
+    "mapListSummary": "{count} locations on this map"
   },
   "blog": {
     "title": "News from the field",

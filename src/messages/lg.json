@@ -132,7 +132,10 @@
     "supportThisProject": "Wagira pulojekiti eno",
     "relatedProjects": "Pulojekiti endala",
     "map": "Gye tukolera",
-    "backToProjects": "Pulojekiti zonna"
+    "backToProjects": "Pulojekiti zonna",
+    "viewProject": "Laba pulojekiti",
+    "mapOtherLocations": "Ebifo ebirala",
+    "mapListSummary": "Ebifo {count} ku maapu eno"
   },
   "blog": {
     "title": "Amawulire okuva ku ttaka",

@@ -132,7 +132,10 @@
     "supportThisProject": "Soutenir ce projet",
     "relatedProjects": "Autres projets",
     "map": "Où nous intervenons",
-    "backToProjects": "Tous les projets"
+    "backToProjects": "Tous les projets",
+    "viewProject": "Voir le projet",
+    "mapOtherLocations": "Autres lieux",
+    "mapListSummary": "{count} lieux sur cette carte"
   },
   "blog": {
     "title": "Nouvelles du terrain",
