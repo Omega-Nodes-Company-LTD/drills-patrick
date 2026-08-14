@@ -113,6 +113,7 @@ export default async function EditProjectPage({
         storageEnabled={features.storage}
         rows={updates.map((update) => ({
           id: update.id,
+          projectId: project.id,
           mediaId: update.mediaId,
           happenedOn: update.happenedOn,
           sortOrder: update.sortOrder,

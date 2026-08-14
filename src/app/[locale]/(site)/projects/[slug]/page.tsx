@@ -260,7 +260,25 @@ export default async function ProjectPage({
                       {update.translation?.title}
                     </h3>
                     {update.translation?.body ? (
-                      <p className="mt-1 text-muted-foreground">{update.translation.body}</p>
+                      // Written with the rich-text editor, so it arrives as
+                      // markup. Rendered as a text child it showed the reader
+                      // its own tags.
+                      <div
+                        className="prose-content mt-1"
+                        dangerouslySetInnerHTML={{
+                          __html: sanitizeHtml(update.translation.body),
+                        }}
+                      />
+                    ) : null}
+                    {update.photo ? (
+                      <figure className="relative mt-3 aspect-[16/10] overflow-hidden rounded-[var(--radius-lg)] bg-muted">
+                        <MediaImage
+                          media={update.photo}
+                          locale={locale}
+                          alt={update.translation?.title ?? ''}
+                          sizes="(max-width: 1024px) 100vw, 44rem"
+                        />
+                      </figure>
                     ) : null}
                   </li>
                 ))}

@@ -222,6 +222,42 @@ export async function adminAuthorOptions() {
 }
 
 /** Timeline entries of a project, every language, published or not. */
+/**
+ * Every timeline entry on the installation, newest first.
+ *
+ * Updates could only be reached by opening the project that owns them, which
+ * is the wrong way round for the work: entries arrive from the field in date
+ * order, across whichever projects happen to be running that week.
+ */
+export async function adminListAllProjectUpdates(limit = 200) {
+  const rows = await db
+    .select({ update: projectUpdates })
+    .from(projectUpdates)
+    .orderBy(desc(projectUpdates.happenedOn), desc(projectUpdates.createdAt))
+    .limit(limit)
+
+  if (rows.length === 0) return []
+
+  const updates = rows.map((row) => row.update)
+
+  const translations = await db
+    .select()
+    .from(projectUpdateTranslations)
+    .where(
+      inArray(
+        projectUpdateTranslations.updateId,
+        updates.map((row) => row.id),
+      ),
+    )
+
+  const byUpdate = groupByParent(translations, 'updateId')
+
+  return updates.map((row) => ({
+    ...row,
+    translations: byUpdate.get(row.id) ?? [],
+  }))
+}
+
 export async function adminListProjectUpdates(projectId: string) {
   const rows = await db
     .select()
