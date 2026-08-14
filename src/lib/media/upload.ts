@@ -41,8 +41,14 @@ const DOCUMENT_TYPES = new Set([
   'text/plain',
 ])
 
-/** Widths generated for raster images; larger than the source is skipped. */
-const VARIANT_WIDTHS = [480, 960, 1440, 1920]
+/**
+ * Widths generated for raster images; larger than the source is skipped.
+ *
+ * These are what the site links to, so the top of the range decides what a
+ * large screen gets: 2560 covers a full-width hero on a 4K display closely
+ * enough that nothing above it is worth storing.
+ */
+const VARIANT_WIDTHS = [480, 960, 1440, 1920, 2560]
 
 export function isAllowedType(mimeType: string): boolean {
   return IMAGE_TYPES.has(mimeType) || DOCUMENT_TYPES.has(mimeType)

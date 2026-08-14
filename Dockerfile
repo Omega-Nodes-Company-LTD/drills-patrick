@@ -26,6 +26,22 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 # The build must not require a live database or any third-party credentials.
 ENV SKIP_ENV_VALIDATION=1
+
+# Next.js compiles the list of hosts its image optimiser will accept into the
+# build, so these two have to be set while `next build` runs and not only at
+# run time. A build variable reaches the build as `--build-arg`, which Docker
+# discards unless the stage declares it -- so without these four lines the host
+# list came out empty on every image ever built here, the optimiser switched
+# itself off, and each visitor was served the original upload: a field
+# photograph of several megabytes behind a card three hundred pixels wide.
+#
+# Empty defaults keep a plain `docker build` working; the optimiser simply
+# stays off, which is the documented fallback.
+ARG S3_ENDPOINT=""
+ARG S3_PUBLIC_BASE_URL=""
+ENV S3_ENDPOINT=$S3_ENDPOINT
+ENV S3_PUBLIC_BASE_URL=$S3_PUBLIC_BASE_URL
+
 RUN pnpm build
 
 # ---------------------------------------------------------------------------
