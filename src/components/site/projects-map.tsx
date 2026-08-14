@@ -13,6 +13,15 @@ export type ProjectMarker = {
   district: string | null
 }
 
+/** A pin the editor placed by hand, with no project behind it. */
+export type MapPlace = {
+  id: string
+  label: string
+  note: string | null
+  lat: number
+  lng: number
+}
+
 /**
  * Leaflet touches `window` at import time, so the actual map is loaded only in
  * the browser. This wrapper keeps the server tree free of it.
@@ -26,12 +35,24 @@ const MapCanvas = dynamic(() => import('./projects-map-canvas').then((mod) => mo
 
 export function ProjectsMap({
   markers,
+  places = [],
   center,
   zoom,
+  viewLabel,
 }: {
   markers: ProjectMarker[]
+  places?: MapPlace[]
   center: { lat: number; lng: number }
   zoom: number
+  viewLabel: string
 }) {
-  return <MapCanvas markers={markers} center={center} zoom={zoom} />
+  return (
+    <MapCanvas
+      markers={markers}
+      places={places}
+      center={center}
+      zoom={zoom}
+      viewLabel={viewLabel}
+    />
+  )
 }

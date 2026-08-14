@@ -18,12 +18,20 @@ export type Cluster<T extends ClusterPoint> = {
 /**
  * Degrees per grid cell at a given zoom.
  *
- * Halves with each zoom level so zooming in splits clusters apart, and is
- * floored so that once the reader is close in the grid stops merging anything
- * and every water point gets its own pin.
+ * Halves with each zoom level, so zooming in keeps splitting clusters until
+ * every water point has its own pin.
+ *
+ * The floor is only a guard against a meaningless cell, not a merge distance:
+ * at 2e-6° — about twenty centimetres — it is reached past zoom 21, beyond any
+ * tile layer. It used to sit at 0.02°, roughly two kilometres, which meant the
+ * grid stopped shrinking around zoom 9 and anything closer than that could
+ * never be separated. Several boreholes in one village is the ordinary case
+ * here, so the reader could zoom all the way in and still be shown a bubble
+ * marked "3", with the popups behind it — name, district, status, link to the
+ * project — unreachable at any zoom.
  */
 export function cellSize(zoom: number): number {
-  return Math.max(0.02, 8 / 2 ** zoom)
+  return Math.max(2e-6, 8 / 2 ** zoom)
 }
 
 /**

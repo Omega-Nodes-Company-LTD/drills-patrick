@@ -212,6 +212,23 @@ export const ctaBlockSchema = z.object({
   mediaId: z.string().uuid().nullish(),
 })
 
+/**
+ * A pin the editor places by hand.
+ *
+ * Water points come from the projects themselves and must keep doing so — a
+ * borehole typed into a page section is a second copy that starts drifting the
+ * day it is drilled. But plenty of things belong on this map without being a
+ * project: the workshop, a district under contract, a site surveyed but not
+ * yet opened. Those had nowhere to go, so the map could only ever show what
+ * the projects table happened to hold.
+ */
+export const mapLocationSchema = z.object({
+  label: i18nTextSchema,
+  note: i18nTextSchema.optional(),
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+})
+
 export const mapBlockSchema = z.object({
   ...baseFields,
   kind: z.literal('map'),
@@ -224,6 +241,11 @@ export const mapBlockSchema = z.object({
     'in_progress',
     'completed',
   ]),
+  /** Generous rather than unbounded: a country programme, not a gazetteer. */
+  locations: z.array(mapLocationSchema).max(60).default([]),
+  /** A key for the pin colours, and the same points again as a list of links. */
+  showLegend: z.boolean().default(true),
+  showList: z.boolean().default(true),
 })
 
 export const videoBlockSchema = z.object({
@@ -324,6 +346,7 @@ export type FaqBlock = z.infer<typeof faqBlockSchema>
 export type StepsBlock = z.infer<typeof stepsBlockSchema>
 export type CtaBlock = z.infer<typeof ctaBlockSchema>
 export type MapBlock = z.infer<typeof mapBlockSchema>
+export type MapLocation = z.infer<typeof mapLocationSchema>
 export type VideoBlock = z.infer<typeof videoBlockSchema>
 export type AnswerBlock = z.infer<typeof answerBlockSchema>
 export type TableBlock = z.infer<typeof tableBlockSchema>

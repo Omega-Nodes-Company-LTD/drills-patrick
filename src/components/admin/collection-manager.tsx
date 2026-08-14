@@ -180,6 +180,7 @@ export function CollectionManager({
           setDraft={setDraft}
           enabledLocales={enabledLocales}
           storageEnabled={storageEnabled}
+          items={items}
         />
       ) : null}
     </div>
@@ -192,17 +193,29 @@ function CollectionDialog({
   setDraft,
   enabledLocales,
   storageEnabled,
+  items,
 }: {
   collectionKey: CollectionKey
   draft: Draft
   setDraft: (draft: Draft | null) => void
   enabledLocales: Locale[]
   storageEnabled: boolean
+  items: CollectionItem[]
 }) {
   const t = useTranslations('admin.common')
   const tCommon = useTranslations('common')
   const def = collections[collectionKey]
   const [pending, startTransition] = useTransition()
+
+  /** Values already in use for a field that groups the public page. */
+  const suggestionsFor = (name: string) =>
+    [
+      ...new Set(
+        items
+          .map((item) => item.base[name])
+          .filter((value): value is string => typeof value === 'string' && value.trim() !== ''),
+      ),
+    ].sort()
 
   const setBase = (name: string, value: unknown) =>
     setDraft({ ...draft, base: { ...draft.base, [name]: value } })
@@ -246,6 +259,7 @@ function CollectionDialog({
               value={draft.base[field.name]}
               onChange={(value) => setBase(field.name, value)}
               storageEnabled={storageEnabled}
+              suggestions={field.groups ? suggestionsFor(field.name) : undefined}
             />
           ))}
 
@@ -304,11 +318,13 @@ function BaseField({
   value,
   onChange,
   storageEnabled,
+  suggestions,
 }: {
   field: FieldDef
   value: unknown
   onChange: (value: unknown) => void
   storageEnabled: boolean
+  suggestions?: string[]
 }) {
   if (field.type === 'switch') {
     return (
@@ -341,13 +357,26 @@ function BaseField({
     )
   }
 
+  const listId = suggestions && suggestions.length > 0 ? `${field.name}-suggestions` : undefined
+
   return (
     <Field label={field.label} hint={field.hint} required={field.required}>
       <Input
         type={field.type === 'email' ? 'email' : field.type === 'url' ? 'url' : 'text'}
         value={String(value ?? '')}
+        list={listId}
         onChange={(event) => onChange(event.target.value)}
       />
+      {/* The value is a heading on the public page, and two spellings of it
+          make two headings. Offering what is already in use is the whole
+          difference between a grouping that holds and one that drifts. */}
+      {listId ? (
+        <datalist id={listId}>
+          {suggestions!.map((suggestion) => (
+            <option key={suggestion} value={suggestion} />
+          ))}
+        </datalist>
+      ) : null}
     </Field>
   )
 }

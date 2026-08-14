@@ -227,7 +227,14 @@ export async function getProjectBySlug(slug: string, locale: Locale) {
 
   const byUpdate = groupByParent(updateTranslations, 'updateId')
 
-  const mediaIds = [project.coverId, ...(project.galleryIds ?? [])].filter(Boolean) as string[]
+  // Timeline photographs are fetched with the cover and the gallery: a field
+  // team attaches one to most entries, and they are the part of an update
+  // people actually look at.
+  const mediaIds = [
+    project.coverId,
+    ...(project.galleryIds ?? []),
+    ...updateRows.map((row) => row.mediaId),
+  ].filter(Boolean) as string[]
   const mediaMap = await getMediaByIds(mediaIds)
 
   const [linkedCampaign] = await db
@@ -247,6 +254,7 @@ export async function getProjectBySlug(slug: string, locale: Locale) {
       .filter((row): row is MediaRow => Boolean(row)),
     updates: updateRows.map((row) => ({
       ...row,
+      photo: row.mediaId ? (mediaMap.get(row.mediaId) ?? null) : null,
       translation: pickTranslation(byUpdate.get(row.id), locale),
     })),
     campaignId: linkedCampaign?.id ?? null,

@@ -2,6 +2,7 @@
 
 import { Plus, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useEffect, useState } from 'react'
 import { MediaGalleryPicker, MediaPicker } from '@/components/admin/media/media-picker'
 import { Button } from '@/components/ui/button'
 import { Field, Input, Select } from '@/components/ui/field'
@@ -477,25 +478,28 @@ export function BlockFields({
       return (
         <>
           <I18nField label="Title" value={block.title} onChange={(title) => patch({ title })} />
+          <I18nField
+            label="Subtitle"
+            variant="textarea"
+            value={block.subtitle}
+            onChange={(subtitle) => patch({ subtitle })}
+          />
+
           <div className="grid gap-3 sm:grid-cols-3">
-            <Field label="Latitude">
-              <Input
-                inputMode="decimal"
-                value={block.center.lat}
-                onChange={(event) =>
-                  patch({ center: { ...block.center, lat: Number(event.target.value) } })
-                }
-              />
-            </Field>
-            <Field label="Longitude">
-              <Input
-                inputMode="decimal"
-                value={block.center.lng}
-                onChange={(event) =>
-                  patch({ center: { ...block.center, lng: Number(event.target.value) } })
-                }
-              />
-            </Field>
+            <CoordinateInput
+              label="Latitude"
+              value={block.center.lat}
+              min={-90}
+              max={90}
+              onChange={(lat) => patch({ center: { ...block.center, lat } })}
+            />
+            <CoordinateInput
+              label="Longitude"
+              value={block.center.lng}
+              min={-180}
+              max={180}
+              onChange={(lng) => patch({ center: { ...block.center, lng } })}
+            />
             <Field label="Zoom">
               <Input
                 type="number"
@@ -505,6 +509,80 @@ export function BlockFields({
                 onChange={(event) => patch({ zoom: Number(event.target.value) })}
               />
             </Field>
+          </div>
+
+          <Field label="Water points shown" hint="Projects carrying coordinates.">
+            <div className="flex flex-wrap gap-4">
+              {(['planned', 'in_progress', 'completed'] as const).map((status) => (
+                <label key={status} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    className="size-4 accent-[var(--c-primary)]"
+                    checked={block.statuses.includes(status)}
+                    onChange={(event) =>
+                      patch({
+                        statuses: event.target.checked
+                          ? [...block.statuses, status]
+                          : block.statuses.filter((entry) => entry !== status),
+                      })
+                    }
+                  />
+                  {status === 'in_progress' ? 'In progress' : status === 'planned' ? 'Planned' : 'Completed'}
+                </label>
+              ))}
+            </div>
+          </Field>
+
+          <RepeatableList
+            label="Other locations on the map"
+            items={block.locations}
+            onChange={(locations) => patch({ locations })}
+            create={() => ({ label: {}, note: {}, lat: block.center.lat, lng: block.center.lng })}
+            render={(location, update) => (
+              <div className="flex flex-col gap-3">
+                <I18nField
+                  label="Label"
+                  value={location.label}
+                  onChange={(label) => update({ label })}
+                />
+                <I18nField
+                  label="Note"
+                  variant="textarea"
+                  value={location.note}
+                  onChange={(note) => update({ note })}
+                />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <CoordinateInput
+                    label="Latitude"
+                    value={location.lat}
+                    min={-90}
+                    max={90}
+                    onChange={(lat) => update({ lat })}
+                  />
+                  <CoordinateInput
+                    label="Longitude"
+                    value={location.lng}
+                    min={-180}
+                    max={180}
+                    onChange={(lng) => update({ lng })}
+                  />
+                </div>
+              </div>
+            )}
+          />
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="flex items-center justify-between gap-2 text-sm">
+              Show the key to the pin colours
+              <Switch
+                checked={block.showLegend}
+                onCheckedChange={(showLegend) => patch({ showLegend })}
+              />
+            </label>
+            <label className="flex items-center justify-between gap-2 text-sm">
+              Show the same points as a list
+              <Switch checked={block.showList} onCheckedChange={(showList) => patch({ showList })} />
+            </label>
           </div>
         </>
       )
@@ -703,6 +781,65 @@ function RepeatableList<T>({
   )
 }
 
+/**
+ * A latitude or a longitude, as typed.
+ *
+ * `Number(event.target.value)` reads an empty field as 0, and a field is empty
+ * for as long as it takes to clear it and type the new value — so editing a
+ * coordinate would throw the map into the Atlantic mid-keystroke. The text is
+ * held locally while it is being worked on and only a value that parses inside
+ * the allowed range is committed to the block.
+ */
+function CoordinateInput({
+  label,
+  value,
+  min,
+  max,
+  onChange,
+}: {
+  label: string
+  value: number
+  min: number
+  max: number
+  onChange: (value: number) => void
+}) {
+  const [text, setText] = useState(() => String(value))
+
+  const parse = (raw: string) => {
+    if (raw.trim() === '') return null
+    const parsed = Number(raw)
+    if (!Number.isFinite(parsed) || parsed < min || parsed > max) return null
+    return parsed
+  }
+
+  // Follows the block when something else changes it, without fighting the
+  // person typing.
+  useEffect(() => {
+    setText((current) => (parse(current) === value ? current : String(value)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `parse` is stable in what it reads
+  }, [value])
+
+  const valid = parse(text) !== null
+
+  return (
+    <Field label={label}>
+      <Input
+        inputMode="decimal"
+        value={text}
+        aria-invalid={!valid}
+        onChange={(event) => {
+          setText(event.target.value)
+          const parsed = parse(event.target.value)
+          if (parsed !== null) onChange(parsed)
+        }}
+        onBlur={() => {
+          if (!valid) setText(String(value))
+        }}
+      />
+    </Field>
+  )
+}
+
 /** Default value for a newly added block of a given kind. */
 export function createBlock(kind: Block['kind']): Block {
   const base = {
@@ -769,6 +906,9 @@ export function createBlock(kind: Block['kind']): Block {
         zoom: 7,
         center: { lat: 1.3733, lng: 32.2903 },
         statuses: ['planned', 'in_progress', 'completed'],
+        locations: [],
+        showLegend: true,
+        showList: true,
       }
     case 'video':
       return { ...base, kind, url: '' }

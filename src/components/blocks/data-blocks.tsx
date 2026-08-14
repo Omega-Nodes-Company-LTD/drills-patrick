@@ -1,6 +1,7 @@
 import { Linkedin, Mail } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import { pickI18n, type Locale } from '@/i18n/config'
+import { Link } from '@/i18n/navigation'
 import type {
   CampaignsBlock,
   ContactBlock,
@@ -337,10 +338,28 @@ export async function FaqBlockView({ block, locale }: { block: FaqBlock; locale:
   )
 }
 
+/** Colours have to match `statusColors` in the map canvas. */
+const STATUS_SWATCH: Record<'planned' | 'in_progress' | 'completed', string> = {
+  planned: 'var(--c-muted-foreground)',
+  in_progress: 'var(--c-warning)',
+  completed: 'var(--c-success)',
+}
+
 export async function MapBlockView({ block, locale }: { block: MapBlock; locale: Locale }) {
   const markers = await listProjectMarkers(locale)
   const filtered = markers.filter((marker) => block.statuses.includes(marker.status))
-  if (filtered.length === 0) return null
+
+  const places = block.locations.map((location, index) => ({
+    id: `place-${index}`,
+    label: pickI18n(location.label, locale) ?? '',
+    note: pickI18n(location.note, locale) || null,
+    lat: location.lat,
+    lng: location.lng,
+  }))
+
+  // Hand-placed pins are worth a map on their own, so the block no longer
+  // disappears just because no project carries coordinates yet.
+  if (filtered.length === 0 && places.length === 0) return null
 
   const t = await getTranslations('projects')
 
@@ -354,6 +373,8 @@ export async function MapBlockView({ block, locale }: { block: MapBlock; locale:
       <ProjectsMap
         center={block.center}
         zoom={block.zoom}
+        viewLabel={t('viewProject')}
+        places={places}
         markers={filtered.map((marker) => ({
           id: marker.id,
           slug: marker.slug,
@@ -365,6 +386,64 @@ export async function MapBlockView({ block, locale }: { block: MapBlock; locale:
           district: marker.district,
         }))}
       />
+
+      {/* Without this the three pin colours mean nothing until a popup is
+          opened, and mean nothing at all to a reader who cannot tell them
+          apart. */}
+      {block.showLegend ? (
+        <ul className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-small">
+          {block.statuses.map((status) => (
+            <li key={status} className="flex items-center gap-2">
+              <span
+                className="size-3 shrink-0 rounded-full border border-background"
+                style={{ background: STATUS_SWATCH[status] }}
+                aria-hidden
+              />
+              {t(`status.${status}`)}
+            </li>
+          ))}
+          {places.length > 0 ? (
+            <li className="flex items-center gap-2">
+              <span
+                className="size-3 shrink-0 rotate-45 border border-background bg-primary"
+                aria-hidden
+              />
+              {t('mapOtherLocations')}
+            </li>
+          ) : null}
+        </ul>
+      ) : null}
+
+      {/* The same points as text. A map is a picture: it is unreadable with a
+          keyboard, unreadable to a screen reader, and unreadable when the tiles
+          do not load. */}
+      {block.showList ? (
+        <details className="mt-4 rounded-[var(--radius-lg)] border border-border">
+          <summary className="cursor-pointer p-4 text-sm font-medium">
+            {t('mapListSummary', { count: filtered.length + places.length })}
+          </summary>
+          <ul className="flex flex-col gap-2 border-t border-border p-4 text-sm">
+            {filtered.map((marker) => (
+              <li key={marker.id} className="flex flex-wrap items-baseline gap-x-2">
+                <Link href={`/projects/${marker.slug}`} className="font-medium hover:underline">
+                  {marker.title}
+                </Link>
+                <span className="text-small text-muted-foreground">
+                  {[marker.district, t(`status.${marker.status}`)].filter(Boolean).join(' · ')}
+                </span>
+              </li>
+            ))}
+            {places.map((place) => (
+              <li key={place.id} className="flex flex-wrap items-baseline gap-x-2">
+                <span className="font-medium">{place.label}</span>
+                {place.note ? (
+                  <span className="text-small text-muted-foreground">{place.note}</span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
     </Section>
   )
 }

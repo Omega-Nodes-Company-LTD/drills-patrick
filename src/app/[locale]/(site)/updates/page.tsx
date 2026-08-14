@@ -1,12 +1,15 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { Suspense } from 'react'
 import { JsonLd } from '@/components/seo/json-ld'
 import { EmptyState, PageHeader } from '@/components/site/page-header'
+import { Pagination } from '@/components/site/pagination'
+import { MediaImage } from '@/components/ui/media-image'
 import { intlLocale, type Locale } from '@/i18n/config'
 import { Link } from '@/i18n/navigation'
-import { listRecentUpdates } from '@/lib/transparency/registry'
+import { countRecentUpdates, listRecentUpdates } from '@/lib/transparency/registry'
 import { sanitizeHtml } from '@/lib/sanitize'
-import { localeUrl, staticAlternates } from '@/lib/seo'
+import { listingRobots, localeUrl, staticAlternates } from '@/lib/seo'
 import { sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
 import { getSiteSettings } from '@/lib/settings/service'
 
@@ -21,12 +24,19 @@ export const dynamic = 'force-dynamic'
  * projects one by one.
  */
 
+const PER_PAGE = 20
+
+type SearchParams = Promise<{ page?: string }>
+
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>
+  searchParams: SearchParams
 }): Promise<Metadata> {
   const { locale } = (await params) as { locale: Locale }
+  const query = await searchParams
   const [t, settings] = await Promise.all([
     getTranslations({ locale, namespace: 'updates' }),
     getSiteSettings(),
@@ -36,18 +46,29 @@ export async function generateMetadata({
     title: t('title'),
     description: t('subtitle'),
     alternates: staticAlternates(locale, '/updates', settings.enabledLocales),
+    robots: listingRobots(query),
   }
 }
 
-export default async function UpdatesPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function UpdatesPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>
+  searchParams: SearchParams
+}) {
   const { locale } = (await params) as { locale: Locale }
   setRequestLocale(locale)
 
-  const [t, tNav, tCommon, updates] = await Promise.all([
+  const query = await searchParams
+  const page = Math.max(1, Number(query.page) || 1)
+
+  const [t, tNav, tCommon, updates, total] = await Promise.all([
     getTranslations('updates'),
     getTranslations('nav'),
     getTranslations('common'),
-    listRecentUpdates(locale, 100),
+    listRecentUpdates(locale, PER_PAGE, (page - 1) * PER_PAGE),
+    countRecentUpdates(),
   ])
 
   const url = localeUrl(locale, '/updates')
@@ -77,30 +98,47 @@ export default async function UpdatesPage({ params }: { params: Promise<{ locale
         {updates.length === 0 ? (
           <EmptyState message={tCommon('noResults')} />
         ) : (
-          <ol className="flex flex-col gap-8">
-            {updates.map((update) => (
-              <li key={update.id} className="border-s-2 border-border ps-5">
-                <p className="text-small text-muted-foreground">
-                  <time dateTime={update.happenedOn}>
-                    {dates.format(new Date(`${update.happenedOn}T00:00:00Z`))}
-                  </time>
-                  {' · '}
-                  <Link href={`/projects/${update.projectSlug}`} className="hover:underline">
-                    {update.projectTitle}
-                  </Link>
-                </p>
+          <>
+            <ol className="flex flex-col gap-8">
+              {updates.map((update) => (
+                <li key={update.id} className="border-s-2 border-border ps-5">
+                  <p className="text-small text-muted-foreground">
+                    <time dateTime={update.happenedOn}>
+                      {dates.format(new Date(`${update.happenedOn}T00:00:00Z`))}
+                    </time>
+                    {' · '}
+                    <Link href={`/projects/${update.projectSlug}`} className="hover:underline">
+                      {update.projectTitle}
+                    </Link>
+                  </p>
 
-                {update.title ? <h2 className="mt-1 text-heading">{update.title}</h2> : null}
+                  {update.title ? <h2 className="mt-1 text-heading">{update.title}</h2> : null}
 
-                {update.body ? (
-                  <div
-                    className="prose-content mt-2"
-                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(update.body) }}
-                  />
-                ) : null}
-              </li>
-            ))}
-          </ol>
+                  {update.body ? (
+                    <div
+                      className="prose-content mt-2"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(update.body) }}
+                    />
+                  ) : null}
+
+                  {update.photo ? (
+                    <figure className="relative mt-3 aspect-[16/10] overflow-hidden rounded-[var(--radius-lg)] bg-muted">
+                      <MediaImage
+                        media={update.photo}
+                        locale={locale}
+                        alt={update.title}
+                        sizes="(max-width: 768px) 100vw, 40rem"
+                      />
+                    </figure>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+
+            <Suspense fallback={null}>
+              <Pagination page={page} total={total} perPage={PER_PAGE} />
+            </Suspense>
+          </>
         )}
       </div>
     </>

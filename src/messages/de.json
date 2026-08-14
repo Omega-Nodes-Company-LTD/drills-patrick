@@ -132,7 +132,10 @@
     "supportThisProject": "Dieses Projekt unterstützen",
     "relatedProjects": "Weitere Projekte",
     "map": "Wo wir arbeiten",
-    "backToProjects": "Alle Projekte"
+    "backToProjects": "Alle Projekte",
+    "viewProject": "Projekt ansehen",
+    "mapOtherLocations": "Weitere Standorte",
+    "mapListSummary": "{count} Standorte auf dieser Karte"
   },
   "blog": {
     "title": "Berichte aus dem Feld",
@@ -328,6 +331,7 @@
       "posts": "Beiträge",
       "categories": "Kategorien",
       "projects": "Projekte",
+      "updates": "Berichte aus dem Feld",
       "campaigns": "Aktionen",
       "donations": "Spenden",
       "inquiries": "Anfragen",
