@@ -59,35 +59,46 @@ export function CategoriesManager({ rows }: { rows: CategoryRow[] }) {
           {rows.map((row) => (
             <li
               key={row.id}
-              className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4"
+              className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4 md:flex-row md:items-center md:gap-4"
             >
-              <span
-                className="size-4 shrink-0 rounded-full border border-border"
-                style={{ background: row.color ?? 'var(--color-muted)' }}
-                aria-hidden
-              />
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{row.names.en ?? '—'}</p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {locales
-                    .filter((locale) => row.names[locale])
-                    .map((locale) => `${locale}: ${row.names[locale]}`)
-                    .join(' · ')}
-                </p>
+              {/* The swatch belongs with the name, not on a line of its own. */}
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <span
+                  className="size-4 shrink-0 rounded-full border border-border"
+                  style={{ background: row.color ?? 'var(--color-muted)' }}
+                  aria-hidden
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium">{row.names.en ?? '—'}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {locales
+                      .filter((locale) => row.names[locale])
+                      .map((locale) => `${locale}: ${row.names[locale]}`)
+                      .join(' · ')}
+                  </p>
+                </div>
               </div>
-              <Button size="iconSm" variant="ghost" onClick={() => setEditing(row)} title={tCommon('edit')}>
-                <Pencil className="size-4" aria-hidden />
-              </Button>
-              <Button
-                size="iconSm"
-                variant="ghost"
-                onClick={() => remove(row)}
-                disabled={pending}
-                title={tCommon('delete')}
-                className="text-muted-foreground hover:text-danger"
-              >
-                <Trash2 className="size-4" aria-hidden />
-              </Button>
+
+              <div className="flex shrink-0 items-center gap-2 pointer-coarse:gap-3">
+                <Button
+                  size="iconSm"
+                  variant="ghost"
+                  onClick={() => setEditing(row)}
+                  title={tCommon('edit')}
+                >
+                  <Pencil className="size-4" aria-hidden />
+                </Button>
+                <Button
+                  size="iconSm"
+                  variant="ghost"
+                  onClick={() => remove(row)}
+                  disabled={pending}
+                  title={tCommon('delete')}
+                  className="text-muted-foreground hover:text-danger"
+                >
+                  <Trash2 className="size-4" aria-hidden />
+                </Button>
+              </div>
             </li>
           ))}
         </ul>

@@ -248,7 +248,7 @@ export function MediaBrowser({
                     </span>
                     <span className="flex flex-col gap-0.5 p-2">
                       <span className="truncate text-xs font-medium">{item.originalName}</span>
-                      <span className="text-[0.7rem] text-muted-foreground">
+                      <span className="text-xs text-muted-foreground">
                         {item.width && item.height ? `${item.width}×${item.height} · ` : ''}
                         {formatBytes(item.sizeBytes)}
                       </span>

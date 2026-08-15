@@ -46,7 +46,10 @@ export function LanguageSwitcher({
         onChange={(event) => onChange(event.target.value as Locale)}
         disabled={pending}
         aria-label={localeLabels[current]}
-        className="h-9 appearance-none rounded-full border border-border bg-surface pl-8 pr-7 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-60"
+        // A `<select>` is a replaced element, so the `touch-target` pseudo-element
+        // trick does not apply to it: the box itself has to be tall enough, and
+        // the font large enough that iOS does not zoom in on focus.
+        className="h-11 appearance-none rounded-full border border-border bg-surface pl-8 pr-7 text-base font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-60 sm:h-9 sm:text-sm"
       >
         {locales.map((locale) => (
           <option key={locale} value={locale}>

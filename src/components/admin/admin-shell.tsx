@@ -29,13 +29,13 @@ import {
   Users,
   Droplets,
   Megaphone,
-  X,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, usePathname } from '@/i18n/navigation'
 import type { Permission } from '@/lib/auth/session'
 import { cn } from '@/lib/utils'
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
 
 type NavEntry = {
@@ -129,6 +129,7 @@ export function AdminShell({
   signOutAction: () => Promise<void>
 }) {
   const t = useTranslations('admin.nav')
+  const tCommon = useTranslations('common')
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
@@ -141,9 +142,21 @@ export function AdminShell({
   const isActive = (entry: NavEntry) =>
     entry.exact ? pathname === entry.href : pathname.startsWith(entry.href)
 
-  const sidebar = (
+  /*
+   * Rendered twice — once in the permanent sidebar, once inside the drawer —
+   * but only ever one of the two is in the tree at a given width, so the
+   * navigation landmark is not duplicated in the accessibility tree. Inside the
+   * drawer the brand row has to keep clear of the dialog's close button.
+   */
+  const renderSidebar = (inDrawer: boolean) => (
     <div className="flex h-full flex-col gap-6 overflow-y-auto p-4">
-      <Link href="/admin" className="flex items-center gap-2 px-2 font-heading text-base font-bold">
+      <Link
+        href="/admin"
+        className={cn(
+          'flex items-center gap-2 px-2 font-heading text-base font-bold',
+          inDrawer && 'pe-10',
+        )}
+      >
         <span className="grid size-8 place-items-center rounded-[var(--radius-sm)] bg-primary text-primary-foreground">
           {siteName.slice(0, 1).toUpperCase()}
         </span>
@@ -217,46 +230,45 @@ export function AdminShell({
   return (
     <div className="flex min-h-dvh">
       <aside className="hidden w-64 shrink-0 border-e border-border bg-surface lg:block">
-        <div className="sticky top-0 h-dvh">{sidebar}</div>
+        <div className="sticky top-0 h-dvh">{renderSidebar(false)}</div>
       </aside>
-
-      {/* Mobile drawer */}
-      <div
-        className={cn('fixed inset-0 z-50 lg:hidden', open ? '' : 'pointer-events-none')}
-        aria-hidden={!open}
-      >
-        <div
-          className={cn(
-            'absolute inset-0 bg-black/50 transition-opacity',
-            open ? 'opacity-100' : 'opacity-0',
-          )}
-          onClick={() => setOpen(false)}
-        />
-        <div
-          className={cn(
-            'absolute inset-y-0 start-0 w-[min(17rem,85vw)] bg-surface transition-transform duration-200',
-            open ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full',
-          )}
-        >
-          {sidebar}
-        </div>
-      </div>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur lg:hidden">
-          <button
-            type="button"
-            onClick={() => setOpen((value) => !value)}
-            aria-label={t('dashboard')}
-            className="grid size-9 place-items-center rounded-[var(--radius-sm)] hover:bg-muted"
-          >
-            {open ? <X className="size-5" aria-hidden /> : <Menu className="size-5" aria-hidden />}
-          </button>
-          <span className="font-heading font-semibold">{siteName}</span>
-          <ChevronDown className="ms-auto size-4 opacity-0" aria-hidden />
+          {/*
+            Built on the `Dialog` primitive rather than by hand: Escape, the
+            focus trap, returning focus to the trigger, locking the background
+            scroll and keeping the closed panel out of the tab order all come
+            from Radix instead of being reimplemented here.
+          */}
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger
+              aria-label={tCommon('menu')}
+              className="grid size-9 place-items-center rounded-[var(--radius-sm)] touch-target hover:bg-muted"
+            >
+              <Menu className="size-5" aria-hidden />
+            </DialogTrigger>
+
+            <DialogContent
+              side="start"
+              closeLabel={tCommon('close')}
+              aria-describedby={undefined}
+              className="w-[min(17rem,85vw)] bg-surface lg:hidden"
+            >
+              <DialogTitle className="sr-only">{tCommon('menu')}</DialogTitle>
+              {renderSidebar(true)}
+            </DialogContent>
+          </Dialog>
+
+          <span className="min-w-0 truncate font-heading font-semibold">{siteName}</span>
+          <ChevronDown className="ms-auto size-4 shrink-0 opacity-0" aria-hidden />
         </header>
 
-        <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
+        {/*
+          The bottom padding leaves room for the sticky action bar the long
+          admin forms render below `lg` (see form-action-bar.tsx).
+        */}
+        <main className="flex-1 p-4 pb-24 md:p-6 lg:p-8 lg:pb-8">{children}</main>
       </div>
     </div>
   )

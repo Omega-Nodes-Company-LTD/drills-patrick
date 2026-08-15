@@ -41,7 +41,7 @@ export async function PortalHeader({
         >
           <button
             type="submit"
-            className="text-small text-muted-foreground underline hover:text-danger"
+            className="text-small text-muted-foreground underline touch-target hover:text-danger"
           >
             {t('signOut')}
           </button>
@@ -55,7 +55,7 @@ export async function PortalHeader({
             href={tab.href}
             aria-current={tab.key === active ? 'page' : undefined}
             className={cn(
-              'rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
+              'flex items-center rounded-full px-4 py-1.5 text-sm font-medium transition-colors pointer-coarse:min-h-11',
               tab.key === active
                 ? 'bg-primary text-primary-foreground'
                 : 'text-foreground/75 hover:bg-muted',

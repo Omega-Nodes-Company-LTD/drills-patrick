@@ -2,8 +2,9 @@
 
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
-import { useMemo, useState } from 'react'
-import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet'
+import { useTranslations } from 'next-intl'
+import { useEffect, useMemo, useState } from 'react'
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { Link } from '@/i18n/navigation'
 import { clusterMarkers } from '@/lib/transparency/cluster'
 import type { MapPlace, ProjectMarker } from './projects-map'
@@ -129,6 +130,27 @@ function Markers({
   )
 }
 
+/**
+ * `MapContainer` only reads its options once, at mount, so the gesture handlers
+ * have to be toggled through the Leaflet instance rather than by re-rendering
+ * with different props.
+ */
+function TouchGate({ active }: { active: boolean }) {
+  const map = useMap()
+
+  useEffect(() => {
+    if (active) {
+      map.dragging.enable()
+      map.touchZoom.enable()
+    } else {
+      map.dragging.disable()
+      map.touchZoom.disable()
+    }
+  }, [active, map])
+
+  return null
+}
+
 export function MapCanvas({
   markers,
   places,
@@ -142,31 +164,61 @@ export function MapCanvas({
   zoom: number
   viewLabel: string
 }) {
+  const t = useTranslations('projects')
+  /*
+   * The map fills the column, so on a phone a one-finger swipe pans it instead
+   * of scrolling the article and the reader gets stuck. Panning stays off until
+   * the map is deliberately tapped — the touch counterpart of the
+   * `scrollWheelZoom={false}` already applied to the desktop.
+   *
+   * `L.Browser.mobile` reads the user agent, which is only meaningful in the
+   * browser — and that is the only place this runs, since the parent loads it
+   * with `ssr: false`.
+   */
+  const [active, setActive] = useState(() => !L.Browser.mobile)
+
   return (
-    <MapContainer
-      center={[center.lat, center.lng]}
-      zoom={zoom}
-      scrollWheelZoom={false}
-      className="h-[22rem] w-full overflow-hidden rounded-[var(--radius-lg)] md:h-[28rem]"
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+    <div className="relative">
+      <MapContainer
+        center={[center.lat, center.lng]}
+        zoom={zoom}
+        scrollWheelZoom={false}
+        dragging={active}
+        touchZoom={active}
+        className="h-[22rem] w-full overflow-hidden rounded-[var(--radius-lg)] md:h-[28rem]"
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-      {/* Hand-placed pins are never clustered: they were positioned one by one
-          and there are few enough that hiding them behind a bubble would only
-          take away what the editor put there. */}
-      {places.map((place) => (
-        <Marker key={place.id} position={[place.lat, place.lng]} icon={placeIcon()}>
-          <Popup>
-            <span className="block text-sm font-semibold">{place.label}</span>
-            {place.note ? <span className="mt-1 block text-xs">{place.note}</span> : null}
-          </Popup>
-        </Marker>
-      ))}
+        {/* Hand-placed pins are never clustered: they were positioned one by one
+            and there are few enough that hiding them behind a bubble would only
+            take away what the editor put there. */}
+        {places.map((place) => (
+          <Marker key={place.id} position={[place.lat, place.lng]} icon={placeIcon()}>
+            <Popup>
+              <span className="block text-sm font-semibold">{place.label}</span>
+              {place.note ? <span className="mt-1 block text-xs">{place.note}</span> : null}
+            </Popup>
+          </Marker>
+        ))}
 
-      <Markers markers={markers} initialZoom={zoom} viewLabel={viewLabel} />
-    </MapContainer>
+        <Markers markers={markers} initialZoom={zoom} viewLabel={viewLabel} />
+        <TouchGate active={active} />
+      </MapContainer>
+
+      {active ? null : (
+        <button
+          type="button"
+          onClick={() => setActive(true)}
+          // `.leaflet-container` is given `z-index: 0` in globals.css, so it
+          // opens a stacking context and this sibling only needs to clear it.
+          className="absolute inset-0 z-10 grid place-items-center rounded-[var(--radius-lg)] bg-black/25 text-sm font-medium text-white"
+        >
+          <span className="rounded-full bg-black/70 px-4 py-2">{t('mapActivate')}</span>
+        </button>
+      )}
+    </div>
   )
 }

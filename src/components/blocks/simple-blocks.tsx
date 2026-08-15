@@ -43,8 +43,11 @@ export function StatsBlockView({ block, locale }: { block: StatsBlock; locale: L
       />
       <dl
         className={cn(
+          // One per row on the narrowest phones: the figures are rendered at
+          // `text-title`, which clamps up to ~35px and does not fit two to a
+          // 360px line.
           'grid gap-6 sm:gap-8',
-          block.items.length <= 2 ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-4',
+          block.items.length <= 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-4',
         )}
       >
         {block.items.map((item, index) => (
@@ -308,7 +311,10 @@ export function TableBlockView({ block, locale }: { block: TableBlock; locale: L
                   <th
                     key={index}
                     scope="col"
-                    className="px-4 py-3 text-start font-semibold whitespace-nowrap"
+                    // No `whitespace-nowrap`: the headings are operator-authored
+                    // and unbounded in length, so forcing them onto one line
+                    // makes the scroll box arbitrarily wide.
+                    className="px-4 py-3 text-start font-semibold"
                   >
                     {column}
                   </th>

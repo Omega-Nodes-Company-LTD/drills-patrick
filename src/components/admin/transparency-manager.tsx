@@ -132,7 +132,7 @@ function IndicatorsPanel({
 
   return (
     <Card>
-      <CardHeader className="flex-row items-center justify-between">
+      <CardHeader className="flex-row flex-wrap items-center justify-between gap-3">
         <CardTitle className="text-base">{t('indicators')}</CardTitle>
         <Button type="button" size="sm" onClick={() => setDraft(empty())}>
           <Plus className="size-4" aria-hidden />
@@ -335,7 +335,7 @@ function SpendingPanel({
 
   return (
     <Card>
-      <CardHeader className="flex-row items-center justify-between">
+      <CardHeader className="flex-row flex-wrap items-center justify-between gap-3">
         <CardTitle className="text-base">{t('spending')}</CardTitle>
         <Button type="button" size="sm" onClick={() => setDraft(empty())}>
           <Plus className="size-4" aria-hidden />
@@ -380,7 +380,7 @@ function SpendingPanel({
 
         {draft ? (
           <div className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-border p-4">
-            <div className="grid gap-4 sm:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Field label={t('year')} required>
                 <Input
                   type="number"

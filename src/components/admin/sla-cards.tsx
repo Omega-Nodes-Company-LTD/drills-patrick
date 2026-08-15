@@ -36,7 +36,7 @@ export async function SlaCards({ metrics, locale }: { metrics: SlaMetrics; local
   ]
 
   return (
-    <dl className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+    <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
       {cards.map((card) => (
         <div
           key={card.label}

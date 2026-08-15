@@ -5,6 +5,8 @@ import { requirePartner } from '@/app/actions/partner'
 import { PortalHeader } from '@/components/portal/portal-header'
 import { SignaturePad } from '@/components/portal/signature-pad'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Select } from '@/components/ui/field'
 import type { Locale } from '@/i18n/config'
 import { intlLocale } from '@/i18n/config'
 import { listPortalDocuments, listPortalProjects } from '@/lib/ngo/portal'
@@ -61,11 +63,18 @@ export default async function PortalDocumentsPage({
     <div className="container-page py-10">
       <PortalHeader session={session} locale={locale} active="documents" />
 
-      <form className="mb-6 flex flex-wrap gap-3" method="get">
-        <select
+      {/*
+        The shared `Select` is used rather than a bare `<select>`: it carries the
+        44px height and the 16px font size that stops iOS zooming the viewport on
+        focus. Each control is full width on a phone and capped from `sm`, since
+        a `<select>` is as wide as its longest option and `flex-wrap` cannot
+        rescue an item that is itself wider than the viewport.
+      */}
+      <form className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap" method="get">
+        <Select
           name="project"
           defaultValue={query.project ?? ''}
-          className="h-11 rounded-[var(--radius-sm)] border border-border bg-background px-3 text-sm"
+          className="sm:w-56"
           aria-label={t('projects')}
         >
           <option value="">{t('allProjects')}</option>
@@ -74,12 +83,12 @@ export default async function PortalDocumentsPage({
               {project.title}
             </option>
           ))}
-        </select>
+        </Select>
 
-        <select
+        <Select
           name="kind"
           defaultValue={kind ?? ''}
-          className="h-11 rounded-[var(--radius-sm)] border border-border bg-background px-3 text-sm"
+          className="sm:w-48"
           aria-label={t('documents')}
         >
           <option value="">{t('allKinds')}</option>
@@ -88,14 +97,11 @@ export default async function PortalDocumentsPage({
               {tDocs(`kinds.${entry}`)}
             </option>
           ))}
-        </select>
+        </Select>
 
-        <button
-          type="submit"
-          className="h-11 rounded-[var(--radius-sm)] bg-primary px-4 text-sm font-medium text-primary-foreground"
-        >
+        <Button type="submit" className="sm:w-auto">
           {t('documents')}
-        </button>
+        </Button>
       </form>
 
       {documents.length === 0 ? (

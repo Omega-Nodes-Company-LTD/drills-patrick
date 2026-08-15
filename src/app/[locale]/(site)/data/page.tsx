@@ -121,14 +121,14 @@ export default async function DataRegistryPage({
             <a
               href="/data.csv"
               download
-              className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+              className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-primary px-4 py-2 text-sm font-medium text-primary-foreground pointer-coarse:min-h-11"
             >
               <Download className="size-4" aria-hidden />
               CSV
             </a>
             <a
               href="/projects.json"
-              className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] border border-border px-4 py-2 text-sm font-medium"
+              className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] border border-border px-4 py-2 text-sm font-medium pointer-coarse:min-h-11"
             >
               <FileCheck2 className="size-4" aria-hidden />
               JSON

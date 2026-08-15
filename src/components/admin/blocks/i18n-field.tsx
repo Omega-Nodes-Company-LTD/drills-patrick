@@ -47,7 +47,7 @@ export function I18nField({
                 onClick={() => setActive(locale)}
                 aria-pressed={active === locale}
                 className={cn(
-                  'rounded px-1.5 py-0.5 text-[0.65rem] font-medium transition-colors',
+                  'rounded px-1.5 py-0.5 text-xs font-medium transition-colors',
                   active === locale
                     ? 'bg-primary text-primary-foreground'
                     : filled

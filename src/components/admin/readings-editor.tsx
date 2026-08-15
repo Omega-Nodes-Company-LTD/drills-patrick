@@ -128,7 +128,7 @@ export function ReadingsEditor({ projectId, rows }: { projectId: string; rows: R
 
       {draft ? (
         <div className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-border p-4">
-          <div className="grid gap-4 sm:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Field label={tAdmin('date')} required>
               <Input
                 type="date"

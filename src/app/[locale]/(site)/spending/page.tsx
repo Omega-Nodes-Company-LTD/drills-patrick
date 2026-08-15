@@ -141,7 +141,14 @@ export default async function SpendingPage({ params }: { params: Promise<{ local
                       <th scope="col" className="px-4 py-3 text-end font-semibold">
                         {t('share')}
                       </th>
-                      <th scope="col" className="w-1/3 px-4 py-3 text-start font-semibold">
+                      {/* Decoration only — the share is already given as a
+                          number in the previous column. A third of a 360px
+                          screen is too much to spend on it, so the bar appears
+                          once there is room for it. */}
+                      <th
+                        scope="col"
+                        className="hidden px-4 py-3 text-start font-semibold sm:table-cell sm:w-1/3"
+                      >
                         <span className="sr-only">{t('share')}</span>
                       </th>
                     </tr>
@@ -165,7 +172,7 @@ export default async function SpendingPage({ params }: { params: Promise<{ local
                         <td className="px-4 py-3 text-end tabular-nums">
                           {percent.format(category.share)}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="hidden px-4 py-3 sm:table-cell">
                           <span
                             className="block h-2 rounded-full bg-primary"
                             style={{ width: `${Math.max(2, category.share * 100)}%` }}

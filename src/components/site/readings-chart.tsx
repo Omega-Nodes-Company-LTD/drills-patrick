@@ -75,7 +75,11 @@ export async function ReadingsChart({
       <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-border bg-surface p-4">
         <svg
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-          className="h-48 w-full min-w-[36rem]"
+          // `h-40` matches the 720×200 viewBox at the 36rem floor width, so the
+          // chart is not letterboxed inside its scroll box on a phone. The SVG
+          // labels are set at 14 rather than 11 because they are scaled down
+          // with the drawing at that width.
+          className="h-40 w-full min-w-[36rem] sm:h-48"
           role="img"
           aria-label={t('title')}
         >
@@ -94,7 +98,7 @@ export async function ReadingsChart({
                 x={PADDING.left - 8}
                 y={y(value) + 4}
                 textAnchor="end"
-                fontSize={11}
+                fontSize={14}
                 fill="var(--c-muted-foreground)"
               >
                 {numbers.format(value)}
@@ -117,7 +121,7 @@ export async function ReadingsChart({
           <text
             x={PADDING.left}
             y={HEIGHT - 8}
-            fontSize={11}
+            fontSize={14}
             fill="var(--c-muted-foreground)"
           >
             {dates.format(new Date(minTime))}
@@ -126,7 +130,7 @@ export async function ReadingsChart({
             x={WIDTH - PADDING.right}
             y={HEIGHT - 8}
             textAnchor="end"
-            fontSize={11}
+            fontSize={14}
             fill="var(--c-muted-foreground)"
           >
             {dates.format(new Date(maxTime))}

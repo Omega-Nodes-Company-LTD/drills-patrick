@@ -8,6 +8,7 @@ import { savePage } from '@/app/actions/admin/content'
 import { BlockEditor } from '@/components/admin/blocks/block-editor'
 import { LocaleFields } from '@/components/admin/locale-fields'
 import { SeoFields } from '@/components/admin/seo-fields'
+import { FormActionBar } from '@/components/admin/form-action-bar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, Input, Select } from '@/components/ui/field'
@@ -205,6 +206,29 @@ export function PageForm({
           campaigns={campaigns}
         />
       </section>
+
+      <FormActionBar>
+        <Select
+          value={status}
+          onChange={(event) => setStatus(event.target.value as typeof status)}
+          aria-label={t('status')}
+          disabled={initial?.isSystem}
+          className="flex-1"
+        >
+          <option value="draft">{t('draft')}</option>
+          <option value="published">{t('published')}</option>
+          <option value="archived">{t('archived')}</option>
+        </Select>
+
+        <Button type="submit" disabled={pending} className="shrink-0">
+          {pending ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+          ) : (
+            <Save className="size-4" aria-hidden />
+          )}
+          {tCommon('save')}
+        </Button>
+      </FormActionBar>
     </form>
   )
 }

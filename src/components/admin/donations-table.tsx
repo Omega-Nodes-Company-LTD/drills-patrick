@@ -152,7 +152,7 @@ export function DonationsTable({
                 }).format(new Date(row.createdAt))}
               </span>
 
-              <div className="flex shrink-0 gap-1">
+              <div className="flex shrink-0 gap-1 pointer-coarse:gap-3">
                 {row.status === 'pending' || row.status === 'processing' ? (
                   <>
                     <Button

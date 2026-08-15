@@ -9,6 +9,7 @@ import { LocaleFields } from '@/components/admin/locale-fields'
 import { MediaPicker } from '@/components/admin/media/media-picker'
 import { RichTextEditor } from '@/components/admin/rich-text-editor'
 import { SeoFields } from '@/components/admin/seo-fields'
+import { FormActionBar } from '@/components/admin/form-action-bar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, Input, Select, Textarea } from '@/components/ui/field'
@@ -287,7 +288,9 @@ export function CampaignForm({
               />
             </Field>
 
-            <div className="grid grid-cols-2 gap-3">
+            {/* One per row on a phone: the native date picker chrome does not
+                fit in half of a 360px column. */}
+            <div className="grid gap-3 sm:grid-cols-2">
               <Field label="From" htmlFor="startsOn">
                 <Input
                   id="startsOn"
@@ -336,6 +339,28 @@ export function CampaignForm({
           </CardContent>
         </Card>
       </aside>
+
+      <FormActionBar>
+        <Select
+          value={values.status}
+          onChange={(event) => set('status', event.target.value as never)}
+          aria-label={t('status')}
+          className="flex-1"
+        >
+          <option value="draft">{t('draft')}</option>
+          <option value="published">{t('published')}</option>
+          <option value="archived">{t('archived')}</option>
+        </Select>
+
+        <Button type="submit" disabled={pending} className="shrink-0">
+          {pending ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+          ) : (
+            <Save className="size-4" aria-hidden />
+          )}
+          {tCommon('save')}
+        </Button>
+      </FormActionBar>
     </form>
   )
 }

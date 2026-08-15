@@ -95,7 +95,7 @@ export function UsersManager({
                 : '—'}
             </span>
 
-            <div className="flex shrink-0 gap-1">
+            <div className="flex shrink-0 gap-1 pointer-coarse:gap-3">
               <Button size="iconSm" variant="ghost" onClick={() => setEditing(row)} title={tCommon('edit')}>
                 <Pencil className="size-4" aria-hidden />
               </Button>
