@@ -50,7 +50,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
                     target="_blank"
                     rel="noreferrer noopener"
                     aria-label={key}
-                    className="grid size-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                    className="grid size-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors touch-target hover:bg-primary hover:text-primary-foreground"
                   >
                     <Icon className="size-4" aria-hidden />
                   </a>

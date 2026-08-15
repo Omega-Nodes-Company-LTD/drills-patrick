@@ -57,7 +57,9 @@ export function ProjectFilters({ districts }: { districts: string[] }) {
             onClick={() => update('status', value)}
             aria-pressed={status === value}
             className={cn(
-              'shrink-0 rounded-full border px-4 py-1.5 text-sm font-medium transition-colors',
+              // The chips sit in a horizontal scroller, so growing them on
+              // touch costs no layout elsewhere.
+              'flex shrink-0 items-center rounded-full border px-4 py-1.5 text-sm font-medium transition-colors pointer-coarse:min-h-11',
               status === value
                 ? 'border-primary bg-primary text-primary-foreground'
                 : 'border-border hover:border-primary',
@@ -102,7 +104,7 @@ export function ProjectFilters({ districts }: { districts: string[] }) {
         <button
           type="button"
           onClick={() => startTransition(() => router.replace(pathname, { scroll: false }))}
-          className="self-start text-sm text-primary underline underline-offset-4"
+          className="self-start text-sm text-primary underline underline-offset-4 touch-target"
         >
           {t('filters.reset')}
         </button>

@@ -30,7 +30,7 @@ export function Pagination({
   }
 
   const linkClass =
-    'inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-sm)] border border-border px-4 text-sm font-medium transition-colors hover:border-primary'
+    'inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-sm)] border border-border px-4 text-sm font-medium transition-colors pointer-coarse:h-11 hover:border-primary'
 
   return (
     <nav className="mt-10 flex items-center justify-between gap-4" aria-label={t('page')}>

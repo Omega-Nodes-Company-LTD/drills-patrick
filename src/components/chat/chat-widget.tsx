@@ -105,7 +105,10 @@ export function ChatWidget({ locale }: { locale: Locale }) {
         onClick={() => setOpen((value) => !value)}
         aria-label={open ? t('title') : t('open')}
         aria-expanded={open}
-        className="fixed bottom-4 end-4 z-40 grid size-13 place-items-center rounded-full bg-primary text-primary-foreground shadow-token-lg transition-transform hover:scale-105 md:bottom-6 md:end-6"
+        // The bottom offset clears the home indicator: without the safe-area
+        // inset the launcher sits inside the system gesture zone on a modern
+        // iPhone and is effectively untappable.
+        className="fixed bottom-[calc(1rem+var(--safe-bottom))] end-4 z-40 grid size-13 place-items-center rounded-full bg-primary text-primary-foreground shadow-token-lg transition-transform hover:scale-105 md:bottom-[calc(1.5rem+var(--safe-bottom))] md:end-6"
       >
         {open ? (
           <X className="size-5" aria-hidden />
@@ -115,7 +118,9 @@ export function ChatWidget({ locale }: { locale: Locale }) {
       </button>
 
       {open ? (
-        <div className="fixed inset-x-3 bottom-20 z-40 flex max-h-[70dvh] flex-col overflow-hidden rounded-[var(--radius-xl)] border border-border bg-background shadow-token-lg sm:inset-x-auto sm:end-6 sm:w-[24rem] md:bottom-24">
+        // `z-50` rather than `z-40`: the sticky site header is also `z-40`, and
+        // an open panel must not slide underneath it as the page scrolls.
+        <div className="fixed inset-x-3 bottom-[calc(5rem+var(--safe-bottom))] z-50 flex max-h-[70dvh] flex-col overflow-hidden rounded-[var(--radius-xl)] border border-border bg-background shadow-token-lg sm:inset-x-auto sm:end-6 sm:w-[24rem] md:bottom-[calc(6rem+var(--safe-bottom))]">
           <header className="flex items-center justify-between gap-2 border-b border-border p-4">
             <p className="font-semibold">{t('title')}</p>
             {messages.length > 0 ? (
@@ -125,7 +130,7 @@ export function ChatWidget({ locale }: { locale: Locale }) {
                   setMessages([])
                   setConversationId(null)
                 }}
-                className="text-xs text-muted-foreground underline"
+                className="text-xs text-muted-foreground underline touch-target"
               >
                 {t('clear')}
               </button>
@@ -181,19 +186,22 @@ export function ChatWidget({ locale }: { locale: Locale }) {
               rows={2}
               placeholder={t('placeholder')}
               aria-label={t('placeholder')}
-              className="flex-1 resize-none rounded-[var(--radius-sm)] border border-border bg-background px-3 py-2 text-sm"
+              // `text-base` below `sm`: Safari zooms the viewport when a focused
+              // control is under 16px, and this panel is `fixed`, so the zoom
+              // leaves it hanging off the screen.
+              className="flex-1 resize-none rounded-[var(--radius-sm)] border border-border bg-background px-3 py-2 text-base sm:text-sm"
             />
             <button
               type="submit"
               disabled={pending || input.trim().length < 2}
               aria-label={t('send')}
-              className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-sm)] bg-primary text-primary-foreground disabled:opacity-50"
+              className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-sm)] bg-primary text-primary-foreground touch-target disabled:opacity-50"
             >
               <Send className="size-4" aria-hidden />
             </button>
           </form>
 
-          <p className="border-t border-border px-3 py-2 text-[0.7rem] text-muted-foreground">
+          <p className="border-t border-border px-3 py-2 text-xs text-muted-foreground">
             {t('disclaimer')}
           </p>
         </div>

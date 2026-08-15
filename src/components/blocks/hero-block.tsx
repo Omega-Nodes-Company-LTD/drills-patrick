@@ -11,7 +11,8 @@ const heights = {
   sm: 'min-h-[16rem] md:min-h-[20rem]',
   md: 'min-h-[22rem] md:min-h-[28rem]',
   lg: 'min-h-[28rem] md:min-h-[34rem]',
-  screen: 'min-h-[calc(100dvh-4rem)]',
+  // Matches the site header, which is `h-16` and `md:h-18`.
+  screen: 'min-h-[calc(100dvh-4rem)] md:min-h-[calc(100dvh-4.5rem)]',
 }
 
 export async function HeroBlockView({ block, locale }: { block: HeroBlock; locale: Locale }) {

@@ -30,7 +30,7 @@ export function ShareButtons({ title }: { title: string }) {
     <button
       type="button"
       onClick={share}
-      className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition-colors hover:border-primary"
+      className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition-colors pointer-coarse:min-h-11 hover:border-primary"
     >
       {copied ? (
         <Check className="size-4 text-success" aria-hidden />

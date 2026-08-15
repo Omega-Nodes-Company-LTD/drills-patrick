@@ -58,13 +58,17 @@ export function ThemeToggle({ className }: { className?: string }) {
           aria-pressed={mounted ? preference === value : undefined}
           title={label}
           className={cn(
-            'grid size-7 place-items-center rounded-full transition-colors',
+            // Three 28px pills sitting 2px apart cannot be hit reliably with a
+            // thumb. Unlike the isolated icon buttons elsewhere, an invisible
+            // 44px hit area would overlap its neighbours and the last sibling
+            // would swallow their taps — so here the control itself grows.
+            'grid size-7 place-items-center rounded-full transition-colors pointer-coarse:size-11',
             mounted && preference === value
               ? 'bg-primary text-primary-foreground'
               : 'text-muted-foreground hover:text-foreground',
           )}
         >
-          <Icon className="size-3.5" aria-hidden />
+          <Icon className="size-3.5 pointer-coarse:size-5" aria-hidden />
           <span className="sr-only">{label}</span>
         </button>
       ))}
