@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { saveSettings, testIntegration } from '@/app/actions/admin/settings'
 import { I18nField } from '@/components/admin/blocks/i18n-field'
 import { MediaPicker } from '@/components/admin/media/media-picker'
+import { FormActionBar } from '@/components/admin/form-action-bar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, Input, Select, Textarea } from '@/components/ui/field'
@@ -492,7 +493,12 @@ export function SettingsForm({
         </TabsContent>
       </Tabs>
 
-      <Button type="submit" disabled={pending} className="self-start">
+      {/*
+        Hidden below `lg`, where the sticky action bar carries the same button:
+        this one sits after every tab panel, which on a phone means a long way
+        down the page.
+      */}
+      <Button type="submit" disabled={pending} className="hidden self-start lg:inline-flex">
         {pending ? (
           <Loader2 className="size-4 animate-spin" aria-hidden />
         ) : (
@@ -500,6 +506,17 @@ export function SettingsForm({
         )}
         {tCommon('save')}
       </Button>
+
+      <FormActionBar className="justify-end">
+        <Button type="submit" disabled={pending}>
+          {pending ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+          ) : (
+            <Save className="size-4" aria-hidden />
+          )}
+          {tCommon('save')}
+        </Button>
+      </FormActionBar>
     </form>
   )
 }

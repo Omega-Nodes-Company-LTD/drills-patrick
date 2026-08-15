@@ -9,6 +9,7 @@ import { LocaleFields } from '@/components/admin/locale-fields'
 import { SeoFields } from '@/components/admin/seo-fields'
 import { MediaGalleryPicker, MediaPicker } from '@/components/admin/media/media-picker'
 import { RichTextEditor } from '@/components/admin/rich-text-editor'
+import { FormActionBar } from '@/components/admin/form-action-bar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, Input, Select, Textarea } from '@/components/ui/field'
@@ -556,6 +557,28 @@ export function ProjectForm({
           </CardContent>
         </Card>
       </aside>
+
+      <FormActionBar>
+        <Select
+          value={values.publishStatus}
+          onChange={(event) => set('publishStatus', event.target.value as never)}
+          aria-label={t('status')}
+          className="flex-1"
+        >
+          <option value="draft">{t('draft')}</option>
+          <option value="published">{t('published')}</option>
+          <option value="archived">{t('archived')}</option>
+        </Select>
+
+        <Button type="submit" disabled={pending} className="shrink-0">
+          {pending ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+          ) : (
+            <Save className="size-4" aria-hidden />
+          )}
+          {tCommon('save')}
+        </Button>
+      </FormActionBar>
     </form>
   )
 }

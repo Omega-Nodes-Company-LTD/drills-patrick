@@ -310,7 +310,9 @@ function ToolbarButton({
       aria-label={label}
       aria-pressed={active}
       className={cn(
-        'grid size-8 place-items-center rounded-[var(--radius-sm)] transition-colors',
+        // The toolbar packs its buttons at `gap-0.5`, so overlapping invisible
+        // hit areas would fight each other: on touch the buttons grow instead.
+        'grid size-8 place-items-center rounded-[var(--radius-sm)] transition-colors pointer-coarse:size-11',
         active ? 'bg-primary text-primary-foreground' : 'text-foreground/80 hover:bg-muted',
       )}
     >

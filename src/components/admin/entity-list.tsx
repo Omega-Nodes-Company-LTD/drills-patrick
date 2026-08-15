@@ -97,7 +97,7 @@ export function EntityList({
                 key={entry}
                 title={entry}
                 className={cn(
-                  'rounded px-1 text-[0.65rem] font-medium',
+                  'rounded px-1 text-xs font-medium',
                   row.translatedLocales.includes(entry)
                     ? 'bg-success/15 text-success'
                     : 'bg-muted text-muted-foreground/60',
@@ -120,7 +120,7 @@ export function EntityList({
             }).format(new Date(row.updatedAt))}
           </span>
 
-          <div className="flex shrink-0 items-center gap-1">
+          <div className="flex shrink-0 items-center gap-1 pointer-coarse:gap-3">
             <Button asChild size="iconSm" variant="ghost" title={tCommon('edit')}>
               <Link href={row.editHref}>
                 <Pencil className="size-4" aria-hidden />

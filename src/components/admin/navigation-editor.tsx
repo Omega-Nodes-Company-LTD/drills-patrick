@@ -50,7 +50,7 @@ export function NavigationEditor({
 
   return (
     <Card>
-      <CardHeader className="flex-row items-center justify-between gap-3">
+      <CardHeader className="flex-row flex-wrap items-center justify-between gap-3">
         <CardTitle className="text-base">{title}</CardTitle>
         <Button type="button" size="sm" onClick={save} disabled={pending}>
           {pending ? (
@@ -65,13 +65,16 @@ export function NavigationEditor({
       <CardContent className="flex flex-col gap-3">
         {items.map((item, index) => (
           <div key={item.id} className="rounded-[var(--radius-md)] border border-border p-3">
-            <div className="mb-3 flex items-center justify-end gap-0.5">
+            {/* Three 32px buttons 2px apart cannot be hit with a thumb, and
+                invisible 44px hit areas would overlap each other here — so on
+                touch the buttons themselves grow. */}
+            <div className="mb-3 flex items-center justify-end gap-0.5 pointer-coarse:gap-1">
               <button
                 type="button"
                 onClick={() => move(index, -1)}
                 disabled={index === 0}
                 aria-label={tCommon('previous')}
-                className="grid size-8 place-items-center rounded-[var(--radius-sm)] text-muted-foreground hover:bg-muted disabled:opacity-30"
+                className="grid size-8 place-items-center rounded-[var(--radius-sm)] text-muted-foreground pointer-coarse:size-11 hover:bg-muted disabled:opacity-30"
               >
                 <MoveUp className="size-4" aria-hidden />
               </button>
@@ -80,7 +83,7 @@ export function NavigationEditor({
                 onClick={() => move(index, 1)}
                 disabled={index === items.length - 1}
                 aria-label={tCommon('next')}
-                className="grid size-8 place-items-center rounded-[var(--radius-sm)] text-muted-foreground hover:bg-muted disabled:opacity-30"
+                className="grid size-8 place-items-center rounded-[var(--radius-sm)] text-muted-foreground pointer-coarse:size-11 hover:bg-muted disabled:opacity-30"
               >
                 <MoveDown className="size-4" aria-hidden />
               </button>
@@ -88,7 +91,7 @@ export function NavigationEditor({
                 type="button"
                 onClick={() => setItems(items.filter((_, position) => position !== index))}
                 aria-label={tCommon('delete')}
-                className="grid size-8 place-items-center rounded-[var(--radius-sm)] text-muted-foreground hover:bg-muted hover:text-danger"
+                className="grid size-8 place-items-center rounded-[var(--radius-sm)] text-muted-foreground pointer-coarse:size-11 hover:bg-muted hover:text-danger"
               >
                 <Trash2 className="size-4" aria-hidden />
               </button>

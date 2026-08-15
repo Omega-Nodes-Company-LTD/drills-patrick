@@ -105,7 +105,7 @@ export function ProjectDocumentsEditor({
           {rows.map((row) => (
             <li
               key={row.id}
-              className="flex items-center gap-3 rounded-[var(--radius-md)] border border-border bg-background p-3"
+              className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-border bg-background p-3 md:flex-row md:items-center"
             >
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{row.title}</p>
@@ -115,28 +115,31 @@ export function ProjectDocumentsEditor({
                 </p>
               </div>
 
-              <Badge variant={row.isPublic ? 'success' : 'outline'}>
-                {row.isPublic ? tDocs('public') : tDocs('partnersOnly')}
-              </Badge>
+              {/* Kept on one line of its own once the row stacks on a phone. */}
+              <div className="flex shrink-0 items-center gap-2 pointer-coarse:gap-3">
+                <Badge variant={row.isPublic ? 'success' : 'outline'}>
+                  {row.isPublic ? tDocs('public') : tDocs('partnersOnly')}
+                </Badge>
 
-              <Button
-                size="iconSm"
-                variant="ghost"
-                onClick={() => setDraft({ ...row })}
-                title={tCommon('edit')}
-              >
-                <Pencil className="size-4" aria-hidden />
-              </Button>
-              <Button
-                size="iconSm"
-                variant="ghost"
-                onClick={() => remove(row)}
-                disabled={pending}
-                title={tCommon('delete')}
-                className="text-muted-foreground hover:text-danger"
-              >
-                <Trash2 className="size-4" aria-hidden />
-              </Button>
+                <Button
+                  size="iconSm"
+                  variant="ghost"
+                  onClick={() => setDraft({ ...row })}
+                  title={tCommon('edit')}
+                >
+                  <Pencil className="size-4" aria-hidden />
+                </Button>
+                <Button
+                  size="iconSm"
+                  variant="ghost"
+                  onClick={() => remove(row)}
+                  disabled={pending}
+                  title={tCommon('delete')}
+                  className="text-muted-foreground hover:text-danger"
+                >
+                  <Trash2 className="size-4" aria-hidden />
+                </Button>
+              </div>
             </li>
           ))}
         </ul>

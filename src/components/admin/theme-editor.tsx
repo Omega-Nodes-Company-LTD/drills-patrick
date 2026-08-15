@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useMemo, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { resetTheme, saveTheme } from '@/app/actions/admin/appearance'
+import { FormActionBar } from '@/components/admin/form-action-bar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, Input, Select } from '@/components/ui/field'
@@ -131,7 +132,7 @@ export function ThemeEditor({ initial }: { initial: ThemeTokens }) {
                         />
                         <span className="flex min-w-0 flex-col">
                           <span className="truncate">{LABELS[key]}</span>
-                          <span className="font-mono text-[0.7rem] text-muted-foreground">
+                          <span className="font-mono text-xs text-muted-foreground">
                             {tokens.colors[mode][key]}
                           </span>
                         </span>
@@ -324,8 +325,24 @@ export function ThemeEditor({ initial }: { initial: ThemeTokens }) {
         </Card>
       </div>
 
+      <FormActionBar className="justify-end">
+        <Button type="button" variant="outline" onClick={reset} disabled={pending}>
+          <RotateCcw className="size-4" aria-hidden />
+          <span className="sr-only">{t('reset')}</span>
+        </Button>
+        <Button type="button" onClick={save} disabled={pending}>
+          {pending ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+          ) : (
+            <Save className="size-4" aria-hidden />
+          )}
+          {tCommon('save')}
+        </Button>
+      </FormActionBar>
+
       <aside className="flex h-fit flex-col gap-4 xl:sticky xl:top-6">
-        <div className="flex gap-2">
+        {/* The action bar takes over below `lg`. */}
+        <div className="hidden gap-2 lg:flex">
           <Button type="button" onClick={save} disabled={pending} className="flex-1">
             {pending ? (
               <Loader2 className="size-4 animate-spin" aria-hidden />

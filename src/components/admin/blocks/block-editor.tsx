@@ -276,7 +276,9 @@ function IconButton({
       title={label}
       aria-label={label}
       className={cn(
-        'grid size-8 place-items-center rounded-[var(--radius-sm)] text-muted-foreground transition-colors hover:bg-muted disabled:opacity-30',
+        // Same reasoning as the editor toolbar: a `gap-0.5` cluster grows its
+        // buttons on touch rather than overlapping invisible hit areas.
+        'grid size-8 place-items-center rounded-[var(--radius-sm)] text-muted-foreground transition-colors pointer-coarse:size-11 hover:bg-muted disabled:opacity-30',
         danger && 'hover:text-danger',
       )}
     >
