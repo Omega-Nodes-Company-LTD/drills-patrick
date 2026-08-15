@@ -17,12 +17,15 @@ const buttonVariants = cva(
         danger: 'bg-danger text-white hover:brightness-110',
         link: 'bg-transparent text-primary underline underline-offset-4 hover:brightness-110',
       },
+      // `md` and `lg` already clear 44px. The three smaller sizes keep their
+      // painted box — the admin lists depend on that density — and grow only
+      // their hit area on touch devices, via the `touch-target` utility.
       size: {
-        sm: 'h-9 rounded-[var(--radius-sm)] px-3 text-sm [&_svg]:size-4',
+        sm: 'h-9 rounded-[var(--radius-sm)] px-3 text-sm touch-target [&_svg]:size-4',
         md: 'h-11 rounded-[var(--radius-md)] px-5 text-base [&_svg]:size-4',
         lg: 'h-13 rounded-[var(--radius-md)] px-7 text-base [&_svg]:size-5',
-        icon: 'size-10 rounded-[var(--radius-md)] [&_svg]:size-4',
-        iconSm: 'size-8 rounded-[var(--radius-sm)] [&_svg]:size-4',
+        icon: 'size-10 rounded-[var(--radius-md)] touch-target [&_svg]:size-4',
+        iconSm: 'size-8 rounded-[var(--radius-sm)] touch-target [&_svg]:size-4',
       },
     },
     defaultVariants: { variant: 'primary', size: 'md' },

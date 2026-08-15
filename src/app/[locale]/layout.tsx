@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { localeUrl, staticAlternates } from '@/lib/seo'
 import { absoluteUrl } from '@/lib/url'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
@@ -16,6 +16,23 @@ import { getMediaById } from '@/lib/media/service'
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
+}
+
+/**
+ * `width=device-width, initial-scale=1` is Next's default and is kept. What is
+ * added here is `viewportFit`, without which `env(safe-area-inset-*)` — used by
+ * the chat launcher and the admin action bar — always resolves to zero, and a
+ * `themeColor` so the mobile address bar follows the active theme.
+ *
+ * `maximumScale` is deliberately left alone: capping it would stop users
+ * pinch-zooming, which is a WCAG failure.
+ */
+export const viewport: Viewport = {
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0f1c26' },
+  ],
 }
 
 export async function generateMetadata({
@@ -119,7 +136,18 @@ export default async function LocaleLayout({
           {t('skipToContent')}
         </a>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
-        <Toaster position="top-right" richColors closeButton />
+        {/*
+          Top-right would sit on top of the sticky header and the hamburger on
+          a phone, where sonner renders toasts full-width; the mobile offset
+          drops them clear of both the site header (4rem) and the admin one
+          (3.5rem).
+        */}
+        <Toaster
+          position="top-right"
+          mobileOffset={{ top: '4.75rem', left: '0.75rem', right: '0.75rem' }}
+          richColors
+          closeButton
+        />
       </body>
     </html>
   )

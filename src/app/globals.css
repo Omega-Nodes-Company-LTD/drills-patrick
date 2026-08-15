@@ -102,6 +102,14 @@
   --r-xl: 1.5rem;
   --border-width: 1px;
   --shadow-strength: 0.35;
+
+  /*
+   * Resolves to 0px everywhere except on devices with a display cutout or a
+   * home indicator, and only once the viewport is declared `viewport-fit=cover`
+   * (see the `viewport` export in src/app/[locale]/layout.tsx).
+   */
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
 }
 
 @layer base {
@@ -157,12 +165,24 @@
     border-radius: var(--radius-sm);
   }
 
-  /* Keep long words and URLs from blowing out narrow phone layouts. */
+  /*
+   * Keep long words and URLs from blowing out narrow phone layouts. Table and
+   * definition-list cells are included deliberately: place names, e-mail
+   * addresses and reference codes — the strings with no break opportunity —
+   * live there rather than in prose.
+   */
   p,
   li,
   h1,
   h2,
-  h3 {
+  h3,
+  h4,
+  h5,
+  h6,
+  th,
+  td,
+  dt,
+  dd {
     overflow-wrap: break-word;
   }
 }
@@ -200,6 +220,39 @@
   box-shadow:
     0 2px 4px rgb(0 0 0 / calc(var(--shadow-strength) * 0.12)),
     0 24px 48px -20px rgb(0 0 0 / calc(var(--shadow-strength) * 0.55));
+}
+
+/*
+ * Raises the *hit* area of a control to the 44px recommended for fingers
+ * without touching its painted box, so the dense icon rows of the admin keep
+ * their desktop proportions. Only applied where the primary pointer is coarse,
+ * which is what actually distinguishes a finger from a mouse — a viewport
+ * width does not.
+ *
+ * Two things it cannot do:
+ *  - it sets `position: relative`, so it must not be put on an element that is
+ *    itself absolutely or fixed positioned;
+ *  - the areas are centred on the control, so in a cluster tighter than 44px
+ *    they would overlap and the last sibling would swallow its neighbours'
+ *    taps. Grow the controls with `pointer-coarse:size-11` there instead, or
+ *    open the gap with `pointer-coarse:gap-3`.
+ */
+@utility touch-target {
+  @media (pointer: coarse) {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      translate: -50% -50%;
+      min-width: 44px;
+      min-height: 44px;
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 
 /* Typographic scale bound to the configurable modular ratio. */
