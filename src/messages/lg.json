@@ -133,7 +133,10 @@
     "relatedProjects": "Pulojekiti endala",
     "map": "Gye tukolera",
     "mapActivate": "Koona okukozesa maapu",
-    "backToProjects": "Pulojekiti zonna"
+    "backToProjects": "Pulojekiti zonna",
+    "viewProject": "Laba pulojekiti",
+    "mapOtherLocations": "Ebifo ebirala",
+    "mapListSummary": "Ebifo {count} ku maapu eno"
   },
   "blog": {
     "title": "Amawulire okuva ku ttaka",
@@ -329,6 +332,7 @@
       "posts": "Ebiwandiiko",
       "categories": "Ebibinja",
       "projects": "Pulojekiti",
+      "updates": "Amawulire ag’omu kyalo",
       "campaigns": "Kaweefube",
       "donations": "Obuyambi",
       "inquiries": "Okusaba",

@@ -75,6 +75,16 @@ override it per application with a literal value — for example
 > this and falls back to serving the originals unoptimised, so pictures still
 > appear, but they are no longer resized or converted to WebP/AVIF. The other S3
 > variables are used only at run time and need no such flag.
+>
+> The flag makes Coolify pass them as `--build-arg`, and Docker discards a build
+> argument the stage has not declared — so both are declared as `ARG` in the
+> builder stage of the `Dockerfile`. If you build the image by hand, pass them
+> yourself: `docker build --build-arg S3_ENDPOINT=… --build-arg
+> S3_PUBLIC_BASE_URL=… .`
+>
+> Independently of all this, the responsive derivatives written at upload time
+> are what the site actually links to, so images stay right-sized even when the
+> optimiser is off.
 
 ## 3. First boot
 

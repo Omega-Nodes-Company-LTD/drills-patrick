@@ -1,5 +1,5 @@
 import 'server-only'
-import { and, asc, desc, eq, inArray } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm'
 import { db } from '@/db'
 import {
   impactIndicatorTranslations,
@@ -12,8 +12,10 @@ import {
   spendingEntries,
   spendingEntryTranslations,
   waterPointReadings,
+  type MediaRow,
 } from '@/db/schema'
 import { pickTranslation } from '@/lib/content/translations'
+import { getMediaByIds } from '@/lib/media/service'
 import type { Locale } from '@/i18n/config'
 
 /**
@@ -227,6 +229,7 @@ export type PublicUpdate = {
   happenedOn: string
   title: string
   body: string
+  photo: MediaRow | null
 }
 
 /**
@@ -236,7 +239,11 @@ export type PublicUpdate = {
  * anything happening at all", which is the question a donor asks six months
  * after giving and cannot currently settle without opening projects one by one.
  */
-export async function listRecentUpdates(locale: Locale, limit = 50): Promise<PublicUpdate[]> {
+export async function listRecentUpdates(
+  locale: Locale,
+  limit = 50,
+  offset = 0,
+): Promise<PublicUpdate[]> {
   const rows = await db
     .select({ update: projectUpdates, projectId: projects.id })
     .from(projectUpdates)
@@ -244,18 +251,20 @@ export async function listRecentUpdates(locale: Locale, limit = 50): Promise<Pub
     .where(and(eq(projectUpdates.isPublished, true), eq(projects.publishStatus, 'published')))
     .orderBy(desc(projectUpdates.happenedOn))
     .limit(limit)
+    .offset(offset)
 
   if (rows.length === 0) return []
 
   const updateIds = rows.map((row) => row.update.id)
   const projectIds = [...new Set(rows.map((row) => row.projectId))]
 
-  const [updateTranslations, projectRows] = await Promise.all([
+  const [updateTranslations, projectRows, photos] = await Promise.all([
     db
       .select()
       .from(projectUpdateTranslations)
       .where(inArray(projectUpdateTranslations.updateId, updateIds)),
     db.select().from(projectTranslations).where(inArray(projectTranslations.projectId, projectIds)),
+    getMediaByIds(rows.map((row) => row.update.mediaId).filter(Boolean) as string[]),
   ])
 
   return rows.map(({ update, projectId }) => {
@@ -275,6 +284,18 @@ export async function listRecentUpdates(locale: Locale, limit = 50): Promise<Pub
       happenedOn: update.happenedOn,
       title: translation?.title ?? '',
       body: translation?.body ?? '',
+      photo: update.mediaId ? (photos.get(update.mediaId) ?? null) : null,
     }
   })
+}
+
+/** Published updates on published projects, for paging the timeline. */
+export async function countRecentUpdates(): Promise<number> {
+  const [row] = await db
+    .select({ total: sql<number>`count(*)::int` })
+    .from(projectUpdates)
+    .innerJoin(projects, eq(projects.id, projectUpdates.projectId))
+    .where(and(eq(projectUpdates.isPublished, true), eq(projects.publishStatus, 'published')))
+
+  return row?.total ?? 0
 }

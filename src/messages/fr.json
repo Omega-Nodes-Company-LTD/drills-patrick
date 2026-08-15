@@ -133,7 +133,10 @@
     "relatedProjects": "Autres projets",
     "map": "Où nous intervenons",
     "mapActivate": "Touchez pour interagir avec la carte",
-    "backToProjects": "Tous les projets"
+    "backToProjects": "Tous les projets",
+    "viewProject": "Voir le projet",
+    "mapOtherLocations": "Autres lieux",
+    "mapListSummary": "{count} lieux sur cette carte"
   },
   "blog": {
     "title": "Nouvelles du terrain",
@@ -329,6 +332,7 @@
       "posts": "Articles",
       "categories": "Catégories",
       "projects": "Projets",
+      "updates": "Nouvelles du terrain",
       "campaigns": "Campagnes",
       "donations": "Dons",
       "inquiries": "Demandes",

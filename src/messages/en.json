@@ -133,7 +133,10 @@
     "relatedProjects": "Other projects",
     "map": "Where we work",
     "mapActivate": "Tap to interact with the map",
-    "backToProjects": "All projects"
+    "backToProjects": "All projects",
+    "viewProject": "View project",
+    "mapOtherLocations": "Other locations",
+    "mapListSummary": "{count} locations on this map"
   },
   "blog": {
     "title": "News from the field",
@@ -329,6 +332,7 @@
       "posts": "Articles",
       "categories": "Categories",
       "projects": "Projects",
+      "updates": "Field updates",
       "campaigns": "Campaigns",
       "donations": "Donations",
       "inquiries": "Inquiries",

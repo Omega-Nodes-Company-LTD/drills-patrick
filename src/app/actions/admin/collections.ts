@@ -7,12 +7,14 @@ import { locales, type Locale } from '@/i18n/config'
 import { recordAudit } from '@/lib/audit'
 import { requireApiUser } from '@/lib/auth/guard'
 import {
+  baseValuesFor,
   collections,
   deleteCollectionRow,
   schemaFor,
   tablesFor,
   type CollectionKey,
 } from '@/lib/admin/collections'
+import { indexDocumentInBackground, removeDocument } from '@/lib/embeddings/indexer'
 import { sanitizeHtml } from '@/lib/sanitize'
 import type { ActionResult } from '@/lib/validation/public'
 
@@ -48,11 +50,9 @@ export async function saveCollectionItem(
   const { base, translation, parent, fk } = tablesFor(key)
   const data = parsed.data
 
-  // Empty strings from the form are stored as NULL rather than ''.
-  const baseValues: Record<string, unknown> = { sortOrder: data.sortOrder }
-  for (const field of def.fields.filter((entry) => !entry.translated)) {
-    const value = (data.base as Record<string, unknown>)[field.name]
-    baseValues[field.name] = value === '' ? null : value
+  const baseValues: Record<string, unknown> = {
+    sortOrder: data.sortOrder,
+    ...baseValuesFor(key, data.base as Record<string, unknown>),
   }
 
   let id = data.id
@@ -92,6 +92,11 @@ export async function saveCollectionItem(
     }
   }
 
+  // Articles, projects and campaigns re-index themselves on every save; FAQs
+  // did not, so a newly written answer stayed invisible to semantic search and
+  // to the assistant until somebody ran `pnpm reindex` on the server by hand.
+  if (key === 'faq') await reindexFaq(id, data.translations as FaqTranslations)
+
   await recordAudit({
     actor: user,
     action: data.id ? `${key}.update` : `${key}.create`,
@@ -104,6 +109,35 @@ export async function saveCollectionItem(
   return { ok: true, data: { id } }
 }
 
+type FaqTranslations = Record<string, Partial<Record<Locale, string>>>
+
+/**
+ * One indexed document per language, or none where the answer is empty.
+ *
+ * The URL matches what the search results link to, so a hit can open the
+ * answer it came from.
+ */
+async function reindexFaq(id: string, translations: FaqTranslations): Promise<void> {
+  for (const locale of locales) {
+    const question = translations.question?.[locale]?.trim() ?? ''
+    const answer = translations.answerHtml?.[locale]?.trim() ?? ''
+
+    if (!question && !answer) {
+      await removeDocument('faq', id, locale)
+      continue
+    }
+
+    indexDocumentInBackground({
+      entityType: 'faq',
+      entityId: id,
+      locale,
+      title: question,
+      url: `/${locale}/faq#${id}`,
+      body: answer,
+    })
+  }
+}
+
 export async function deleteCollectionItem(
   key: CollectionKey,
   id: string,
@@ -114,6 +148,10 @@ export async function deleteCollectionItem(
   if (!user) return { ok: false, error: 'unauthorised' }
 
   await deleteCollectionRow(key, id)
+
+  // Otherwise the answer stays in the vector index and the assistant keeps
+  // citing an FAQ that no longer exists.
+  if (key === 'faq') await removeDocument('faq', id)
 
   await recordAudit({ actor: user, action: `${key}.delete`, entityType: key, entityId: id })
 

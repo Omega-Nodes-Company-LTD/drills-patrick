@@ -123,7 +123,8 @@ async function main() {
       entityId: row.id,
       locale: row.locale as Locale,
       title: row.question,
-      url: `/${row.locale}/faq`,
+      // Anchored, so a result opens the answer rather than the top of the page.
+      url: `/${row.locale}/faq#${row.id}`,
       body: row.answer,
     })
     indexed += 1

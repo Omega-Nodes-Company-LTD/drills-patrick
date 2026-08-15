@@ -83,6 +83,36 @@ async function keywordSearch(query: string, locale: Locale, limit: number): Prom
         AND (ct.title ILIKE ${pattern} OR ct.summary ILIKE ${pattern} OR ct.content_html ILIKE ${pattern})
       LIMIT ${limit}
     )
+    UNION ALL
+    (
+      -- FAQs answer the questions people actually type into a search box, and
+      -- were reachable only through the semantic pass — which is optional, so
+      -- on an installation without an embeddings key they could not be found
+      -- at all. The id stands in for the slug: the answers live on one page,
+      -- addressed by anchor.
+      SELECT 'faq'::text, ft.faq_id, ft.question, ft.faq_id::text,
+             left(regexp_replace(ft.answer_html, '<[^>]+>', ' ', 'g'), 300),
+             GREATEST(similarity(ft.question, ${query}), 0.35)
+      FROM faq_translations ft
+      JOIN faqs f ON f.id = ft.faq_id AND f.is_published = true
+      WHERE ft.locale = ${locale}
+        AND (ft.question ILIKE ${pattern} OR ft.answer_html ILIKE ${pattern})
+      LIMIT ${limit}
+    )
+    UNION ALL
+    (
+      -- Pages carry their text in blocks rather than a column, so only the
+      -- title and the SEO description can be matched here. Better than a page
+      -- that cannot be found by name.
+      SELECT 'page'::text, pgt.page_id, pgt.title, pgt.slug,
+             COALESCE(pgt.seo_description, ''),
+             GREATEST(similarity(pgt.title, ${query}), 0.35)
+      FROM page_translations pgt
+      JOIN pages pg ON pg.id = pgt.page_id AND pg.status = 'published'
+      WHERE pgt.locale = ${locale}
+        AND (pgt.title ILIKE ${pattern} OR pgt.seo_description ILIKE ${pattern})
+      LIMIT ${limit}
+    )
     ORDER BY score DESC
     LIMIT ${limit}
   `)

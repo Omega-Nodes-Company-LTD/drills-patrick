@@ -4,6 +4,7 @@ import { FaqAccordion } from '@/components/site/faq-accordion'
 import { EmptyState, PageHeader } from '@/components/site/page-header'
 import type { Locale } from '@/i18n/config'
 import { listFaqs } from '@/lib/content/queries'
+import { sanitizeHtml } from '@/lib/sanitize'
 import { localeUrl, staticAlternates } from '@/lib/seo'
 import { faqPageNode, sectionBreadcrumb, webPageNode } from '@/lib/seo/nodes'
 import { JsonLd } from '@/components/seo/json-ld'
@@ -81,7 +82,16 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
           [...groups.entries()].map(([category, entries]) => (
             <section key={category || 'general'} className="flex flex-col gap-4">
               {category ? <h2 className="text-heading">{category}</h2> : null}
-              <FaqAccordion items={entries} />
+              {/* Sanitised on the way out as well as the way in, as the FAQ
+                  block already did — an answer written before a rule changed
+                  must not be able to inject markup into the page. */}
+              <FaqAccordion
+                items={entries.map((entry) => ({
+                  id: entry.id,
+                  question: entry.question,
+                  answerHtml: sanitizeHtml(entry.answerHtml),
+                }))}
+              />
             </section>
           ))
         )}

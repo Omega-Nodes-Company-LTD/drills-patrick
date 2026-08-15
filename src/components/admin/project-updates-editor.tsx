@@ -18,12 +18,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Field, Input } from '@/components/ui/field'
+import { Field, Input, Select } from '@/components/ui/field'
 import { Switch } from '@/components/ui/switch'
 import { localeLabels, type Locale } from '@/i18n/config'
 
 export type ProjectUpdateRow = {
   id: string
+  projectId: string
   mediaId: string | null
   happenedOn: string
   sortOrder: number
@@ -31,9 +32,10 @@ export type ProjectUpdateRow = {
   translations: Partial<Record<Locale, { title: string; body: string }>>
 }
 
-type Draft = Omit<ProjectUpdateRow, 'id'> & { id?: string }
+export type UpdateDraft = Omit<ProjectUpdateRow, 'id'> & { id?: string }
 
-const emptyDraft = (sortOrder: number): Draft => ({
+export const emptyUpdateDraft = (projectId: string, sortOrder: number): UpdateDraft => ({
+  projectId,
   mediaId: null,
   happenedOn: new Date().toISOString().slice(0, 10),
   sortOrder,
@@ -59,7 +61,7 @@ export function ProjectUpdatesEditor({
   const t = useTranslations('admin.common')
   const tCommon = useTranslations('common')
   const tProject = useTranslations('projects')
-  const [draft, setDraft] = useState<Draft | null>(null)
+  const [draft, setDraft] = useState<UpdateDraft | null>(null)
   const [pending, startTransition] = useTransition()
 
   function remove(row: ProjectUpdateRow) {
@@ -90,7 +92,7 @@ export function ProjectUpdatesEditor({
         <Button
           type="button"
           size="sm"
-          onClick={() => setDraft(emptyDraft(rows.length))}
+          onClick={() => setDraft(emptyUpdateDraft(projectId, rows.length))}
         >
           <Plus className="size-4" aria-hidden />
           {t('newItem')}
@@ -141,7 +143,6 @@ export function ProjectUpdatesEditor({
 
       {draft ? (
         <UpdateDialog
-          projectId={projectId}
           draft={draft}
           setDraft={setDraft}
           enabledLocales={enabledLocales}
@@ -152,21 +153,27 @@ export function ProjectUpdatesEditor({
   )
 }
 
-function UpdateDialog({
-  projectId,
+/**
+ * Shared with the site-wide field-updates screen, which is why the project is
+ * carried on the draft and offered as a choice when a list is passed: the same
+ * entry is edited from inside its project and from the list of everything.
+ */
+export function UpdateDialog({
   draft,
   setDraft,
   enabledLocales,
   storageEnabled,
+  projects,
 }: {
-  projectId: string
-  draft: Draft
-  setDraft: (draft: Draft | null) => void
+  draft: UpdateDraft
+  setDraft: (draft: UpdateDraft | null) => void
   enabledLocales: Locale[]
   storageEnabled: boolean
+  projects?: { id: string; title: string }[]
 }) {
   const t = useTranslations('admin.common')
   const tCommon = useTranslations('common')
+  const tProjects = useTranslations('projects')
   const [pending, startTransition] = useTransition()
 
   const setTranslation = (locale: Locale, patch: { title?: string; body?: string }) =>
@@ -184,7 +191,7 @@ function UpdateDialog({
 
   function save() {
     startTransition(async () => {
-      const result = await saveProjectUpdate({ ...draft, projectId })
+      const result = await saveProjectUpdate(draft)
       if (result.ok) {
         toast.success(tCommon('success.saved'))
         setDraft(null)
@@ -202,6 +209,22 @@ function UpdateDialog({
         </DialogHeader>
 
         <DialogBody className="flex flex-col gap-5">
+          {projects ? (
+            <Field label={tProjects('title')} htmlFor="updateProject" required>
+              <Select
+                id="updateProject"
+                value={draft.projectId}
+                onChange={(event) => setDraft({ ...draft, projectId: event.target.value })}
+              >
+                {projects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.title}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          ) : null}
+
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label={t('date')} htmlFor="happenedOn" required>
               <Input

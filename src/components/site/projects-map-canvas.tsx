@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { Link } from '@/i18n/navigation'
 import { clusterMarkers } from '@/lib/transparency/cluster'
-import type { ProjectMarker } from './projects-map'
+import type { MapPlace, ProjectMarker } from './projects-map'
 
 const statusColors: Record<ProjectMarker['status'], string> = {
   planned: 'var(--c-muted-foreground)',
@@ -22,6 +22,24 @@ function pinIcon(status: ProjectMarker['status']) {
     html: `<span style="display:block;width:18px;height:18px;border-radius:9999px;background:${statusColors[status]};border:3px solid var(--c-background);box-shadow:0 2px 6px rgba(0,0,0,.35)"></span>`,
     iconSize: [18, 18],
     iconAnchor: [9, 9],
+    popupAnchor: [0, -10],
+  })
+}
+
+/**
+ * Pin for a place the editor added by hand — an office, a district covered, a
+ * site not yet opened as a project. Deliberately a different shape as well as
+ * a different colour, so it does not read as a water point in a screenshot or
+ * to someone who cannot tell the two colours apart.
+ */
+function placeIcon() {
+  return L.divIcon({
+    className: 'pw-map-place',
+    html:
+      `<span style="display:block;width:16px;height:16px;border-radius:3px;background:var(--c-primary);` +
+      `border:3px solid var(--c-background);box-shadow:0 2px 6px rgba(0,0,0,.35);transform:rotate(45deg)"></span>`,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8],
     popupAnchor: [0, -10],
   })
 }
@@ -46,7 +64,15 @@ function clusterIcon(count: number) {
  * `useMap` is the supported handle; reaching into the marker's internals is
  * not.
  */
-function Markers({ markers, initialZoom }: { markers: ProjectMarker[]; initialZoom: number }) {
+function Markers({
+  markers,
+  initialZoom,
+  viewLabel,
+}: {
+  markers: ProjectMarker[]
+  initialZoom: number
+  viewLabel: string
+}) {
   const [zoom, setZoom] = useState(initialZoom)
   const map = useMapEvents({ zoomend: () => setZoom(map.getZoom()) })
   const clusters = useMemo(() => clusterMarkers(markers, zoom), [markers, zoom])
@@ -73,7 +99,7 @@ function Markers({ markers, initialZoom }: { markers: ProjectMarker[]; initialZo
                   href={`/projects/${marker.slug}`}
                   className="mt-1 inline-block text-xs font-medium underline"
                 >
-                  →
+                  {viewLabel}
                 </Link>
               </Popup>
             </Marker>
@@ -86,9 +112,16 @@ function Markers({ markers, initialZoom }: { markers: ProjectMarker[]; initialZo
             position={[cluster.lat, cluster.lng]}
             icon={clusterIcon(cluster.markers.length)}
             eventHandlers={{
-              // Clicking a cluster zooms toward it rather than opening a popup
-              // listing forty water points nobody will read.
-              click: () => map.setView([cluster.lat, cluster.lng], zoom + 2),
+              // Clicking a cluster frames its members rather than opening a
+              // popup listing forty water points nobody will read. Fitting the
+              // bounds rather than guessing at `zoom + 2` means one click
+              // always arrives at the level where the group actually comes
+              // apart, however tightly it is packed.
+              click: () =>
+                map.fitBounds(
+                  L.latLngBounds(cluster.markers.map((marker) => [marker.lat, marker.lng])),
+                  { padding: [48, 48] },
+                ),
             }}
           />
         )
@@ -120,12 +153,16 @@ function TouchGate({ active }: { active: boolean }) {
 
 export function MapCanvas({
   markers,
+  places,
   center,
   zoom,
+  viewLabel,
 }: {
   markers: ProjectMarker[]
+  places: MapPlace[]
   center: { lat: number; lng: number }
   zoom: number
+  viewLabel: string
 }) {
   const t = useTranslations('projects')
   /*
@@ -154,7 +191,20 @@ export function MapCanvas({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Markers markers={markers} initialZoom={zoom} />
+
+        {/* Hand-placed pins are never clustered: they were positioned one by one
+            and there are few enough that hiding them behind a bubble would only
+            take away what the editor put there. */}
+        {places.map((place) => (
+          <Marker key={place.id} position={[place.lat, place.lng]} icon={placeIcon()}>
+            <Popup>
+              <span className="block text-sm font-semibold">{place.label}</span>
+              {place.note ? <span className="mt-1 block text-xs">{place.note}</span> : null}
+            </Popup>
+          </Marker>
+        ))}
+
+        <Markers markers={markers} initialZoom={zoom} viewLabel={viewLabel} />
         <TouchGate active={active} />
       </MapContainer>
 
