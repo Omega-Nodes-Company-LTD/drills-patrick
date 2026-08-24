@@ -67,10 +67,16 @@ export function SlideshowWrapper({
   }, [prevSlide, nextSlide])
 
   const touchStartRef = useRef<number | null>(null)
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartRef.current = e.touches[0].clientX }
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const x = e.touches[0]?.clientX
+    if (x == null) return
+    touchStartRef.current = x
+  }
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartRef.current === null) return
-    const diff = touchStartRef.current - e.changedTouches[0].clientX
+    const x = e.changedTouches[0]?.clientX
+    if (x == null) return
+    const diff = touchStartRef.current - x
     if (Math.abs(diff) > 50) { if (diff > 0) nextSlide(); else prevSlide() }
     touchStartRef.current = null
   }
