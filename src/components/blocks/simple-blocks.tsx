@@ -5,6 +5,7 @@ import type {
   CtaBlock,
   GalleryBlock,
   RichTextBlock,
+  SlideshowBlock,
   StatsBlock,
   StepsBlock,
   TableBlock,
@@ -16,6 +17,7 @@ import { cn, isExternalHref } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { MediaImage } from '@/components/ui/media-image'
 import { Section, SectionHeading } from './section'
+import { SlideshowWrapper } from './slideshow-client'
 
 export function RichTextBlockView({ block, locale }: { block: RichTextBlock; locale: Locale }) {
   const html = sanitizeHtml(pickI18n(block.content, locale))
@@ -152,6 +154,21 @@ const aspectClasses = {
   portrait: 'aspect-[3/4]',
 }
 
+const slideshowAspectClasses = {
+  square: 'aspect-square',
+  landscape: 'aspect-[4/3]',
+  portrait: 'aspect-[3/4]',
+  wide: 'aspect-[16/9]',
+  cinema: 'aspect-[21/9]',
+}
+
+const heightClasses = {
+  sm: 'max-h-[300px]',
+  md: 'max-h-[400px]',
+  lg: 'max-h-[500px]',
+  xl: 'max-h-[600px]',
+}
+
 export async function GalleryBlockView({
   block,
   locale,
@@ -192,6 +209,54 @@ export async function GalleryBlockView({
             />
           </figure>
         ))}
+      </div>
+    </Section>
+  )
+}
+
+export async function SlideshowBlockView({
+  block,
+  locale,
+}: {
+  block: SlideshowBlock
+  locale: Locale
+}) {
+  if (block.mediaIds.length === 0) return null
+
+  const map = await getMediaByIds(block.mediaIds)
+  const items = block.mediaIds.map((id) => map.get(id)).filter(Boolean)
+  if (items.length === 0) return null
+
+  const aspectClass = slideshowAspectClasses[block.aspect]
+  const heightClass = heightClasses[block.height]
+
+  return (
+    <Section layout={block.layout}>
+      <SectionHeading
+        title={pickI18n(block.title, locale)}
+        subtitle={pickI18n(block.subtitle, locale)}
+        className="mb-6"
+      />
+      <div className={cn('relative overflow-hidden rounded-[var(--radius-xl)] bg-muted', aspectClass, heightClass)}>
+        <SlideshowWrapper
+          slideCount={items.length}
+          autoplayInterval={block.autoplayInterval}
+          pauseOnHover={block.pauseOnHover}
+          transition={block.transition}
+          showArrows={block.showArrows}
+          showDots={block.showDots}
+        >
+          {items.map((item) => (
+            <MediaImage
+              key={item.id}
+              media={item}
+              locale={locale}
+              sizes="100vw"
+              className="w-full h-full object-cover"
+              fill
+            />
+          ))}
+        </SlideshowWrapper>
       </div>
     </Section>
   )

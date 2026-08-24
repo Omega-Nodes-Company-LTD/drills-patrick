@@ -412,6 +412,84 @@ export function BlockFields({
         </>
       )
 
+    case 'slideshow':
+      return (
+        <>
+          <I18nField label="Title" value={block.title} onChange={(title) => patch({ title })} />
+          <I18nField
+            label="Subtitle"
+            variant="textarea"
+            value={block.subtitle}
+            onChange={(subtitle) => patch({ subtitle })}
+          />
+          <MediaGalleryPicker
+            value={block.mediaIds}
+            onChange={(mediaIds) => patch({ mediaIds })}
+            storageEnabled={storageEnabled}
+            label={t('kinds.slideshow')}
+          />
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Field label="Height">
+              <Select
+                value={block.height}
+                onChange={(event) => patch({ height: event.target.value as never })}
+              >
+                {['sm', 'md', 'lg', 'xl'].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field label="Aspect">
+              <Select
+                value={block.aspect}
+                onChange={(event) => patch({ aspect: event.target.value as never })}
+              >
+                {['landscape', 'square', 'portrait', 'wide', 'cinema'].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field label="Transition">
+              <Select
+                value={block.transition}
+                onChange={(event) => patch({ transition: event.target.value as never })}
+              >
+                <option value="slide">Slide</option>
+                <option value="fade">Fade</option>
+              </Select>
+            </Field>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Field label="Autoplay (ms)">
+              <Input
+                type="number"
+                min={0}
+                max={30000}
+                step={500}
+                value={block.autoplayInterval}
+                onChange={(event) => patch({ autoplayInterval: Number(event.target.value) })}
+              />
+            </Field>
+            <label className="flex items-center justify-between gap-2 self-end text-sm">
+              Show arrows
+              <Switch checked={block.showArrows} onCheckedChange={(showArrows) => patch({ showArrows })} />
+            </label>
+            <label className="flex items-center justify-between gap-2 self-end text-sm">
+              Show dots
+              <Switch checked={block.showDots} onCheckedChange={(showDots) => patch({ showDots })} />
+            </label>
+          </div>
+          <label className="flex items-center justify-between gap-2 self-end text-sm">
+            Pause on hover
+            <Switch checked={block.pauseOnHover} onCheckedChange={(pauseOnHover) => patch({ pauseOnHover })} />
+          </label>
+        </>
+      )
+
     case 'team':
       return (
         <>
@@ -883,6 +961,8 @@ export function createBlock(kind: Block['kind']): Block {
       return { ...base, kind, suggestedAmounts: [], campaignId: null }
     case 'gallery':
       return { ...base, kind, mediaIds: [], columns: 3, aspect: 'landscape' }
+    case 'slideshow':
+      return { ...base, kind, mediaIds: [], height: 'lg', aspect: 'landscape', transition: 'slide', autoplayInterval: 5000, showArrows: true, showDots: true, pauseOnHover: true }
     case 'partners':
       return { ...base, kind, partnerIds: [] }
     case 'testimonials':

@@ -356,6 +356,66 @@
       "contracts": "Endagaano",
       "partnerAccess": "Bakolagana naffe",
       "transparency": "Ebibalo ebifulumiziddwa"
+    },
+    "blocks": {
+      "title": "Ebikunkumizza",
+      "add": "Ongeza ekikunkumizza",
+      "empty": "Olupapula luno lulina ebikunkumizza.",
+      "moveUp": "Tugula wansi",
+      "moveDown": "Tugula waggulu",
+      "duplicate": "Kusobola",
+      "remove": "Kusussa",
+      "hidden": "Ekiyitibwa",
+      "layout": "Ebisooka n'omutwe",
+      "paddingTop": "Ebisooka ebiganda",
+      "paddingBottom": "Ebisooka ebinazzi",
+      "width": "Obugazi",
+      "tone": "Omwaka",
+      "anchor": "Anchor id",
+      "preview": "Okulaba",
+      "kinds": {
+        "hero": "Hero",
+        "richText": "Ebigambo",
+        "stats": "Ebibaale by'obuyambi",
+        "projects": "Pulojekiti",
+        "posts": "Ebiwandiiko",
+        "campaigns": "Kaweefube",
+        "donate": "Ekitundu kyo buyambi",
+        "gallery": "Ebifaananyi",
+        "slideshow": "Ebifaananyi ebirangiriza",
+        "partners": "Bakolagana naffe",
+        "testimonials": "Obujulizi",
+        "team": "Ttiimu",
+        "faq": "Ebibuuzo",
+        "steps": "Ebintu bikiragira kitya",
+        "cta": "Okusaba okukola ekintu",
+        "map": "Map",
+        "video": "Video",
+        "contact": "Fomu yo kwagala",
+        "answer": "Okwogera okuto",
+        "table": "Tebulo ya data"
+      },
+      "spacing": {
+        "none": "Teli",
+        "sm": "Kito",
+        "md": "Kisinga",
+        "lg": "Nkulu",
+        "xl": "Nkulu nnyo"
+      },
+      "widths": {
+        "narrow": "Mpano",
+        "container": "Kikozesebwa",
+        "wide": "Ebugaziddwa",
+        "full": "Bugazi bwo buwonna"
+      },
+      "tones": {
+        "default": "Omwaka gwo buwonna",
+        "surface": "Omwaka",
+        "muted": "Ekiluluma",
+        "primary": "Ekya kwanjula",
+        "secondary": "Ekya kabiri",
+        "accent": "Ekiyita"
+      }
     }
   }
 }

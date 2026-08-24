@@ -140,6 +140,28 @@ export const galleryBlockSchema = z.object({
   aspect: z.enum(['square', 'landscape', 'portrait']).default('landscape'),
 })
 
+export const slideshowBlockSchema = z.object({
+  ...baseFields,
+  kind: z.literal('slideshow'),
+  title: i18nTextSchema.optional(),
+  subtitle: i18nTextSchema.optional(),
+  mediaIds: z.array(z.string().uuid()).default([]),
+  /** Transition style between slides. */
+  transition: z.enum(['slide', 'fade']).default('slide'),
+  /** Auto-advance interval in milliseconds. 0 = disabled. */
+  autoplayInterval: z.number().int().min(0).max(30000).default(5000),
+  /** Show navigation arrows. */
+  showArrows: z.boolean().default(true),
+  /** Show dot indicators. */
+  showDots: z.boolean().default(true),
+  /** Pause autoplay on hover. */
+  pauseOnHover: z.boolean().default(true),
+  /** Height of the slideshow. */
+  height: z.enum(['sm', 'md', 'lg', 'xl']).default('lg'),
+  /** Aspect ratio of slides. */
+  aspect: z.enum(['square', 'landscape', 'portrait', 'wide', 'cinema']).default('landscape'),
+})
+
 export const partnersBlockSchema = z.object({
   ...baseFields,
   kind: z.literal('partners'),
@@ -314,6 +336,7 @@ export const blockSchema = z.discriminatedUnion('kind', [
   campaignsBlockSchema,
   donateBlockSchema,
   galleryBlockSchema,
+  slideshowBlockSchema,
   partnersBlockSchema,
   testimonialsBlockSchema,
   teamBlockSchema,
@@ -339,6 +362,7 @@ export type PostsBlock = z.infer<typeof postsBlockSchema>
 export type CampaignsBlock = z.infer<typeof campaignsBlockSchema>
 export type DonateBlock = z.infer<typeof donateBlockSchema>
 export type GalleryBlock = z.infer<typeof galleryBlockSchema>
+export type SlideshowBlock = z.infer<typeof slideshowBlockSchema>
 export type PartnersBlock = z.infer<typeof partnersBlockSchema>
 export type TestimonialsBlock = z.infer<typeof testimonialsBlockSchema>
 export type TeamBlock = z.infer<typeof teamBlockSchema>
@@ -373,6 +397,7 @@ export const blockKinds = [
   'campaigns',
   'donate',
   'gallery',
+  'slideshow',
   'partners',
   'testimonials',
   'team',

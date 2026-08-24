@@ -6,6 +6,7 @@ import {
   CtaBlockView,
   GalleryBlockView,
   RichTextBlockView,
+  SlideshowBlockView,
   StatsBlockView,
   StepsBlockView,
   TableBlockView,
@@ -45,6 +46,8 @@ export function BlockView({ block, locale }: { block: Block; locale: Locale }) {
       return <CtaBlockView block={block} locale={locale} />
     case 'gallery':
       return <GalleryBlockView block={block} locale={locale} />
+    case 'slideshow':
+      return <SlideshowBlockView block={block} locale={locale} />
     case 'video':
       return <VideoBlockView block={block} locale={locale} />
     case 'projects':
