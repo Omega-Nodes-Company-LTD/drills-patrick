@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { Children, useEffect, useRef, useState, useCallback } from 'react'
 
 interface SlideshowWrapperProps {
   children: React.ReactNode
@@ -25,7 +25,6 @@ export function SlideshowWrapper({
 }: SlideshowWrapperProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
-  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const slidesRef = useRef<HTMLDivElement>(null)
   const isAnimating = useRef(false)
@@ -68,10 +67,16 @@ export function SlideshowWrapper({
   }, [prevSlide, nextSlide])
 
   const touchStartRef = useRef<number | null>(null)
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartRef.current = e.touches[0].clientX }
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const x = e.touches[0]?.clientX
+    if (x == null) return
+    touchStartRef.current = x
+  }
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartRef.current === null) return
-    const diff = touchStartRef.current - e.changedTouches[0].clientX
+    const x = e.changedTouches[0]?.clientX
+    if (x == null) return
+    const diff = touchStartRef.current - x
     if (Math.abs(diff) > 50) { if (diff > 0) nextSlide(); else prevSlide() }
     touchStartRef.current = null
   }
@@ -95,7 +100,7 @@ export function SlideshowWrapper({
   return (
     <div ref={containerRef} className="relative" role="region" aria-label="Slideshow" aria-roledescription="carousel" tabIndex={0} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <div ref={slidesRef} className="flex transition-transform duration-700 ease-out" data-slideshow-track>
-        {React.Children.toArray(children).map((child, index) => (
+        {Children.toArray(children).map((child, index) => (
           <div key={index} className={"flex-shrink-0 w-full " + (transition === 'fade' ? 'absolute inset-0 transition-opacity duration-700 ' : '') + (index === currentIndex ? (transition === 'fade' ? 'opacity-100 z-10' : '') : (transition === 'fade' ? 'opacity-0 z-0' : ''))} style={transition === 'fade' && index !== currentIndex ? { position: 'absolute', inset: 0 } : {}} data-slide={index} role="group" aria-roledescription="slide" aria-label={"Slide " + (index + 1) + " of " + slideCount} aria-current={index === currentIndex ? 'true' : 'false'}>
             {child}
           </div>

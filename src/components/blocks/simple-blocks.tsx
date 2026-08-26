@@ -179,7 +179,9 @@ export async function GalleryBlockView({
   if (block.mediaIds.length === 0) return null
 
   const map = await getMediaByIds(block.mediaIds)
-  const items = block.mediaIds.map((id) => map.get(id)).filter(Boolean)
+  const items = block.mediaIds
+    .map((id) => map.get(id))
+    .filter((item): item is NonNullable<typeof item> => item != null)
   if (items.length === 0) return null
 
   return (
@@ -195,7 +197,7 @@ export async function GalleryBlockView({
       >
         {items.map((item) => (
           <figure
-            key={item!.id}
+            key={item.id}
             className={cn(
               'relative overflow-hidden rounded-[var(--radius-lg)] bg-muted',
               aspectClasses[block.aspect],
@@ -224,7 +226,9 @@ export async function SlideshowBlockView({
   if (block.mediaIds.length === 0) return null
 
   const map = await getMediaByIds(block.mediaIds)
-  const items = block.mediaIds.map((id) => map.get(id)).filter(Boolean)
+  const items = block.mediaIds
+    .map((id) => map.get(id))
+    .filter((item): item is NonNullable<typeof item> => item != null)
   if (items.length === 0) return null
 
   const aspectClass = slideshowAspectClasses[block.aspect]
