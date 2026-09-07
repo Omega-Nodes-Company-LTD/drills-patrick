@@ -98,7 +98,7 @@ export function SlideshowWrapper({
   if (slideCount <= 1) return <div className="absolute inset-0">{children}</div>
 
   return (
-    <div ref={containerRef} className="absolute inset-0" role="region" aria-label="Slideshow" aria-roledescription="carousel" tabIndex={0} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+<div ref={containerRef} className="absolute inset-0" role="region" aria-label="Slideshow" aria-roledescription="carousel" tabIndex={0} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <div ref={slidesRef} className="absolute inset-0 flex transition-transform duration-700 ease-out" data-slideshow-track>
         {Children.toArray(children).map((child, index) => (
           <div key={index} className={(transition === 'slide' ? 'relative min-w-full flex-shrink-0' : 'absolute inset-0 transition-opacity duration-700') + (index === currentIndex ? (transition === 'fade' ? ' opacity-100 z-10' : '') : (transition === 'fade' ? ' opacity-0 z-0' : ''))} data-slide={index} role="group" aria-roledescription="slide" aria-label={"Slide " + (index + 1) + " of " + slideCount} aria-current={index === currentIndex ? 'true' : 'false'}>
