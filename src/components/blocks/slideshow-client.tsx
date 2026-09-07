@@ -124,13 +124,13 @@ export function SlideshowWrapper({
   }, [currentIndex, transition])
 
   if (slideCount <= 1) {
-    return <div className="relative size-full w-full h-full">{children}</div>
+    return <div className="absolute inset-0">{children}</div>
   }
 
   return (
     <div
       ref={containerRef}
-      className="relative size-full w-full h-full"
+      className="absolute inset-0"
       role="region"
       aria-label="Slideshow"
       aria-roledescription="carousel"
@@ -141,10 +141,9 @@ export function SlideshowWrapper({
       <div
         ref={slidesRef}
         className={
-          'w-full h-full ' +
-          (transition === 'slide'
-            ? 'flex transition-transform duration-700 ease-out'
-            : 'relative')
+          transition === 'slide'
+            ? 'absolute inset-0 flex transition-transform duration-700 ease-out'
+            : 'absolute inset-0'
         }
         data-slideshow-track
       >
@@ -152,9 +151,11 @@ export function SlideshowWrapper({
           <div
             key={index}
             className={
-              'relative w-full h-full flex-shrink-0 ' +
+              (transition === 'slide'
+                ? 'relative min-w-full flex-shrink-0'
+                : 'absolute inset-0 transition-opacity duration-700') +
               (transition === 'fade'
-                ? 'absolute inset-0 transition-opacity duration-700 '
+                ? ' '
                 : '') +
               (index === currentIndex
                 ? transition === 'fade'
@@ -163,11 +164,6 @@ export function SlideshowWrapper({
                 : transition === 'fade'
                 ? 'opacity-0 z-0'
                 : '')
-            }
-            style={
-              transition === 'fade' && index !== currentIndex
-                ? { position: 'absolute', inset: 0 }
-                : {}
             }
             data-slide={index}
             role="group"
