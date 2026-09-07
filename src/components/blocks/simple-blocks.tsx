@@ -256,8 +256,9 @@ export async function SlideshowBlockView({
               media={item}
               locale={locale}
               sizes="100vw"
-              className="w-full h-full object-cover"
+              className="object-cover"
               fill
+              priority
             />
           ))}
         </SlideshowWrapper>
