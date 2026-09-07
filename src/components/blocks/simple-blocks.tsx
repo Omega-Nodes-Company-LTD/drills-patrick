@@ -241,7 +241,7 @@ export async function SlideshowBlockView({
         subtitle={pickI18n(block.subtitle, locale)}
         className="mb-6"
       />
-      <div className={cn('relative overflow-hidden rounded-[var(--radius-xl)] bg-muted', aspectClass, heightClass)}>
+      <div className={cn('relative w-full overflow-hidden rounded-[var(--radius-xl)] bg-muted', aspectClass, heightClass)}>
         <SlideshowWrapper
           slideCount={items.length}
           autoplayInterval={block.autoplayInterval}
