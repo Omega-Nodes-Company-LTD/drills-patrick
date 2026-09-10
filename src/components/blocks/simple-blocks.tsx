@@ -154,19 +154,11 @@ const aspectClasses = {
   portrait: 'aspect-[3/4]',
 }
 
-const slideshowAspectClasses = {
-  square: 'aspect-square',
-  landscape: 'aspect-[4/3]',
-  portrait: 'aspect-[3/4]',
-  wide: 'aspect-[16/9]',
-  cinema: 'aspect-[21/9]',
-}
-
 const heightClasses = {
-  sm: 'max-h-[300px]',
-  md: 'max-h-[400px]',
-  lg: 'max-h-[500px]',
-  xl: 'max-h-[600px]',
+  sm: 'h-[200px] sm:h-[300px]',
+  md: 'h-[250px] sm:h-[400px]',
+  lg: 'h-[300px] sm:h-[500px]',
+  xl: 'h-[350px] sm:h-[600px]',
 }
 
 export async function GalleryBlockView({
@@ -231,7 +223,6 @@ export async function SlideshowBlockView({
     .filter((item): item is NonNullable<typeof item> => item != null)
   if (items.length === 0) return null
 
-  const aspectClass = slideshowAspectClasses[block.aspect]
   const heightClass = heightClasses[block.height]
 
   return (
@@ -241,7 +232,7 @@ export async function SlideshowBlockView({
         subtitle={pickI18n(block.subtitle, locale)}
         className="mb-6"
       />
-      <div className={cn('relative w-full overflow-hidden rounded-[var(--radius-xl)] bg-muted', aspectClass, heightClass)}>
+      <div className={cn('relative w-full overflow-hidden rounded-[var(--radius-xl)] bg-muted', heightClass)}>
         <SlideshowWrapper
           slideCount={items.length}
           autoplayInterval={block.autoplayInterval}
